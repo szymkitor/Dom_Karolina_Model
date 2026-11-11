@@ -378,7 +378,7 @@ flat([[-12,-19],[32,-19],[32,43],[-12,43]],-.42,0x9fb48a);
 [[[-12,-8],[1.38,-8],[1.38,-7.5],[-12,-7.5]],[[5.88,-8],[8.87,-8],[8.87,-7.5],[5.88,-7.5]],[[9.99,-8],[14.78,-8],[14.78,-7.5],[9.99,-7.5]],[[29.38,-8],[32,-8],[32,-7.5],[29.38,-7.5]]].forEach(pl=>flat(pl,-.34,0x82ad63));   /* pas trawnika przy ulicy na tym samym poziomie co dzialka (-0,34) */                           // ulica
 const PL=[[-3,-7.5],[14.78,-7.5],[19.45,-2.65],[19.45,21.35],[21.9,21.35],[21.8,37.4],[-3.4,37.4]];
 flat(PL,-.34,0x82ad63); // działka (bez linii granicy)
-/* kostka omija stopy slupow i cokol muru (elementy sie nie przenikaja) */flat([[.91,-5],[.91,-7.25],[1.38,-7.25],[1.38,-7.7],[5.88,-7.7],[5.88,-7.25],[6.41,-7.25],[6.41,-5]],-.30,0xbab5ab);flat([[8.62,-3.5],[8.62,-7.25],[8.87,-7.25],[8.87,-7.7],[9.99,-7.7],[9.99,-7.25],[10.24,-7.25],[10.24,-3.5]],-.30,0xbab5ab);[[1.38,5.88],[8.87,9.99]].forEach(([x0,x1])=>{const g=new THREE.BufferGeometry(),P=[[x0,-7.7,-.30],[x1,-7.7,-.30],[x1,-8.0,-.38],[x0,-8.0,-.38]];g.setAttribute('position',new THREE.Float32BufferAttribute(P.flatMap(p=>[p[0],p[2],-p[1]]),3));g.setAttribute('uv',new THREE.Float32BufferAttribute(P.flatMap(p=>[p[0],p[1]]),2));g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();add(g,pvD,0,0,0,false)});flat([[7.25,-3.5],[12.1,-3.5],[12.1,0],[7.25,0]],-.30,0xbab5ab);
+/* kostka omija stopy slupow i cokol muru (elementy sie nie przenikaja) */flat([[.91,-5],[.91,-7.25],[1.38,-7.25],[1.38,-7.7],[5.88,-7.7],[5.88,-7.25],[6.41,-7.25],[6.41,-5]],-.30,0xbab5ab);flat([[8.62,-3.5],[8.62,-7.25],[8.87,-7.25],[8.87,-7.7],[9.99,-7.7],[9.99,-7.25],[10.24,-7.25],[10.24,-3.5]],-.30,0xbab5ab);[[1.38,5.88],[8.87,9.99]].forEach(([x0,x1])=>{const g=new THREE.BufferGeometry(),P=[[x0,-7.7,-.30],[x1,-7.7,-.30],[x1,-8.0,-.38],[x0,-8.0,-.38]];g.setAttribute('position',new THREE.Float32BufferAttribute(P.flatMap(p=>[p[0],p[2],-p[1]]),3));g.setAttribute('uv',new THREE.Float32BufferAttribute(P.flatMap(p=>[p[0],p[1]]),2));g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();add(g,pvD,0,0,0,false)});flat([[7.25,-3.5],[12.1,-3.5],[12.1,0],[7.25,0]],-.30,0xbab5ab);flat([[7.25,-5.8],[8.62,-5.8],[8.62,-3.5],[7.25,-3.5]],-.30,0xbab5ab);   /* poszerzenie chodnika od furtki (M5d, M5b, skraj M5a/M5c): zachodnia krawedz w linii x=7,21 jak chodnik w M6c/M6d */
 /* boki nawierzchni frontowych (podjazd, ścieżka do furtki, chodnik) schodzą do gruntu - bez pustych szczelin pod płytami */
 {const sk=new THREE.MeshStandardMaterial({color:0xb4b0a7,roughness:.95,side:THREE.DoubleSide}),B=-.46,vq=(x0,y0,x1,y1,ta,tb)=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute([x0,ta,-y0,x1,tb,-y1,x1,B,-y1,x0,B,-y0],3));g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();add(g,sk,0,0,0,false)};
  [1.38,5.88,8.87,9.99].forEach(x=>vq(x,-7.7,x,-8.0,-.30,-.38));vq(1.38,-8.0,5.88,-8.0,-.38,-.38);vq(8.87,-8.0,9.99,-8.0,-.38,-.38)}
@@ -873,6 +873,38 @@ function thujaM(){const S=128,c=document.createElement('canvas');c.width=c.heigh
  const im2=new THREE.InstancedMesh(thujaGeo(),thujaM(),Pt.length),d2=new THREE.Object3D(),c2=new THREE.Color();
  Pt.forEach((p,i)=>{const h=2.05+Math.random()*.3;d2.position.set(p[0],-.34,-p[1]);d2.scale.set(.9+Math.random()*.15,h,.9+Math.random()*.15);d2.rotation.y=Math.random()*6;d2.updateMatrix();im2.setMatrixAt(i,d2.matrix);im2.setColorAt(i,c2.setHSL(.27+Math.random()*.07,.45+Math.random()*.15,.30+Math.random()*.08))});
  im2.frustumCulled=false;im2.castShadow=im2.receiveShadow=true;scene.add(im2)}
+/* donica z drzewkiem oliwnym na rogu chodnika od furtki (N5b/N6d): donica Ø0,94 m, wys. 0,80 m (grafit), drzewko ok. 2,2 m nad ziemią: skręcony pień z dwóch splecionych pędów, 3 przewodniki, konary, gałązki i lancetowate liście (srebrzysto-zielone, ok. 3 tys. szt.) */
+{const cx=11.55,cy=-3.0,y0=-.295,ys=y0+.695,rnd=(()=>{let s=77;return()=>(s=(s*16807)%2147483647)/2147483647})(),gs=()=>rnd()+rnd()+rnd()-1.5,
+ vs=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],va=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],vm=(a,k)=>[a[0]*k,a[1]*k,a[2]*k],vn=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]},vc=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+ add(new THREE.LatheGeometry([[0,0],[.27,0],[.29,.03],[.36,.30],[.44,.66],[.47,.74],[.47,.80],[.43,.80],[.42,.74],[.40,.70]].map(p=>new THREE.Vector2(p[0],p[1])),40),M(0x4b5056,{roughness:.8,side:THREE.DoubleSide}),cx,y0,-cy);
+ add(new THREE.CylinderGeometry(.405,.405,.012,32),M(0xa7a196,{roughness:1}),cx,ys-.006,-cy,false);   // żwirek dekoracyjny na ziemi
+ const crm=(P,sub)=>{const o=[],n=P.length;for(let i=0;i<n-1;i++){const p0=P[Math.max(0,i-1)],p1=P[i],p2=P[i+1],p3=P[Math.min(n-1,i+2)];for(let s=0;s<sub;s++){const t=s/sub,t2=t*t,t3=t2*t;o.push([0,1,2].map(k=>.5*(2*p1[k]+(-p0[k]+p2[k])*t+(2*p0[k]-5*p1[k]+4*p2[k]-p3[k])*t2+(-p0[k]+3*p1[k]-3*p2[k]+p3[k])*t3)))}}o.push(P[n-1]);return o},
+ BP=[],BI=[],LV=[],RG=7,
+ tube=(pts,rad)=>{const n=pts.length,base=BP.length/3,ax=vs(pts[n-1],pts[0]),al=ax.map(Math.abs),ref=al[1]<=al[0]&&al[1]<=al[2]?[0,1,0]:al[0]<=al[2]?[1,0,0]:[0,0,1];
+  for(let k=0;k<n;k++){const t=vn(vs(pts[Math.min(n-1,k+1)],pts[Math.max(0,k-1)])),u=vn(vc(t,ref)),v=vc(t,u),r=rad(k/(n-1)),p=pts[k];
+   for(let j=0;j<=RG;j++){const a=j/RG*6.2832,c=Math.cos(a)*r,s=Math.sin(a)*r;BP.push(p[0]+c*u[0]+s*v[0],p[1]+c*u[1]+s*v[1],p[2]+c*u[2]+s*v[2])}}
+  for(let k=0;k<n-1;k++)for(let j=0;j<RG;j++){const a=base+k*(RG+1)+j,b=a+1,c=a+RG+1,d=c+1;BI.push(a,c,b,b,c,d)}},
+ leaf=(p,t,al,th)=>{const h=Math.abs(t[1])<.9?[0,1,0]:[1,0,0],u=vn(vc(h,t)),v=vc(t,u),w=va(vm(u,Math.cos(al)),vm(v,Math.sin(al))),d=vn(va(vm(t,Math.cos(th)),vm(w,Math.sin(th))));d[1]-=.12;LV.push([p,vn(d),.055+.03*rnd()])},
+ grow=(p,d,L,r0,lv)=>{const m=lv==3?4:6,pts=[p];let q=p,dd=d;
+  for(let k=0;k<m;k++){dd=vn(va(dd,[gs()*.3,gs()*.2+(lv==1?.04:.1),gs()*.3]));q=va(q,vm(dd,L/m));pts.push(q)}
+  const sm=crm(pts,3),n=sm.length,tg=i=>vn(vs(sm[Math.min(n-1,i+1)],sm[Math.max(0,i-1)]));tube(sm,u=>Math.max(.0022,r0*(1-.85*u)));
+  if(lv<3){const nc=lv==1?5:6;for(let c=0;c<nc;c++){const f=.3+.65*(c+rnd()*.7)/nc,i=Math.min(n-2,Math.max(1,Math.round(f*(n-1)))),t=tg(i),h=vn(vc(t,[gs(),gs()+.5,gs()])),th=.5+.35*rnd(),cd=vn(va(vm(t,Math.cos(th)),vm(h,Math.sin(th))));cd[1]+=.3;
+   grow(sm[i],vn(cd),L*(lv==1?.5:.45)*(.75+.5*rnd()),r0*(lv==1?.45:.4)*(1-.6*f),lv+1)}}
+  if(lv>=2)for(let i=lv==3?1:Math.round(n*.55);i<n;i+=lv==3?1:2){const t=tg(i),al=i*1.9+rnd();leaf(sm[i],t,al,.8+.3*rnd());leaf(sm[i],t,al+Math.PI,.8+.3*rnd())}
+  if(lv==3)leaf(sm[n-1],tg(n-1),0,0)},
+ strand=(ph,R)=>{const P=[];for(let k=0;k<=8;k++){const u=k/8,a=ph+u*7.5,r=R*(1-.35*u);P.push([r*Math.cos(a),.62*u,r*Math.sin(a)])}tube(crm(P,3),u=>.036-.012*u);return P[8]};
+ tube(crm([[0,-.03,0],[0,.08,0],[0,.18,0]],3),u=>.075-.03*u);   // nasada pnia
+ const t1=strand(0,.03),t2=strand(Math.PI,.03);
+ [[t1,0],[t2,2.1],[[0,.6,0],4.2]].forEach(([s,az])=>{const el=.22+.14*rnd();grow(s,vn([Math.sin(el)*Math.cos(az),Math.cos(el),Math.sin(el)*Math.sin(az)]),1.05+.15*rnd(),.026,1)});
+ const bg=new THREE.BufferGeometry();bg.setAttribute('position',new THREE.Float32BufferAttribute(BP,3));bg.setIndex(BI);bg.computeVertexNormals();
+ const bkM=M(0x6f6556,{roughness:1,side:THREE.DoubleSide});bkM.userData.plant=1;const bk=new THREE.Mesh(bg,bkM);bk.position.set(cx,ys,-cy);bk.castShadow=bk.receiveShadow=true;bk.userData.plant=1;scene.add(bk);
+ const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.Float32BufferAttribute([0,0,0,.1,.45,.012,0,1,0,-.1,.45,.012,0,.45,.045],3));lg.setIndex([0,1,4,1,2,4,2,3,4,3,0,4]);lg.computeVertexNormals();
+ const lfM=M(0xffffff,{roughness:.65,side:THREE.DoubleSide});lfM.userData.plant=1;
+ const im=new THREE.InstancedMesh(lg,lfM,LV.length),cl=new THREE.Color(),mt=new THREE.Matrix4();
+ LV.forEach(([p,d,s],i)=>{const h=Math.abs(d[1])<.9?[0,1,0]:[1,0,0],u=vn(vc(h,d)),v=vc(d,u),al=rnd()*6.28,X=va(vm(u,Math.cos(al)),vm(v,Math.sin(al))),Z=vc(X,d);
+  mt.set(X[0]*s,d[0]*s,Z[0]*s,p[0],X[1]*s,d[1]*s,Z[1]*s,p[1],X[2]*s,d[2]*s,Z[2]*s,p[2],0,0,0,1);im.setMatrixAt(i,mt);
+  im.setColorAt(i,rnd()<.45?cl.setHSL(.2+rnd()*.03,.16+.1*rnd(),.55+.12*rnd()):cl.setHSL(.24+rnd()*.04,.3+.15*rnd(),.30+.12*rnd()))});
+ im.position.set(cx,ys,-cy);im.frustumCulled=false;im.castShadow=im.receiveShadow=true;scene.add(im);window.OLV={n:LV.length,v:BP.length/3}}
 // tunel foliowy do warzyw (P18b–Q16b): półeliptyczne łuki z rur stalowych Ø25 co 1 m, szer. 3,0 m, wys. 1,8 m, dł. 7 m, folia UV, wejście od strony domu (południe), dwie grządki
 {const a=1.5,b=1.8,L=7,cx=19.35,Ys=29.35,Ye=Ys+L,gy=-.34,st=M(0xb9bec3,{roughness:.45,metalness:.4}),pt=(th,Y,k=0)=>new THREE.Vector3(cx+(a+k)*Math.cos(th),gy+(b+k)*Math.sin(th),-Y);
  for(let i=0;i<=7;i++)add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(Array.from({length:25},(_,j)=>pt(Math.PI*j/24,Ys+i))),48,.0125,6,false),st);
@@ -940,7 +972,7 @@ function kerbRun(P,rs,re,o){o=o||{};const n=P.length,hw=o.hw||.075,H=o.H||.14,BT
  /* waskie krawezniki po bokach wjazdu i furtki: od lica cokolu slupow (y -7,75) prosto do boku krawezników drogi (y -8,0); czola proste */[1.34,5.92,8.83,10.03].forEach(x=>K([[x,-7.75],[x,-8.0]],{RD0:-.26,RD1:-.26,bot:-.48}));
  K([[.87,-7.2],[.87,-5.0]]);K([[.87,-5.0],[.87,0]],{RD1:0,bot:-.48});   /* podjazd: lewa strona (plaska + pochylnia) */
  K([[6.45,0],[6.45,-5.0]],{RD0:0,RD1:-.30,bot:-.48});                    /* podjazd: prawa strona (pochylnia) */
- K([[6.45,-5.0],[6.45,-5.84],[8.58,-5.84],[8.58,-3.54],[7.21,-3.54],[7.21,-.5]]);   /* skrawek trawnika miedzy podjazdem a sciezka */
+ K([[6.45,-5.0],[6.45,-5.84],[7.21,-5.84],[7.21,-.5]]);   /* waski pas trawnika miedzy podjazdem a poszerzonym chodnikiem */
  const og=new THREE.BufferGeometry();og.setAttribute('position',new THREE.Float32BufferAttribute(OL,3));const ol=new THREE.LineSegments(og,new THREE.LineBasicMaterial({color:0x10151a}));ol.visible=false;ol.userData.ln=1;ol.frustumCulled=false;scene.add(ol);LNX.push(ol)}
 /* slupy swiatlowodowe: smukle, stozkowe slupy stalowe (grafit, ocynk) o wysokosci 5,2 m nad terenem, fi 14 -> 9 cm; na pasie trawnika miedzy ulica a ogrodzeniem: wylacznie wzdluz ulicy glownej (x od -11,2 do 28,8, w granicach trawnika), bez skretu w slepa uliczke; rozstaw max 15 m (norma: do ok. 40 m); jeden slup (x=-1,2) obok zlacza pomiarowego; wiazka ADSS z lekkim zwisem; od slupa przy zlaczu odejscie do domu pod okapem na lewo od lewego kinkietu */
 {const sl=M(0x4a5056,{roughness:.55,metalness:.55}),dk=M(0x2b2f33,{roughness:.5,metalness:.5}),cb=M(0x1b1d20,{roughness:.55,metalness:.2}),wh=M(0xe6e6e2,{roughness:.6}),
