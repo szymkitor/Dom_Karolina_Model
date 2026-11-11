@@ -433,8 +433,8 @@ const glassM=new THREE.MeshStandardMaterial({color:0x242b31,roughness:.06,metaln
  ['y',0,-1,3.66,5,0,2.25,0xb7bcc2]].slice(0,0).forEach(([ax,c,s,a,w,zb,h,col])=>{
  const m=M(col||glass,{roughness:.2,metalness:.3});
  ax=='x'?add(new THREE.BoxGeometry(.1,h,w),m,c+s*.05,zb+h/2,-a,false):add(new THREE.BoxGeometry(w,h,.1),m,a,zb+h/2,-(c+s*.05),false)});
-// okna dachowe (4 szt., wysokość posadowienia bez zmian): [x,y,kierunek spadku°] (0=front/WNW, 90=wschód w modelu/SSW, 180=tył/ESE, -90=zachód/NNE); rozmieszczone wzdłuż poddasza: front (popołudnie), skrzydło wschodnie (ranek), dwa na połaci SSW głównego skrzydła (południe)
-[[4.77,2.8,0],[6.8,11.9,90],[6.8,16.8,90],[9.47,10.1,180]].forEach(([x,y,d])=>{
+// okna dachowe (4 szt., wysokość posadowienia bez zmian): [x,y,kierunek spadku°] (0=front/WNW, 90=wschód w modelu/SSW, 180=tył/ESE, -90=zachód/NNE); po jednym na przyszły pokój poddasza (rzut str. 2): górny i środkowy pokój skrzydła głównego (SSW, w osi pokoju, >=0,9 m od ścian działowych), pokoje skrzydła wschodniego (ESE rano / WNW po południu, w osi pokoju)
+[[6.8,16.6,90],[6.8,12.8,90],[10.05,10.1,180],[10.05,5.3,0]].forEach(([x,y,d])=>{
  const me=new THREE.Group(),fm=M(0x3a3d42,{roughness:.5,metalness:.3}),rg=roofGlass,pc=(sx,sy,sz,px,py,pz,m)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);q.position.set(px,py,pz);q.castShadow=true;me.add(q);statics.push(q)};
  me.position.set(x,zAt(x,y),-y);scene.add(me);pc(.98,.024,1.62,0,.012,0,fm);pc(.62,.012,1.24,0,.034,0,rg);[-.66,.66].forEach(z=>pc(.78,.09,.08,0,.066,z,fm));[-.35,.35].forEach(px=>pc(.08,.09,1.4,px,.066,0,fm));pc(.62,.016,.05,0,.04,0,fm);
  me.rotation.order='YXZ';me.rotation.y=d*Math.PI/180;me.rotation.x=Math.PI/6});
