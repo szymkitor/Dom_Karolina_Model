@@ -876,8 +876,9 @@ function thujaM(){const S=128,c=document.createElement('canvas');c.width=c.heigh
 /* donica z drzewkiem oliwnym na rogu chodnika od furtki (N5b/N6d): donica Ø0,94 m, wys. 0,80 m (grafit), drzewko ok. 2,2 m nad ziemią: skręcony pień z dwóch splecionych pędów, 3 przewodniki, konary, gałązki i lancetowate liście (srebrzysto-zielone, ok. 3 tys. szt.) */
 {const cx=11.55,cy=-3.0,y0=-.295,ys=y0+.695,rnd=(()=>{let s=77;return()=>(s=(s*16807)%2147483647)/2147483647})(),gs=()=>rnd()+rnd()+rnd()-1.5,
  vs=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],va=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],vm=(a,k)=>[a[0]*k,a[1]*k,a[2]*k],vn=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]},vc=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
- add(new THREE.LatheGeometry([[0,0],[.27,0],[.29,.03],[.36,.30],[.44,.66],[.47,.74],[.47,.80],[.43,.80],[.42,.74],[.40,.70]].map(p=>new THREE.Vector2(p[0],p[1])),40),M(0x4b5056,{roughness:.8,side:THREE.DoubleSide}),cx,y0,-cy);
- add(new THREE.CylinderGeometry(.405,.405,.012,32),M(0xa7a196,{roughness:1}),cx,ys-.006,-cy,false);   // żwirek dekoracyjny na ziemi
+ const potM=M(0x4b5056,{roughness:.8,side:THREE.DoubleSide}),gvM=M(0xa7a196,{roughness:1});potM.userData.plant=gvM.userData.plant=1;   // donica i zwirek znikaja w trybie liniowym
+ add(new THREE.LatheGeometry([[0,0],[.27,0],[.29,.03],[.36,.30],[.44,.66],[.47,.74],[.47,.80],[.43,.80],[.42,.74],[.40,.70]].map(p=>new THREE.Vector2(p[0],p[1])),40),potM,cx,y0,-cy);
+ add(new THREE.CylinderGeometry(.405,.405,.012,32),gvM,cx,ys-.006,-cy,false);   // żwirek dekoracyjny na ziemi
  const crm=(P,sub)=>{const o=[],n=P.length;for(let i=0;i<n-1;i++){const p0=P[Math.max(0,i-1)],p1=P[i],p2=P[i+1],p3=P[Math.min(n-1,i+2)];for(let s=0;s<sub;s++){const t=s/sub,t2=t*t,t3=t2*t;o.push([0,1,2].map(k=>.5*(2*p1[k]+(-p0[k]+p2[k])*t+(2*p0[k]-5*p1[k]+4*p2[k]-p3[k])*t2+(-p0[k]+3*p1[k]-3*p2[k]+p3[k])*t3)))}}o.push(P[n-1]);return o},
  BP=[],BI=[],LV=[],RG=7,
  tube=(pts,rad)=>{const n=pts.length,base=BP.length/3,ax=vs(pts[n-1],pts[0]),al=ax.map(Math.abs),ref=al[1]<=al[0]&&al[1]<=al[2]?[0,1,0]:al[0]<=al[2]?[1,0,0]:[0,0,1];
