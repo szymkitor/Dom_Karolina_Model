@@ -456,9 +456,8 @@ const glassM=new THREE.MeshStandardMaterial({color:0x242b31,roughness:.06,metaln
   [-.32,.32].forEach(z=>bx(PW+.1,.035,.04,0,LF-.0175,z,pvR));[-PW/2+.25,PW/2-.25].forEach(x=>[-.32,.32].forEach(z=>bx(.05,.045,.05,x,.0225,z,pvR)));
   me.rotation.order='YXZ';me.rotation.y=d*Math.PI/180;me.rotation.x=Math.PI/6};
  const GP=PW+.02,SP=PH+.02,CV=Math.cos(Math.PI/6);
- // 15 paneli na połaciach SSW (azymut 204°, ~98% optimum): trójkątna połać szczytowa skrzydła wschodniego 4+3+2+1 i główna połać wschodnia za oknami (3+2)
- [4,3,2,1].forEach((n,k)=>{const x=15.65-(.52+PH/2+k*SP)*CV;for(let i=0;i<n;i++)pvPanel(x,7.8+(i-(n-1)/2)*GP,90)});
- [[.4,3],[.4+SP,2]].forEach(([s0,n])=>{const x=10.5-(s0+PH/2)*CV;for(let i=0;i<n;i++)pvPanel(x,14.8+PW/2+i*GP,90)})}
+ // 10 paneli (~4,4 kWp) na trójkątnej połaci szczytowej SSW (azymut 204°, ~98% optimum) skrzydła wschodniego, rzędy 4+3+2+1; połać SSW głównego skrzydła wolna (rezerwa)
+ [4,3,2,1].forEach((n,k)=>{const x=15.65-(.52+PH/2+k*SP)*CV;for(let i=0;i<n;i++)pvPanel(x,7.8+(i-(n-1)/2)*GP,90)})}
 // komin, wywiewka, słupy podcienia
 
 add(new THREE.CylinderGeometry(.1,.1,1.3,16),M(0x9aa0a6),7,zAt(7,18)+.5,-18);
