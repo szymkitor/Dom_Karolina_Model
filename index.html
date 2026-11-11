@@ -788,6 +788,28 @@ const wuvT=(g,x,y,z)=>{const P=g.attributes.position,N=g.attributes.normal,U=g.a
   const B=new THREE.Group();B.position.set(0,.45,-.22);B.rotation.x=-.12;[-.235,.235].forEach(a=>bx(B,.03,.44,.03,a,.22,0));[.1,.19,.28].forEach(y=>bx(B,.5,.06,.02,0,y,0));bx(B,.5,.04,.03,0,.42,0);g.add(B);
   g.position.set(x,.004,z);g.rotation.y=yaw;scene.add(g);FG.push(g)};
  [-.4,.4].forEach(a=>{chair(CX+a,CZ+.62,Math.PI);chair(CX+a,CZ-.62,0)});chair(CX-1.07,CZ,Math.PI/2);chair(CX+1.07,CZ,-Math.PI/2);
+ /* duza pizza (Ø 39 cm: blat, wyrosniety brzeg, ser, sos, 12 plastrow pepperoni, bazylia, oliwki, 8 kawalkow) na porcelanowym talerzu Ø 47 cm, na srodku stolu (blat 0,754 m) */
+ {const yb=.754,px=CX,pz=CZ,rnd=(()=>{let s=19;return()=>(s=(s*16807)%2147483647)/2147483647})(),cv=(w,f)=>{const c=document.createElement('canvas');c.width=c.height=w;f(c.getContext('2d'),w);const t=new THREE.CanvasTexture(c);t.anisotropy=4;return t},
+  plate=M(0xf4f3ef,{roughness:.22,metalness:.02,side:THREE.DoubleSide});
+  add(new THREE.LatheGeometry([[0,.005],[.13,.005],[.17,.008],[.21,.016],[.235,.026],[.238,.026],[.238,.023],[.232,.022]].map(p=>new THREE.Vector2(p[0],p[1])),48),plate,px,yb,pz);
+  add(new THREE.CylinderGeometry(.125,.125,.005,32),plate,px,yb+.0025,pz);
+  const y0=yb+.0075,dough=M(0xd8a65a,{roughness:.8}),crustM=M(0xc98d3e,{roughness:.75});
+  add(new THREE.CylinderGeometry(.182,.182,.014,48),dough,px,y0+.007,pz);
+  add(new THREE.TorusGeometry(.176,.016,10,56).rotateX(Math.PI/2),crustM,px,y0+.019,pz);
+  const top=cv(512,(q,W)=>{q.fillStyle='#d9a441';q.fillRect(0,0,W,W);for(let i=0;i<260;i++){const x=rnd()*W,y=rnd()*W,r=14+rnd()*34,k=rnd();q.fillStyle=k<.45?'rgba(250,232,160,.55)':k<.75?'rgba(196,120,40,.45)':'rgba(214,70,36,.35)';q.beginPath();q.arc(x,y,r,0,6.3);q.fill()}
+   q.strokeStyle='rgba(205,60,35,.55)';q.lineWidth=26;q.beginPath();q.arc(W/2,W/2,W/2-8,0,6.3);q.stroke();
+   for(let i=0;i<90;i++){q.fillStyle='rgba(120,70,20,.5)';q.beginPath();q.arc(rnd()*W,rnd()*W,2+rnd()*4,0,6.3);q.fill()}
+   for(let i=0;i<260;i++){q.fillStyle='rgba(60,95,35,.7)';q.fillRect(rnd()*W,rnd()*W,2,2)}
+   q.strokeStyle='rgba(70,40,15,.85)';q.lineWidth=2.5;for(let k=0;k<4;k++){const a=k*Math.PI/4;q.beginPath();q.moveTo(W/2-Math.cos(a)*W/2,W/2-Math.sin(a)*W/2);q.lineTo(W/2+Math.cos(a)*W/2,W/2+Math.sin(a)*W/2);q.stroke()}});
+  add(new THREE.CircleGeometry(.176,48).rotateX(-Math.PI/2),M(0xffffff,{map:top,roughness:.45}),px,y0+.0155,pz,false);
+  const pep=cv(64,(q,W)=>{q.fillStyle='#a8352a';q.fillRect(0,0,W,W);q.strokeStyle='#7a241c';q.lineWidth=5;q.beginPath();q.arc(32,32,29,0,6.3);q.stroke();for(let i=0;i<22;i++){q.fillStyle=i%3?'#7d261e':'#d27a4a';q.beginPath();q.arc(10+rnd()*44,10+rnd()*44,1.5+rnd()*2.5,0,6.3);q.fill()}}),
+   pm=[M(0x8e2d24,{roughness:.55}),M(0xffffff,{map:pep,roughness:.5}),M(0x8e2d24,{roughness:.55})],pg=new THREE.CylinderGeometry(.027,.026,.004,22);
+  const P=[];for(let k=0;k<8;k++)P.push([.14,Math.PI/8+k*Math.PI/4]);for(let k=0;k<4;k++)P.push([.062,Math.PI/8+k*Math.PI/2]);
+  P.forEach(([r,a])=>{const m=add(pg,pm,px+Math.cos(a)*r,y0+.0175,pz+Math.sin(a)*r);m.rotation.y=rnd()*6});
+  const bm=M(0x3f7a2c,{roughness:.6,side:THREE.DoubleSide});
+  for(let k=0;k<6;k++){const a=Math.PI/8+k*Math.PI/3+.5,r=.098+(k%2)*.012;const m=add(new THREE.CircleGeometry(1,12).scale(.017,.009,1).rotateX(-Math.PI/2),bm,px+Math.cos(a)*r,y0+.0182,pz+Math.sin(a)*r,false);m.rotation.y=-a+rnd()}
+  const om=M(0x1d1a1a,{roughness:.4}),og=new THREE.TorusGeometry(.009,.0042,6,12).rotateX(Math.PI/2);
+  for(let k=0;k<9;k++){const a=k*.698+.3,r=.1+(k%3)*.03;add(og,om,px+Math.cos(a)*r,y0+.0185,pz+Math.sin(a)*r,false)}}
  FG.forEach(o=>o.traverse(q=>{if(q.isMesh)statics.push(q)}))}
 const pipeM=M(0x4a4f55,{roughness:.5,metalness:.4,side:THREE.DoubleSide}),fasM=M(0x1b1c1f,{roughness:.55,side:THREE.DoubleSide}),brkM=M(0x2a2e33,{roughness:.5,metalness:.6,side:THREE.DoubleSide});
 function pipe(a,b,r){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A),me=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),10),pipeM);me.position.copy(A).add(B).multiplyScalar(.5);me.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());me.castShadow=true;scene.add(me);statics.push(me)}
