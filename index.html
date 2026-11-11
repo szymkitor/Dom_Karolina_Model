@@ -821,7 +821,8 @@ function pineTex(){const c=document.createElement('canvas');c.width=c.height=128
 function fence(x0,y0,x1,y1,h=1.5){seg(x0,y0,x1,y1,h,.04,fenM);const n=Math.ceil(Math.hypot(x1-x0,y1-y0)/2.5);for(let i=0;i<=n;i++){const k=i/n;add(new THREE.BoxGeometry(.08,h+.1,.08),pilM,x0+(x1-x0)*k,G0+(h+.1)/2,-(y0+(y1-y0)*k))}}
 [[-3.0045,-7,-3.4,37.4],[-3.4,37.4,21.8,37.4],[21.8,37.4,21.9,21.35],[21.9,21.35,19.45,21.35],[19.45,21.35,19.45,-2.65]].forEach(s=>fence(...s));
 /* ogrodzenie przy zlaczu (ta sama wysokosc 1,5 m co na calym obwodzie): krotkie przeslo za skrzynka (35 cm od jej tylu) od granicy do slupa muru, z zawrotka przy slupie - zamyka dojscie na posesje */
-fence(-3.0045,-7,-2.2,-7);fence(-2.2,-7,-2.2,-7.26);
+fence(-3.0045,-7,-2.2,-7);fence(-2.2,-7,-2.2,-7.26);   /* po stronie sasiada tak samo: przeslo za skrzynka od granicy do poczatku jego ogrodzenia frontowego (x -3,75), z zawrotka */
+fence(-3.0045,-7,-3.75,-7);fence(-3.75,-7,-3.75,-7.5134);
 const barkM=(()=>{const S=256,c=document.createElement('canvas');c.width=c.height=S;const a=c.getContext('2d');a.fillStyle='#4a301c';a.fillRect(0,0,S,S);let sd=31;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647,pal=['#6b4528','#7d5430','#5a3a20','#8a6038','#3f2916','#73492a'];
  for(let i=0;i<1100;i++){const x=rnd()*S,y=rnd()*S,w=4+rnd()*9,h=2+rnd()*4,an=rnd()*3.14;a.fillStyle=pal[i%6];[0,-S,S].forEach(ox=>[0,-S,S].forEach(oy=>{a.save();a.translate(x+ox,y+oy);a.rotate(an);a.fillRect(-w/2,-h/2,w,h);a.fillStyle='rgba(0,0,0,.35)';a.fillRect(-w/2,h/2-1,w,1);a.restore();a.fillStyle=pal[i%6]}))}
  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=8;return M(0xffffff,{map:t,roughness:1})})();barkM.userData.plant=1;   // opaska z kory pod tujami: ukrywana w trybie liniowym
