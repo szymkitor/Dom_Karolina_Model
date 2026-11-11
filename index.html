@@ -330,7 +330,13 @@ Object.assign(sun.shadow.camera,{left:-46,right:46,top:46,bottom:-46,near:1,far:
 function setSun(a){a*=Math.PI/180;sun.position.set(7+Math.cos(a)*55,38,-10+Math.sin(a)*55)}setSun(60);
 
 const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.9},o));
-const roofMat=M(0x383e42,{roughness:.8,side:THREE.DoubleSide,map:loaraTex2()});roofMat.userData.lnTex='roof';
+const roofMat=M(0x383e42,{roughness:.8,side:THREE.DoubleSide,map:loaraTex2(),bumpMap:loaraBump(),bumpScale:2});roofMat.userData.lnTex='roof';
+// faktura (mapa wysokosci) blachodachowki LOARA: przetloczenie fali (ten sam ukad co tekstura koloru: modul 350 mm, 4 fale), wzniesiona czesc modulu, uskok zakladki z cieniem i nizsza czesc
+function loaraBump(){const c=document.createElement('canvas');c.width=512;c.height=160;const x=c.getContext('2d'),W=128,rb=u=>{const d=Math.abs(u-100);return d>16?0:.5+.5*Math.cos(d/16*Math.PI)};
+ for(let i=0;i<512;i++){const r=rb(i%W),ye=Math.round(146-16*r),k=.8+.2*r;
+  for(let j=0;j<160;j++){let h;if(j<24)h=.45+.55*(j/24);else if(j<ye)h=1;else if(j<ye+7)h=1-.65*((j-ye)/7);else h=.35+.1*((j-ye-7)/(160-ye-7));
+   const v=Math.round(255*h*k);x.fillStyle='rgb('+v+','+v+','+v+')';x.fillRect(i,j,1,1)}}
+ const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1/1.12,1/.35);t.anisotropy=8;return t}
 function loaraTex2(){const c=document.createElement('canvas');c.width=512;c.height=160;const x=c.getContext('2d'),W=128,rb=u=>{const d=Math.abs(u-100);return d>16?0:.5+.5*Math.cos(d/16*Math.PI)},g=(v,k)=>{v=Math.max(0,Math.min(255,Math.round(v*k)));return 'rgb('+v+','+v+','+v+')'};
  for(let i=0;i<512;i++){const u=i%W,r=rb(u),b=215+14*r+90*(rb(u+2)-rb(u-2)),ye=Math.round(146-16*r);
   x.fillStyle=g(b,1);x.fillRect(i,0,1,ye);x.fillStyle=g(b+40,1);x.fillRect(i,ye-2,1,2);x.fillStyle=g(b,.42);x.fillRect(i,ye,1,7);x.fillStyle=g(b,.8);x.fillRect(i,ye+7,1,160-ye-7)}
