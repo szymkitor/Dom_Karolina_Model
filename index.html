@@ -476,9 +476,9 @@ const PGR=-.34,CT=G0+.05,CH=CT-PGR;   /* jeden cokol: wysokosc CH, spod na grunc
 function seg(x0,y0,x1,y1,h,t,m,y=G0){const L=Math.hypot(x1-x0,y1-y0),bg_=new THREE.BoxGeometry(L,h,t),me=add(m===wallM?bUV(bg_):bg_,m,(x0+x1)/2,y+h/2,-(y0+y1)/2);me.rotation.y=Math.atan2(y1-y0,x1-x0)}
 function pillar(x,y){add(new THREE.BoxGeometry(.5,CH,.5),ftM,x,PGR+CH/2,-y);add(bUV(new THREE.BoxGeometry(.4,G0+2-CT,.4)),wallM,x,CT+(G0+2-CT)/2,-y);add(new THREE.BoxGeometry(.52,.08,.52),capM,x,G0+2.04,-y)}
 const stM=M(0x3d444c,{roughness:.6,metalness:.3}),hM=M(0xc2c6cc,{metalness:.8,roughness:.3}),sdoorM=(()=>{const S=256,c=document.createElement('canvas');c.width=c.height=S;const a=c.getContext('2d');let sd=9;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;
- for(let i=0;i<8;i++){const v=62+Math.round(rnd()*14);a.fillStyle='rgb('+v+','+(v+4)+','+(v+9)+')';a.fillRect(i*32,0,32,S);for(let k=0;k<26;k++){a.strokeStyle='rgba('+(rnd()<.5?'255,255,255,.07':'0,0,0,.14')+')';a.beginPath();const x=i*32+3+rnd()*26;a.moveTo(x,0);a.lineTo(x+(rnd()-.5)*3,S);a.stroke()}a.fillStyle='rgba(10,12,14,.8)';a.fillRect(i*32,0,2,S)}
- a.fillStyle='rgba(10,12,14,.8)';a.fillRect(0,0,S,3);a.fillRect(0,S-3,S,3);a.fillStyle='rgba(120,130,140,.28)';[34,222].forEach(y=>a.fillRect(0,y,S,9));
- const t=new THREE.CanvasTexture(c);t.anisotropy=8;return M(0xffffff,{map:t,roughness:.55,metalness:.25})})();
+ for(let i=0;i<8;i++){const v=56+Math.round(rnd()*7);a.fillStyle='rgb('+v+','+(v+4)+','+(v+9)+')';a.fillRect(i*32,0,32,S);for(let k=0;k<7;k++){a.strokeStyle='rgba('+(rnd()<.5?'255,255,255,.035':'0,0,0,.07')+')';a.beginPath();const x=i*32+3+rnd()*26;a.moveTo(x,0);a.lineTo(x+(rnd()-.5)*3,S);a.stroke()}a.fillStyle='rgba(10,12,14,.8)';a.fillRect(i*32,0,2,S)}
+ a.fillStyle='rgba(10,12,14,.8)';a.fillRect(0,0,S,3);a.fillRect(0,S-3,S,3);a.fillStyle='rgba(120,130,140,.16)';[34,222].forEach(y=>a.fillRect(0,y,S,9));
+ const t=new THREE.CanvasTexture(c);t.anisotropy=8;return M(0xffffff,{map:t,roughness:.6,metalness:.2})})();
 const ftM=M(0x9a9a96,{roughness:.95});
 /* mur ogrodzenia: obrys w rzucie = prostokat bez slupow (odjete kwadraty slupow) - styk bez przenikania, rowniez pod katem != 90 st. */
 function wallFoot(P0,P1,hw,sa,sb){const L=Math.hypot(P1[0]-P0[0],P1[1]-P0[1]),ux=(P1[0]-P0[0])/L,uy=(P1[1]-P0[1])/L,nx=-uy,ny=ux,W=(t,n)=>new THREE.Vector2(P0[0]+ux*t+nx*n,P0[1]+uy*t+ny*n),
