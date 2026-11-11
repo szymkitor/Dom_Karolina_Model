@@ -132,9 +132,10 @@ let d0=null,drag=false;
 dock.forEach((f,i)=>{
  f.addEventListener('pointerdown',e=>{d0={x:e.clientX,y:e.clientY,gx:gx,gy:gy};drag=false;dock.forEach(b=>b.classList.remove('snap'));try{f.setPointerCapture(e.pointerId)}catch(x){}});
  f.addEventListener('pointermove',e=>{if(!d0)return;if(!drag&&Math.hypot(e.clientX-d0.x,e.clientY-d0.y)>6){drag=true;dock.forEach(b=>b.classList.add('drag'))}
-  if(drag){const z=hz(),gw=z?L:S,gh=z?S:L;gx=clamp(d0.gx+e.clientX-d0.x,0,W()-gw);gy=clamp(d0.gy+e.clientY-d0.y,0,H()-gh);layout();place()}});
+  if(drag){const w=W(),h=H(),px=e.clientX,py=e.clientY,dd={left:px,right:w-px,top:py,bottom:h-py};pos.e=Object.keys(dd).sort((a,b)=>dd[a]-dd[b])[0];   /* uklad zmienia sie na zywo: przy bocznej krawedzi pionowo, przy gornej/dolnej poziomo */
+  const z=hz(),o=i*(S+GAP)+S/2,gw=z?L:S,gh=z?S:L;gx=clamp(px-(z?o:S/2),0,w-gw);gy=clamp(py-(z?S/2:o),0,h-gh);layout();place()}});
  const end=()=>{if(!d0)return;const was=drag;d0=null;drag=false;dock.forEach(b=>b.classList.remove('drag'));
-  if(was){const w=W(),h=H(),z0=hz(),gw=z0?L:S,gh=z0?S:L,cx=gx+gw/2,cy=gy+gh/2,dd={left:cx,right:w-cx,top:cy,bottom:h-cy},k=Object.keys(dd).sort((a,b)=>dd[a]-dd[b])[0],z=k==='top'||k==='bottom',nw=z?L:S,nh=z?S:L,x0=G+ins.l,x1=w-nw-G-ins.r,y0=G+ins.t,y1=h-nh-G-ins.b;
+  if(was){const w=W(),h=H(),z0=hz(),gw=z0?L:S,gh=z0?S:L,cx=gx+gw/2,cy=gy+gh/2,k=pos.e,z=k==='top'||k==='bottom',nw=z?L:S,nh=z?S:L,x0=G+ins.l,x1=w-nw-G-ins.r,y0=G+ins.t,y1=h-nh-G-ins.b;
    pos={e:k,t:(k==='left'||k==='right')?(clamp(gy,y0,y1)-y0)/Math.max(1,y1-y0):(clamp(gx,x0,x1)-x0)/Math.max(1,x1-x0)};try{localStorage.setItem('fabPos',JSON.stringify(pos))}catch(x){}
    dock.forEach(b=>b.classList.add('snap'));xy();setTimeout(place,300)}};
  f.addEventListener('pointerup',()=>{const was=drag;end();if(!was)tgl(i,cur!==i)});
