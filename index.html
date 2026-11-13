@@ -1060,6 +1060,24 @@ PIPES.forEach(([px,py,wx,wy,rd=.045],k)=>{
  const dx=px-wx,dy=py-wy,L=Math.hypot(dx,dy),nx=dx/L,ny=dy/L,o=GOFF,a=[px+nx*o,GYT-GRAD-GDROP[k],-(py+ny*o)],b=[px+nx*o,E-.46,-(py+ny*o)],c=[wx,E-.46-(L+o)*Math.tan(Math.PI/6),-wy],f=[wx,G0+.32,-wy],e=[wx+nx*.22,G0+.1,-(wy+ny*.22)];
  pipe([a[0],a[1]+.025,a[2]],[a[0],a[1]-.05,a[2]],rd+.013);pipe(a,b,rd);pipe(b,c,rd);pipe(c,f,rd);pipe(f,e,rd);[b,c,f].forEach(p=>ball(p,rd+.003));
  [(c[1]+f[1])/2,f[1]+.2].forEach(y=>pipe([wx,y-.02,-wy],[wx,y+.02,-wy],rd+.011))});
+// jednostka zewnetrzna klimatyzacji / pompy ciepla (split) na elewacji wschodniej salonu (sciana x 14,9, strona tarasu tylnego): na dwoch wspornikach, gora ok. 0,34 m pod podbitka (2,89), srodek w polowie odleglosci miedzy kinkietami (y 5,1), na lewo od rury spustowej (y 7,7); front z wentylatorem skierowany na zewnatrz, instalacja chlodnicza (dwie izolowane rurki) wchodzi w sciane z boku
+{const bd=M(0xe3e5e6,{roughness:.55}),dk=M(0x1c1e21,{roughness:.6,metalness:.3,side:THREE.DoubleSide}),st=M(0x3a3d41,{roughness:.5,metalness:.6}),ins=M(0x23252a,{roughness:.8}),cu=M(0xb87333,{roughness:.4,metalness:.7});
+ const g=new THREE.Group();g.position.set(14.9,2.2,-5.1);scene.add(g);   /* lokalnie: +X = na zewnatrz, prostopadle do sciany; y=0 srodek jednostki */
+ const put=(geo,m,x,y,z,ry,rz)=>{const me=new THREE.Mesh(geo,m);me.position.set(x,y,z);if(ry)me.rotation.y=ry;if(rz)me.rotation.z=rz;me.castShadow=me.receiveShadow=true;g.add(me);statics.push(me);return me};
+ const W=.86,H=.70,D=.31,X0=.07;   /* szer. wzdluz sciany, wys., glebokosc; X0 = odstep od sciany (wsporniki) */
+ put(new THREE.BoxGeometry(D,H,W),bd,X0+D/2,0,0);
+ [-.28,.28].forEach(z=>{put(new THREE.BoxGeometry(X0+.02,.05,.04),st,(X0+.02)/2,-H/2+.12,z);put(new THREE.BoxGeometry(X0+.02,.05,.04),st,(X0+.02)/2,H/2-.12,z);put(new THREE.BoxGeometry(.03,.04,.03),st,.0,-H/2+.12,z)});   /* wsporniki do sciany */
+ const fx=X0+D+.002;   /* licz frontu */
+ put(new THREE.CircleGeometry(.29,40),dk,fx,0,-.02,Math.PI/2);
+ [.09,.17,.25].forEach(r=>{const t=put(new THREE.TorusGeometry(r,.004,6,40),st,fx+.004,0,-.02,Math.PI/2)});
+ for(let i=0;i<8;i++){const a=i*Math.PI/8,b=put(new THREE.BoxGeometry(.004,.58,.004),st,fx+.004,0,-.02);b.rotation.x=a}
+ put(new THREE.CylinderGeometry(.045,.045,.02,16),st,fx+.008,0,-.02,0,Math.PI/2);
+ put(new THREE.TorusGeometry(.3,.008,6,40),bd,fx+.002,0,-.02,Math.PI/2);
+ for(let i=0;i<9;i++)put(new THREE.BoxGeometry(D*.7,.012,.003),dk,X0+D/2,-.30+i*.075,-W/2-.001);   /* zaluzje boczne */
+ put(new THREE.BoxGeometry(.22,.30,.05),bd,X0+D*.5,-.1,W/2+.025);   /* oslona zaworow z boku */
+ put(new THREE.CylinderGeometry(.011,.011,.16,10),ins,.04,-.17,W/2+.03,0,Math.PI/2);
+ put(new THREE.CylinderGeometry(.016,.016,.16,10),ins,.04,-.12,W/2+.03,0,Math.PI/2);
+}
 // czerpnia i wyrzutnia rekuperatora (jednostka na strychu nad garazem): dwa przejscia scienne O160 w zachodniej scianie strychu, os prostopadla do elewacji, z zaluzja przeciwdeszczowa i siatka; na osiach wolnych odcinkow sciany (z dala od okna garazu i rury spustowej), pod podbitka
 {const vm=M(0x3b4045,{roughness:.42,metalness:.55,side:THREE.DoubleSide}),gr=M(0x0c0d0f,{roughness:.9,side:THREE.DoubleSide});
  const vent=(wx,y,zc,r,L)=>{const g=new THREE.Group();g.position.set(wx,zc,-y);g.rotation.y=Math.PI;scene.add(g);   /* lokalnie: +X = na zewnatrz, prostopadle do sciany */
