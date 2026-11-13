@@ -467,6 +467,13 @@ flat(PL,-.34,0x82ad63); // działka (bez linii granicy)
  const tx=new THREE.CanvasTexture(sl);tx.wrapS=tx.wrapT=THREE.RepeatWrapping;tx.repeat.set(1/1.8,1/.9);tx.anisotropy=8;
  const st=M(0xffffff,{map:tx,roughness:.9}),mk=(w,h,d,x,y,z)=>{const g=new THREE.BoxGeometry(w,h,d),u=g.attributes.uv,S=[[d,h,z,y],[d,h,z,y],[w,d,x,z],[w,d,x,z],[w,h,x,y],[w,h,x,y]];S.forEach(([a,b,oa,ob],f)=>{for(let k=0;k<4;k++){const i=f*4+k;u.setXY(i,u.getX(i)*a+oa,u.getY(i)*b+ob)}});add(g,st,x,y,-z)};
  mk(2.8,.46,2.9,8.65,-.23,1.05);mk(2.8,.19,.4,8.65,-.245,-.6)}   // taras 0,00; stopień +/-.15 nad terenem (-0,30) i 0,15 pod tarasem
+// wycieraczka przed drzwiami glownymi: brazowa mata kokosowa 80 x 50 cm z czarnym napisem WELCOME, na plycie wejscia (poziom 0,00), przy progu drzwi (os drzwi x = 8,37, lico y = 2,4)
+{const c=document.createElement('canvas');c.width=640;c.height=400;const q=c.getContext('2d');q.fillStyle='#6a4a2e';q.fillRect(0,0,640,400);
+ for(let i=0;i<5200;i++){const l=Math.random();q.strokeStyle=l<.5?'rgba(120,86,52,'+(.25+Math.random()*.3)+')':'rgba(60,40,24,'+(.2+Math.random()*.3)+')';q.lineWidth=1+Math.random()*1.4;const x=Math.random()*640,y=Math.random()*400,a=Math.random()*6.28,L=4+Math.random()*10;q.beginPath();q.moveTo(x,y);q.lineTo(x+Math.cos(a)*L,y+Math.sin(a)*L);q.stroke()}
+ q.strokeStyle='#2a1b10';q.lineWidth=10;q.strokeRect(18,18,604,364);q.strokeStyle='rgba(20,12,6,.55)';q.lineWidth=3;q.strokeRect(36,36,568,328);
+ q.fillStyle='#0b0b0c';q.textAlign='center';q.textBaseline='middle';let fs=120;q.font='900 '+fs+'px Arial Black,Arial,sans-serif';while(q.measureText('WELCOME').width>500&&fs>30){fs-=4;q.font='900 '+fs+'px Arial Black,Arial,sans-serif'}q.fillText('WELCOME',320,205);
+ const tx=new THREE.CanvasTexture(c);tx.anisotropy=8;const top=M(0xffffff,{map:tx,roughness:1}),sd=M(0x4a3320,{roughness:1});
+ add(new THREE.BoxGeometry(.8,.018,.5),[sd,sd,top,sd,sd,sd],8.37,.009,-2.12)}
 const TERR=[[6.3,.34,9.1,12.95,-.17,-15.85],[1.2,.34,2.9,15.5,-.17,-9.85]];                         // taras pod dachem (okładzina boków dodawana niżej)
 // ściany: obrys z rzutu
 const WP=[[0,0],[7.25,0],[7.25,2.5],[14.9,2.5],[14.9,11.3],[9.8,11.3],[9.8,21.35],[1,21.35],[1,8.8],[0,8.8]];
