@@ -856,8 +856,8 @@ const wuvT=(g,x,y,z)=>{const P=g.attributes.position,N=g.attributes.normal,U=g.a
 const pipeM=M(0x4a4f55,{roughness:.5,metalness:.4,side:THREE.DoubleSide}),fasM=M(0x1b1c1f,{roughness:.55,side:THREE.DoubleSide}),brkM=M(0x2a2e33,{roughness:.5,metalness:.6,side:THREE.DoubleSide});
 function pipe(a,b,r){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A),me=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),10),pipeM);me.position.copy(A).add(B).multiplyScalar(.5);me.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());me.castShadow=true;scene.add(me);statics.push(me)}
 const EV=[[-.9,-.9],[10.5,-.9],[10.5,1.6],[15.65,1.6],[15.65,14],[10.5,14],[10.5,22.1],[.1,22.1],[.1,9.5],[-.9,9.5]];
-// deska okapowa na krawędzi dachu, do niej przymocowana rynna Ø150 (haki co 60 cm), rury spustowe Ø110; narożniki mitrowane
-const FT=.022,GRAD=.065,GOFF=FT+GRAD,GYT=E-.04;
+// deska okapowa na krawędzi dachu, do niej przymocowana rynna Ø125 (haki co 60 cm), rury spustowe Ø90; narożniki mitrowane
+const FT=.022,GRAD=.0625,GOFF=FT+GRAD,GYT=E-.04;
 // spadki rynien 4 mm/m ku rurom; punkty rozdziału (najwyższe) między rurami: kosz-tył (x=11,5; tylna rynna x=8,0) przesunięte, reszta w połowie odległości
 const KS=.004,PIPES=[[-.9,.35,-.06,.35],[-.9,8.2,-.06,8.2],[.1,20.6,.94,20.6],[10.5,21.27,9.86,21.27],[14.5,1.6,14.5,2.44],[15.65,7.7,14.96,7.7]];
 const GEL=EV.map((p,i)=>{const q=EV[(i+1)%EV.length];return Math.hypot(q[0]-p[0],q[1]-p[1])}),GCUM=[0];GEL.forEach(L=>GCUM.push(GCUM[GCUM.length-1]+L));const GPER=GCUM[GCUM.length-1];
