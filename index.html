@@ -1673,7 +1673,7 @@ const MTC=(()=>{
   const s=MTC.analyze(M,h.faceIndex,hp,mode==='edge');if(s.err)return s;
   if(mode==='edge'){const o=MTC.pickEdge(s.outline,hp);if(!o)return{err:'Nie znaleziono krawędzi w tym miejscu.'};return{kind:'edge',a:o.a,b:o.b}}
   s.pt=hp;if(s.kind==='plane'){const dn=MTC.dot(s.n,[dir.x,dir.y,dir.z]);s.vn=dn>0?MTC.mul(s.n,-1):s.n.slice()}return s}
- function onPick(cx,cy,mode){mode=mode||st.once||st.mode;st.once=null;st.warn='';const p=pick(cx,cy);if(!p){st.warn='Tu nie ma nic do zmierzenia.';render();return}
+ function onPick(cx,cy,mode){mode=mode||st.once||st.mode;st.once=null;st.warn='';const p=pick(cx,cy);if(!p){reset();return}   /* klik w pustke (niebo / poza plansze) = reset wyboru */
   let s;try{s=analyzeHit(p.h,p.dir,mode)}catch(e){console.warn(e);s={err:'Nie udało się przeanalizować tej powierzchni.'}}
   if(s.err){st.warn=s.err;render();return}
   if(st.A&&st.B){st.A=st.B=st.res=null}
