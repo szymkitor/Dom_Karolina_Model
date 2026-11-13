@@ -1721,9 +1721,15 @@ const MTC=(()=>{
  cv.addEventListener('pointerup',e=>{clearTimeout(lpT);if(!dn||!st.on)return;const d=dn;dn=null;if(d.long)return;if(Math.hypot(e.clientX-d.x,e.clientY-d.y)<6&&performance.now()-d.t<700)onPick(e.clientX,e.clientY)});
  cv.addEventListener('pointercancel',()=>{clearTimeout(lpT);dn=null});
  /* etykieta z wynikiem przy srodku odcinka pomiarowego */
- const tv=new THREE.Vector3();window.__mtUpd=()=>{const DD=st.on&&st.delta?deltas():null;dLab.forEach((d,i)=>{if(!DD||DD.v[i]<=5e-4){if(d.style.display!=='none')d.style.display='none';return}const s=DD.seg[i];tv.set((s[0][0]+s[1][0])/2,(s[0][1]+s[1][1])/2,(s[0][2]+s[1][2])/2).project(cam);if(tv.z>1||tv.z<-1){d.style.display='none';return}d.textContent='Δ'+DNM[i]+' '+fmt(DD.v[i])+' m';d.style.display='block';d.style.left=((tv.x*.5+.5)*innerWidth)+'px';d.style.top=((-tv.y*.5+.5)*innerHeight)+'px'});
+ const tv=new THREE.Vector3();const upd0=()=>{const DD=st.on&&st.delta?deltas():null;dLab.forEach((d,i)=>{if(!DD||DD.v[i]<=5e-4){if(d.style.display!=='none')d.style.display='none';return}const s=DD.seg[i];tv.set((s[0][0]+s[1][0])/2,(s[0][1]+s[1][1])/2,(s[0][2]+s[1][2])/2).project(cam);if(tv.z>1||tv.z<-1){d.style.display='none';return}d.textContent='Δ'+DNM[i]+' '+fmt(DD.v[i])+' m';d.style.display='block';d.style.left=((tv.x*.5+.5)*innerWidth)+'px';d.style.top=((-tv.y*.5+.5)*innerHeight)+'px'});
   const rs=st.res&&st.res.a,sd=!st.B&&st.A&&dia(st.A)!=null&&st.A.pt,ar=st.kind==='area'&&st.areas.length&&st.areas[st.areas.length-1].pt;if((!rs&&!sd&&!ar)||!st.on){if(lab.style.display!=='none')lab.style.display='none';return}if(rs)tv.set((st.res.a[0]+st.res.b[0])/2,(st.res.a[1]+st.res.b[1])/2,(st.res.a[2]+st.res.b[2])/2).project(cam);else{const q=ar?st.areas[st.areas.length-1].pt:st.A.pt;tv.set(q[0],q[1],q[2]).project(cam)}
   if(tv.z>1||tv.z<-1){lab.style.display='none';return}lab.textContent=rs?fmt(st.res.d)+' m'+(st.res.angle!=null?' · '+fa(st.res.angle):''):ar?(st.areas.length>1?'Σ ':'')+fmt(areaSum())+' m²':'Ø '+fmt(dia(st.A))+' m';lab.style.display='block';lab.style.left=((tv.x*.5+.5)*innerWidth)+'px';lab.style.top=((-tv.y*.5+.5)*innerHeight)+'px'};
+ /* etykiety przy krotkich odcinkach nie moga lezec jedna na drugiej: uklad kolumny (glowna wartosc na miejscu, reszta kolejno nizej) */
+ const declutter=()=>{const L=[lab,...dLab].filter(e=>e.style.display==='block');if(L.length<2){[lab,...dLab].forEach(e=>{if(e._dy){e._dy=0;e.style.transform=''}});return}
+  const placed=[];L.forEach(e=>{const w=e.offsetWidth,h=e.offsetHeight,x=parseFloat(e.style.left),y=parseFloat(e.style.top)-1.3*h;let dy=0,n=0;
+   const hit=t=>placed.some(p=>x-w/2<p[0]+p[2]+2&&x+w/2>p[0]-2&&t<p[1]+p[3]+2&&t+h>p[1]-2);
+   while(hit(y+dy)&&n++<12)dy+=h+3;placed.push([x-w/2,y+dy,w,h]);if((e._dy||0)!==dy){e._dy=dy;e.style.transform=dy?'translate(-50%,calc(-130% + '+dy+'px))':''}})};
+ window.__mtUpd=()=>{upd0();declutter()};
  window.__panelHook=(k,on)=>{if(k!=='meas'&&k!=='area')return;st.on=on;document.body.classList.toggle('mtool',on);if(on){setKind(k==='area'?'area':'dist');setMode(k==='area'&&st.mode==='edge'?'plane':st.mode)}else{st.once=null;reset();hideMenu()}};
  render()})();
 
