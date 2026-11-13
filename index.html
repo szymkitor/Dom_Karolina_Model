@@ -1163,7 +1163,7 @@ function thujaM(){const S=128,c=document.createElement('canvas');c.width=c.heigh
  Pt.forEach((p,i)=>{const h=2.05+Math.random()*.3;d2.position.set(p[0],-.34,-p[1]);d2.scale.set(.9+Math.random()*.15,h,.9+Math.random()*.15);d2.rotation.y=Math.random()*6;d2.updateMatrix();im2.setMatrixAt(i,d2.matrix);im2.setColorAt(i,c2.setHSL(.27+Math.random()*.07,.45+Math.random()*.15,.30+Math.random()*.08))});
  im2.frustumCulled=false;im2.castShadow=im2.receiveShadow=true;scene.add(im2)}
 /* drzewko magnolii (O5c), posadzone w gruncie na trawniku miedzy kostka (kraweznik y -3,3), murowanym frontem (y -7,5), skosem wiaty smietnikowej i chodnikiem do wiaty: pien ok. 1 m, 4-5 konarow, galazki, duze lisciaste (ciemnozielone) i ok. 200 kwiatow (kremowo-rozowych); korona jest przycinana do wolnej przestrzeni - zadna galazka, lisc ani kwiat nie wchodzi nad kostke, mur ogrodzenia, siatke przy skosie ani wiate */
-{const cx=12.6,cy=-4.9,y0=-.30,rnd=(()=>{let s=91;return()=>(s=(s*16807)%2147483647)/2147483647})(),gs=()=>rnd()+rnd()+rnd()-1.5,
+{const cx=12.6,cy=-5.6,y0=-.30,rnd=(()=>{let s=91;return()=>(s=(s*16807)%2147483647)/2147483647})(),gs=()=>rnd()+rnd()+rnd()-1.5,
  vs=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],va=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],vm=(a,k)=>[a[0]*k,a[1]*k,a[2]*k],vn=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]},vc=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
  const SX=14.78,SY=-7.5,SL=Math.hypot(19.45-SX,-2.65-SY),SUX=(19.45-SX)/SL,SUY=(-2.65-SY)/SL;
  const ok=p=>{const wx=cx+p[0],wy=cy-p[2],t=(wx-SX)*SUX+(wy-SY)*SUY,s=-(wx-SX)*SUY+(wy-SY)*SUX;return wy<-3.55&&wx>10.7&&wy>-7.1&&s>.5&&t<2.2};   /* wolna przestrzen: poza kostka/kraweznikiem, murem, siatka przy skosie i pasem wiaty */
@@ -1173,20 +1173,20 @@ function thujaM(){const S=128,c=document.createElement('canvas');c.width=c.heigh
   for(let k=0;k<n;k++){const t=vn(vs(pts[Math.min(n-1,k+1)],pts[Math.max(0,k-1)])),u=vn(vc(t,ref)),v=vc(t,u),r=rad(k/(n-1)),p=pts[k];
    for(let j=0;j<=RG;j++){const a=j/RG*6.2832,c=Math.cos(a)*r,s=Math.sin(a)*r;BP.push(p[0]+c*u[0]+s*v[0],p[1]+c*u[1]+s*v[1],p[2]+c*u[2]+s*v[2])}}
   for(let k=0;k<n-1;k++)for(let j=0;j<RG;j++){const a=base+k*(RG+1)+j,b=a+1,c=a+RG+1,d=c+1;BI.push(a,c,b,b,c,d)}},
- leaf=(p,t,al,th)=>{if(!ok(p))return;const h=Math.abs(t[1])<.9?[0,1,0]:[1,0,0],u=vn(vc(h,t)),v=vc(t,u),w=va(vm(u,Math.cos(al)),vm(v,Math.sin(al))),d=vn(va(vm(t,Math.cos(th)),vm(w,Math.sin(th))));d[1]-=.25;LV.push([p,vn(d),.13+.06*rnd()])},
+ leaf=(p,t,al,th)=>{if(!ok(p))return;const h=Math.abs(t[1])<.9?[0,1,0]:[1,0,0],u=vn(vc(h,t)),v=vc(t,u),w=va(vm(u,Math.cos(al)),vm(v,Math.sin(al))),d=vn(va(vm(t,Math.cos(th)),vm(w,Math.sin(th))));d[1]-=.25;LV.push([p,vn(d),.15+.07*rnd()])},
  flower=(p,t)=>{const q=va(p,[0,.04,0]);if(!ok(q)||!ok(va(q,[0,.1,0])))return;FL.push([q,vn(va(t,[gs()*.5,.9,gs()*.5])),.085+.03*rnd()])},
  grow=(p,d,Ln,r0,lv)=>{const m=lv==3?4:6,pts=[p];let q=p,dd=d;
-  for(let k=0;k<m;k++){dd=vn(va(dd,[gs()*.3,gs()*.2+(lv==1?.05:.12),gs()*.3]));const nq=va(q,vm(dd,Ln/m));if(!ok(nq))break;q=nq;pts.push(q)}
+  for(let k=0;k<m;k++){dd=vn(va(dd,[gs()*.3,gs()*.2+(lv==1?.0:.05),gs()*.3]));const nq=va(q,vm(dd,Ln/m));if(!ok(nq))break;q=nq;pts.push(q)}
   if(pts.length<2)return;
   const sm=crm(pts,3),n=sm.length,tg=i=>vn(vs(sm[Math.min(n-1,i+1)],sm[Math.max(0,i-1)]));tube(sm,u=>Math.max(.0025,r0*(1-.85*u)));
-  if(lv<3){const nc=lv==1?5:6;for(let c=0;c<nc;c++){const f=.3+.65*(c+rnd()*.7)/nc,i=Math.min(n-2,Math.max(1,Math.round(f*(n-1)))),t=tg(i),h=vn(vc(t,[gs(),gs()+.5,gs()])),th=.5+.35*rnd(),cd=vn(va(vm(t,Math.cos(th)),vm(h,Math.sin(th))));cd[1]+=.25;
+  if(lv<3){const nc=lv==1?7:8;for(let c=0;c<nc;c++){const f=.3+.65*(c+rnd()*.7)/nc,i=Math.min(n-2,Math.max(1,Math.round(f*(n-1)))),t=tg(i),h=vn(vc(t,[gs(),gs()+.5,gs()])),th=.5+.35*rnd(),cd=vn(va(vm(t,Math.cos(th)),vm(h,Math.sin(th))));cd[1]+=.25;
    grow(sm[i],vn(cd),Ln*(lv==1?.55:.5)*(.75+.5*rnd()),r0*(lv==1?.45:.4)*(1-.6*f),lv+1)}}
-  if(lv>=2)for(let i=lv==3?1:Math.round(n*.45);i<n;i+=lv==3?1:2){const t=tg(i),al=i*1.9+rnd();leaf(sm[i],t,al,.8+.3*rnd());leaf(sm[i],t,al+Math.PI,.8+.3*rnd());if(lv==3&&rnd()<.5)leaf(sm[i],t,al+1.6,.9)}
+  if(lv>=2)for(let i=lv==3?1:Math.round(n*.3);i<n;i+=1){const t=tg(i),al=i*1.9+rnd();leaf(sm[i],t,al,.8+.3*rnd());leaf(sm[i],t,al+Math.PI,.8+.3*rnd());if(lv==3){leaf(sm[i],t,al+1.6,.9);leaf(sm[i],t,al+4.4,.7)}}
   if(lv==3){leaf(sm[n-1],tg(n-1),0,0);if(rnd()<.55)flower(sm[n-1],tg(n-1))}
   else if(lv==2&&rnd()<.35)flower(sm[n-1],tg(n-1))};
  tube(crm([[0,-.03,0],[.02,.5,.01],[0,1.0,.03]],4),u=>.085-.035*u);   // pien
- for(let c=0;c<5;c++){const az=c*1.25+.3+gs()*.3,el=.38+.18*rnd();grow([0,.95,.03],vn([Math.sin(el)*Math.cos(az),Math.cos(el),Math.sin(el)*Math.sin(az)]),1.9+.5*rnd(),.04,1)}
- grow([0,1.0,.03],[0,1,0],1.5,.035,1);
+ for(let c=0;c<5;c++){const az=c*1.25+.3+gs()*.3,el=.6+.2*rnd();grow([0,.95,.03],vn([Math.sin(el)*Math.cos(az),Math.cos(el),Math.sin(el)*Math.sin(az)]),1.5+.4*rnd(),.04,1)}
+ grow([0,1.0,.03],[0,1,0],.9,.035,1);
  const bg=new THREE.BufferGeometry();bg.setAttribute('position',new THREE.Float32BufferAttribute(BP,3));bg.setIndex(BI);bg.computeVertexNormals();
  const bkM=M(0x8a8780,{roughness:1,side:THREE.DoubleSide});bkM.userData.plant=1;const bk=new THREE.Mesh(bg,bkM);bk.position.set(cx,y0,-cy);bk.castShadow=bk.receiveShadow=true;bk.userData.plant=1;scene.add(bk);
  const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.Float32BufferAttribute([0,0,0,.3,.4,.02,0,1,0,-.3,.4,.02,0,.45,.05],3));lg.setIndex([0,1,4,1,2,4,2,3,4,3,0,4]);lg.computeVertexNormals();
