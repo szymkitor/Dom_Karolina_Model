@@ -500,7 +500,10 @@ function roofCreases(R,E,T){
   for(let i=0;i<EP.length;i++)for(let j=i+1;j<EP.length;j++){const p=EP[i][0][EP[i][1]],q=EP[j][0][EP[j][1]];if(EP[i][0]!==EP[j][0]&&Math.hypot(p[0]-q[0],p[1]-q[1],p[2]-q[2])<.5)par[fd(i)]=fd(j)}
   const cl=new Map();EP.forEach((e,i)=>{const k=fd(i);if(!cl.has(k))cl.set(k,[]);cl.get(k).push(e)});
   cl.forEach(m=>{if(m.length<2){const[s,k]=m[0],P=s[k],Q=k==='A'?s.B:s.A,dx=P[0]-Q[0],dz=P[2]-Q[2],Lp=Math.hypot(dx,dz),h=(P[1]-Q[1])/(Lp||1),tg=E-.02;s['free'+k]=true;if(h<-1e-3&&P[1]>tg){const t=(P[1]-tg)/-h;if(t<.7){P[0]+=dx/Lp*t;P[2]+=dz/Lp*t;P[1]=tg}}return}
-   const c=[0,1,2].map(i=>m.reduce((a,e)=>a+e[0][e[1]][i],0)/m.length);m.forEach(([s,k])=>{s[k]=c.slice()});if(m.some(([s])=>s.kind==='ridge'))hubs.push(c)})}
+   const rg=m.filter(([s])=>s.kind==='ridge');if(rg.length===1){rg[0][0]['free'+rg[0][1]]=true;return}if(rg.length<2)return;
+   const c=[0,1,2].map(i=>rg.reduce((a,e)=>a+e[0][e[1]][i],0)/rg.length);rg.forEach(([s,k])=>{s[k]=c.slice()});hubs.push(c);
+   /* kosz: zachowuje swoja prosta (i spadek); koniec tylko przedluzamy wzdluz niej do punktu najblizszego wezla */
+   m.filter(([s])=>s.kind==='valley').forEach(([s,k])=>{const P=s[k],Q=k==='A'?s.B:s.A,dx=P[0]-Q[0],dz=P[2]-Q[2],Lp=Math.hypot(dx,dz)||1,ux=dx/Lp,uz=dz/Lp,h=(P[1]-Q[1])/Lp,t=(c[0]-P[0])*ux+(c[2]-P[2])*uz;if(t>0&&t<.6){P[0]+=ux*t;P[2]+=uz*t;P[1]+=h*t}})})}
  /* tekstury: matowa blacha powlekana (ziarno, cien nasuwanej obejmy co 40 cm) i blacha koszowa z przetloczeniami wzdluz */
  const cvT=(w,h,fn)=>{const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');fn(x,w,h);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=4;return t};
  const grain=(x,w,h,n,a)=>{for(let i=0;i<n;i++){const v=Math.random()<.5?255:0;x.fillStyle='rgba('+v+','+v+','+v+','+Math.random()*a+')';x.fillRect(Math.random()*w,Math.random()*h,1,1)}};
@@ -526,7 +529,8 @@ function roofCreases(R,E,T){
  const zA=(x,y)=>{let z=-9;for(const[a,b,c,d]of R)if(x>a&&x<c&&y>b&&y<d)z=Math.max(z,E+T*Math.min(x-a,c-x,y-b,d-y));return z};
  SEG.filter(s=>s.kind==='valley').forEach(s=>{const A=s.A,B=s.B,dx=B[0]-A[0],dy=B[2]-A[2],l=Math.hypot(dx,dy),nx=-dy/l,ny=dx/l,mx=(A[0]+B[0])/2,my=(A[2]+B[2])/2,zm=zA(mx,my),len3=Math.hypot(dx,B[1]-A[1],dy);
   [1,-1].forEach(sd=>{const px=mx+sd*nx*.4,py=my+sd*ny*.4,zs=zA(px,py);if(zs<-8)return;const hv=new V(sd*nx*.4,zs-zm,sd*ny*.4).normalize(),vx=hv.x*.15,vh=hv.y*.15,vy=hv.z*.15,lift=.007;
-   const P=[[A[0],A[1]+lift,A[2]],[B[0],B[1]+lift,B[2]],[B[0]+vx,B[1]+vh+lift,B[2]+vy],[A[0]+vx,A[1]+vh+lift,A[2]+vy],[B[0]+vx,B[1]+vh+lift+.012,B[2]+vy],[A[0]+vx,A[1]+vh+lift+.012,A[2]+vy]],UV=[[0,0],[0,len3*3],[1,len3*3],[1,0],[1,len3*3],[1,0]],base=fp.length/3;
+   const hz=(Pt)=>{const z=zA(Pt[0]+vx,Pt[2]+vy);return z>-8?z-Pt[1]:vh},hA=hz(A),hB=hz(B),
+    P=[[A[0],A[1]+lift,A[2]],[B[0],B[1]+lift,B[2]],[B[0]+vx,B[1]+hB+lift,B[2]+vy],[A[0]+vx,A[1]+hA+lift,A[2]+vy],[B[0]+vx,B[1]+hB+lift+.012,B[2]+vy],[A[0]+vx,A[1]+hA+lift+.012,A[2]+vy]],UV=[[0,0],[0,len3*3],[1,len3*3],[1,0],[1,len3*3],[1,0]],base=fp.length/3;
    P.forEach((p,i)=>{const q=W(p);fp.push(q[0],q[1],q[2]);fu.push(UV[i][0],UV[i][1])});fi.push(base,base+1,base+2,base,base+2,base+3,base+3,base+2,base+4,base+3,base+4,base+5)})});
  if(fp.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(fp,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(fu,2));g.setIndex(fi);g.computeVertexNormals();add(g,flM)}}
 // stolarka wg rzutu parteru: [oś,stała,znak,środek,szer,dół(parapet),wys,kolor]
