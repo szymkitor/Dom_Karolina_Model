@@ -1007,23 +1007,18 @@ PIPES.forEach(([px,py,wx,wy,rd=.045],k)=>{
  const dx=px-wx,dy=py-wy,L=Math.hypot(dx,dy),nx=dx/L,ny=dy/L,o=GOFF,a=[px+nx*o,GYT-GRAD-GDROP[k],-(py+ny*o)],b=[px+nx*o,E-.25,-(py+ny*o)],c=[wx,E-.25-(L+o)*Math.tan(Math.PI/6),-wy],f=[wx,G0+.32,-wy],e=[wx+nx*.22,G0+.1,-(wy+ny*.22)];
  pipe([a[0],a[1]+.025,a[2]],[a[0],a[1]-.05,a[2]],rd+.013);pipe(a,b,rd);pipe(b,c,rd);pipe(c,f,rd);pipe(f,e,rd);[b,c,f].forEach(p=>ball(p,rd+.003));
  [(c[1]+f[1])/2,f[1]+.2].forEach(y=>pipe([wx,y-.02,-wy],[wx,y+.02,-wy],rd+.011))});
-// wywiewki i czerpnie na elewacji zachodniej (kolano z siatka, kierunek w dol): rekuperator (jednostka na strychu nad garazem): czerpnia i wyrzutnia O160 w scianie strychu; wentylatory lazienki (5,37 m2) i WC (4,99 m2) oraz wywiew kotlowni (6,28 m2) O100 w scianie, nad pasem okiennym
+// czerpnia i wyrzutnia rekuperatora (jednostka na strychu nad garazem): dwa przejscia scienne O160 w zachodniej scianie strychu, os prostopadla do elewacji, z zaluzja przeciwdeszczowa i siatka; na osiach wolnych odcinkow sciany (z dala od okna garazu i rury spustowej), pod podbitka
 {const vm=M(0x3b4045,{roughness:.42,metalness:.55,side:THREE.DoubleSide}),gr=M(0x0c0d0f,{roughness:.9,side:THREE.DoubleSide});
- const vent=(wx,y,zc,r,L,R,H)=>{const g=new THREE.Group();g.position.set(wx,zc,-y);g.rotation.y=Math.PI;scene.add(g);   /* lokalnie: +X = na zewnatrz od sciany */
-  const put=(geo,m,x,yy,z)=>{const me=new THREE.Mesh(geo,m);me.position.set(x,yy,z);me.castShadow=true;g.add(me);statics.push(me);return me};
-  put(new THREE.CylinderGeometry(r*1.32,r*1.32,.012,24).rotateZ(Math.PI/2),vm,.006,0,0);                                  /* rozeta przy scianie */
-  const pts=[];for(let i=0;i<=3;i++)pts.push(new THREE.Vector3(.012+L*i/3,0,0));                                           /* prosty odcinek */
-  for(let i=1;i<=14;i++){const a=Math.PI/2*i/14;pts.push(new THREE.Vector3(.012+L+R*Math.sin(a),-R*(1-Math.cos(a)),0))}      /* kolano 90 st. w dol */
-  const ex=.012+L+R,ey=-R;for(let i=1;i<=3;i++)pts.push(new THREE.Vector3(ex,ey-H*i/3,0));
-  put(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,false,'catmullrom',0),64,r,16,false),vm,0,0,0);
-  put(new THREE.TorusGeometry(r*1.04,r*.12,8,20).rotateX(Math.PI/2),vm,ex,ey-H,0);                                         /* obrecz wylotu */
-  put(new THREE.CircleGeometry(r*.96,20).rotateX(Math.PI/2),gr,ex,ey-H-.004,0);                                           /* siatka / kratka w wylocie (ciemna) */
-  put(new THREE.TorusGeometry(r*1.12,r*.1,8,20).rotateY(Math.PI/2),vm,.03,0,0)};                                           /* opaska przy scianie */
- vent(0,1.6,2.55,.08,.14,.13,.12);          /* rekuperator: czerpnia O160, strych nad garazem, sciana zachodnia */
- vent(0,6.2,2.55,.08,.14,.13,.12);          /* rekuperator: wyrzutnia O160, 4,6 m od czerpni */
- vent(0,6.85,2.15,.05,.10,.08,.08);         /* kotlownia: wywiew O100 (obok pompy ciepla, ponad nia) */
- vent(1,10.45,2.15,.05,.10,.08,.08);        /* WC: wentylator O100 (za oknem WC) */
- vent(1,17.75,2.15,.05,.10,.08,.08)}        /* lazienka: wentylator O100 (przed oknem lazienki) */
+ const vent=(wx,y,zc,r,L)=>{const g=new THREE.Group();g.position.set(wx,zc,-y);g.rotation.y=Math.PI;scene.add(g);   /* lokalnie: +X = na zewnatrz, prostopadle do sciany */
+  const put=(geo,m,x,yy,z,rz)=>{const me=new THREE.Mesh(geo,m);me.position.set(x,yy,z);if(rz)me.rotation.z=rz;me.castShadow=true;g.add(me);statics.push(me);return me};
+  put(new THREE.CylinderGeometry(r*1.38,r*1.38,.012,32).rotateZ(Math.PI/2),vm,.006,0,0);                                  /* okragla rozeta przy scianie */
+  put(new THREE.CylinderGeometry(r,r,L,32,1,true).rotateZ(Math.PI/2),vm,L/2+.012,0,0);                                    /* rura O160 prostopadla do sciany */
+  put(new THREE.TorusGeometry(r*1.02,r*.09,8,32).rotateY(Math.PI/2),vm,.03,0,0);                                          /* opaska montazowa */
+  put(new THREE.TorusGeometry(r*1.02,r*.1,8,32).rotateY(Math.PI/2),vm,L+.012,0,0);                                        /* obrecz wylotu */
+  put(new THREE.CircleGeometry(r*.97,32).rotateY(Math.PI/2),gr,L-.04,0,0);                                                /* ciemne tlo: siatka przeciw owadom */
+  for(let k=-3;k<=3;k++){const yy=k*r*.27,ch=2*Math.sqrt(Math.max(0,r*r*.94-yy*yy));put(new THREE.BoxGeometry(.034,.007,ch),vm,L-.002,yy,0,-.55)}};   /* zaluzja przeciwdeszczowa, lamele skosem w dol */
+ vent(0,1.8,2.55,.08,.13);                   /* czerpnia: srodek wolnego odcinka sciany przed oknem garazu (y 0–3,6) */
+ vent(0,7.0,2.55,.08,.13)}                   /* wyrzutnia: srodek wolnego odcinka za oknem (y 5,2–8,8); 5,2 m od czerpni */
 function pineTex(){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d'),cl=['#e0c496','#d7b886','#e6cca0','#d2b180','#dcbd8d'];
  for(let i=0;i<8;i++){x.fillStyle=cl[i%5];x.fillRect(0,i*16,128,16);x.fillStyle='#a98a5c';x.fillRect(0,i*16+14.5,128,1.5);
   for(let j=0;j<14;j++){x.fillStyle='rgba(150,110,60,.35)';x.fillRect(Math.random()*128,i*16+1+Math.random()*12,20+Math.random()*60,.8)}
