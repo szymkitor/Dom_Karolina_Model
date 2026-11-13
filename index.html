@@ -1750,11 +1750,10 @@ return out}
  near=(p,q,tol)=>{if(pin(p,q))return true;for(let i=0;i<q.length;i++)if(dseg(p,q[i],q[(i+1)%q.length])<=tol)return true;return false},
  rc=(x0,y0,x1,y1)=>[[x0,y0],[x1,y0],[x1,y1],[x0,y1]];
  const KO=KOSP.concat([rc(.91,-5,6.41,0),rc(1.38,-8,5.88,-7.5),rc(8.87,-8,9.99,-7.5)]),TE=[rc(-2.9,34.5,1.1,36.9),rc(7.25,-.8,10.05,2.5),rc(9.8,11.3,16.1,20.4),rc(14.9,8.4,16.1,11.3)];
- const blocked=(p,own)=>{if(pin(p,GRVP[own]))return true;for(let i=0;i<GRVP.length;i++)if(i!==own&&near(p,GRVP[i],.02))return true;for(const q of KO)if(near(p,q,.09))return true;if(pin(p,WP))return true;for(const q of TE)if(near(p,q,.05))return true;for(const q of BARR)if(near(p,q,.2))return true;for(const q of BARK)if(near(p,q,.02))return true;
-  for(let i=0;i<PL.length;i++)if(dseg(p,PL[i],PL[(i+1)%PL.length])<=.09)return true;return false};
+ const AP=GRVP.concat(BARK),NG=GRVP.length,blocked=(p,own)=>{if(pin(p,AP[own]))return true;for(let i=0;i<NG;i++)if(i!==own&&near(p,GRVP[i],.02))return true;if(own>=NG)for(let i=0;i<BARK.length;i++)if(i+NG!==own&&near(p,BARK[i],.02))return true;for(const q of KO)if(near(p,q,.09))return true;if(pin(p,WP))return true;for(const q of TE)if(near(p,q,.05))return true;for(const q of BARR)if(near(p,q,.2))return true;  for(let i=0;i<PL.length;i++)if(dseg(p,PL[i],PL[(i+1)%PL.length])<=.09)return true;return false};
  const TOP=-.29,BOT=-.33,W=.006,pos=[],idx=[],V=(x,y,z)=>{pos.push(x,y,z);return pos.length/3-1},quad=(a,b,c,d)=>idx.push(a,b,c,a,c,d);
  const ST=.01,SNAP=.045,MRG=.035;
- GRVP.forEach((poly,gi)=>{const n=poly.length;let ar=0;for(let i=0;i<n;i++){const a=poly[i],b=poly[(i+1)%n];ar+=a[0]*b[1]-b[0]*a[1]}const sg=ar>0?1:-1;   /* sg: orientacja -> normalna zewnetrzna krawedzi = (dy,-dx)*sg */
+ AP.forEach((poly,gi)=>{const n=poly.length;let ar=0;for(let i=0;i<n;i++){const a=poly[i],b=poly[(i+1)%n];ar+=a[0]*b[1]-b[0]*a[1]}const sg=ar>0?1:-1;   /* sg: orientacja -> normalna zewnetrzna krawedzi = (dy,-dx)*sg */
   const ed=[],sgm=[];   /* ed[i]: dane krawedzi; sgm: przedzialy [t0,t1] bez przeszkod (trawnik) */
   for(let i=0;i<n;i++){const a=poly[i],b=poly[(i+1)%n],dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy);if(L<1e-6){ed.push(null);continue}
    const ux=dx/L,uy=dy/L,nx=uy*sg,ny=-ux*sg,N=Math.max(1,Math.ceil(L/ST));ed.push({a,L,ux,uy,nx,ny});
