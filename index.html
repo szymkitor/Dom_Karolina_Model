@@ -1050,10 +1050,10 @@ PIPES.forEach(([px,py,wx,wy,rd=.045],k)=>{
  put(new THREE.TorusGeometry(.0185,.0028,8,28),rm,0,.015,.0125);                                                                                                             /* pierscien */
  put(new THREE.CylinderGeometry(.0145,.0145,.01,28).rotateX(Math.PI/2),bm,0,.015,.0135);                                                                                     /* przycisk */
  const ip=new THREE.Mesh(new THREE.PlaneGeometry(.026,.026),new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(ic),transparent:true,roughness:.5,metalness:.3}));ip.position.set(0,-.027,.0125);g.add(ip)}
-// czujnik ruchu (PIR) wlaczajacy halogeny nad garazem po wykryciu pojazdu/osoby na podjezdzie: na froncie garazu, 1,24 m na prawo od halogenu nad brama (x 3,66), srodek na wysokosci 2,55 m, lekko pochylony w dol w strone podjazdu; ciemnoszary korpus z matowa kopulka
+// czujnik ruchu (PIR) wlaczajacy halogeny nad garazem po wykryciu pojazdu/osoby na podjezdzie: na froncie garazu, przy prawym rogu bramy (x 5,85; halogen nad brama x 3,66), obrocony ok. 30 st. w strone podjazdu i odwrocony od sciezki furtka-drzwi, srodek na wysokosci 2,55 m, lekko pochylony w dol w strone podjazdu; ciemnoszary korpus z matowa kopulka
 {const rr=(w,h,r)=>{const q=new THREE.Shape(),x=-w/2,y=-h/2;q.moveTo(x+r,y);q.lineTo(x+w-r,y);q.quadraticCurveTo(x+w,y,x+w,y+r);q.lineTo(x+w,y+h-r);q.quadraticCurveTo(x+w,y+h,x+w-r,y+h);q.lineTo(x+r,y+h);q.quadraticCurveTo(x,y+h,x,y+h-r);q.lineTo(x,y+r);q.quadraticCurveTo(x,y,x+r,y);return q},
  dk=M(0x2f3338,{roughness:.5,metalness:.4}),fr=M(0xe6e9ec,{roughness:.35,metalness:.05,transparent:true,opacity:.96}),led=M(0xff3b30,{emissive:0xc01208,emissiveIntensity:.9,roughness:.4}),
- g=new THREE.Group();g.position.set(4.9,2.55,.002);scene.add(g);
+ g=new THREE.Group();g.position.set(5.85,2.55,.002);g.rotation.y=-.52;scene.add(g);   /* obrot ok. 30 st. w strone podjazdu (zachod), tylem do sciezki furtka-drzwi */
  const put=(p,geo,m,x,y,z)=>{const me=new THREE.Mesh(geo,m);me.position.set(x,y,z);me.castShadow=true;p.add(me);statics.push(me);return me};
  put(g,new THREE.BoxGeometry(.075,.135,.012),dk,0,0,.006);                                                                       /* plyta montazowa przy scianie */
  const sb=new THREE.Group();sb.position.set(0,0,.012);sb.rotation.x=.2;g.add(sb);                                                /* czujnik pochylony w dol */
