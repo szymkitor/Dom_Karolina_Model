@@ -98,6 +98,7 @@ button.on{background:var(--line);font-weight:600}
 .mtr{margin:2px 0 10px;line-height:1.45}.mtl{font-size:12px;opacity:.85}.mtv{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;margin:6px 0 2px}.mtw{color:#c0392b;font-size:12px;margin-top:6px;font-weight:600}
 .mtlab{position:fixed;left:0;top:0;z-index:25;pointer-events:none;transform:translate(-50%,-130%);background:rgba(255,255,255,.78);color:#8a1313;border:1px solid rgba(220,40,40,.6);border-radius:10px;padding:3px 9px;font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);white-space:nowrap;display:none}
 body.mtool canvas{cursor:crosshair}
+.mtd{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.mtd span{font:700 12px system-ui,sans-serif;font-variant-numeric:tabular-nums;padding:2px 8px;border:1.5px solid;border-radius:10px;background:rgba(255,255,255,.45)}.mtdl{background:rgba(255,255,255,.82);border-width:1.5px;border-style:solid}
 .mtmenu{position:fixed;z-index:30;display:none;gap:6px;padding:6px;border-radius:20px;background:linear-gradient(145deg,var(--gl1),var(--gl2));backdrop-filter:blur(8px) saturate(1.6);-webkit-backdrop-filter:blur(8px) saturate(1.6);border:1px solid var(--glb);box-shadow:0 10px 30px rgba(10,20,40,.3),inset 0 1.5px 1px rgba(255,255,255,.7);color:inherit}.mtmenu button{all:unset;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:78px;padding:8px 10px;border-radius:14px;background:var(--glk);border:1px solid var(--glb);font:600 11px system-ui,sans-serif;cursor:pointer;text-shadow:var(--tsh)}.mtmenu button:active{background:rgba(255,60,60,.35)}body.mtool{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 
 </style></head><body>
@@ -190,7 +191,7 @@ const gr=document.getElementById('gr');gr.addEventListener('click',()=>gr.classL
  <div class="hd"><div class="tt">Pomiar</div><div class="st">Odległości, kąty i średnice</div></div>
  <section><h3>Łapanie</h3><div class="seg2"><button id="mtp" class="on">Płaszczyzna</button><button id="mte">Krawędź</button><button id="mto">Obiekt</button></div>
   <small class="hint">Kliknij w scenie pierwszy, a potem drugi obiekt. Zaznaczone elementy podświetlają się na czerwono. Powierzchnie nieregularne i nieplaskie (auto, rośliny, itp.) są pomijane.</small></section>
- <section><h3>Wynik</h3><div id="mtr" class="mtr"><div class="mtl">Zaznacz pierwszy obiekt</div></div><button id="mtc">Nowy pomiar</button></section></div>
+ <section><h3>Wynik</h3><div id="mtr" class="mtr"><div class="mtl">Zaznacz pierwszy obiekt</div></div><div class="seg2" style="margin-top:6px"><button id="mtd" class="on" title="Pokaż składowe odległości w osiach X, Y, Z">Δ X/Y/Z</button><button id="mtc">Nowy pomiar</button></div></section></div>
 <div id="ptov"><div class="ptbar"><span id="ptmsg"></span><label style="display:flex;gap:6px;align-items:center;font-size:12px">Ekspozycja<input id="ptx" type="range" min=".3" max="4" step=".05" value="1"></label><button id="ptsave" disabled>Zapisz PNG</button><button id="ptclose">Zamknij</button></div><div class="ptprog"><i id="ptbar"></i></div><div id="ptwrap"><img id="ptimg" alt="Render"></div></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/","three/examples/jsm/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/","three-mesh-bvh":"https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.8.3/build/index.module.js","three-gpu-pathtracer":"https://cdn.jsdelivr.net/npm/three-gpu-pathtracer@0.0.23/build/index.module.js"}}</script>
 <script>(()=>{
@@ -1549,8 +1550,8 @@ const MTC=(()=>{
  return{mk,analyze,comp,pickEdge,measure,soupDist,soupSeg,segSeg,fitCyl,dot,cross,sub,add,mul,nrm,len}})();
 
 /* ===== narzedzie pomiarowe: obsluga sceny i panelu ===== */
-(()=>{const el=id=>document.getElementById(id),rBox=el('mtr'),bP=el('mtp'),bE=el('mte'),bO=el('mto'),bC=el('mtc');if(!rBox||!bP)return;
- const st={on:false,mode:'plane',once:null,A:null,B:null,res:null,warn:''},G=new THREE.Group();G.userData.mt=1;scene.add(G);
+(()=>{const el=id=>document.getElementById(id),rBox=el('mtr'),bP=el('mtp'),bE=el('mte'),bO=el('mto'),bC=el('mtc'),bD=el('mtd');if(!rBox||!bP)return;
+ const st={on:false,mode:'plane',once:null,delta:true,A:null,B:null,res:null,warn:''},G=new THREE.Group();G.userData.mt=1;scene.add(G);
  const redM=new THREE.MeshBasicMaterial({color:0xff2020,transparent:true,opacity:.55,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}),
   edgeM=new THREE.MeshBasicMaterial({color:0xff2020,depthTest:false,transparent:true}),lnM=new THREE.MeshBasicMaterial({color:0xffc800,depthTest:false,transparent:true});
  const lab=document.createElement('div');lab.className='mtlab';document.body.appendChild(lab);
@@ -1559,15 +1560,21 @@ const MTC=(()=>{
  function ball(p,r,m){const me=new THREE.Mesh(new THREE.SphereGeometry(r,10,8),m);me.position.copy(V3(p));me.userData.mt=1;me.renderOrder=11;G.add(me)}
  function clearG(){while(G.children.length){const o=G.children.pop();if(o.geometry)o.geometry.dispose()}}
  function drawItem(s){if(s.kind==='edge'){seg(s.a,s.b,.014,edgeM,10);return}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(Float32Array.from(s.tris),3));const me=new THREE.Mesh(g,redM);me.userData.mt=1;me.renderOrder=5;me.frustumCulled=false;G.add(me)}
- function redraw(){clearG();[st.A,st.B].forEach(s=>s&&drawItem(s));if(st.res&&st.res.a){seg(st.res.a,st.res.b,.008,lnM,12);ball(st.res.a,.03,lnM);ball(st.res.b,.03,lnM)}dirty=true}
+ /* skladowe odleglosci w osiach modelu: X = x planu, Y = y planu (= -z sceny), Z = wysokosc (= y sceny) */
+ const DCOL=['#ff8a00','#16a34a','#2f7bff'],DNM=['X','Y','Z'],dMat=DCOL.map(c=>new THREE.MeshBasicMaterial({color:c,depthTest:false,transparent:true})),
+  dLab=DNM.map((n,i)=>{const d=document.createElement('div');d.className='mtlab mtdl';d.style.color=DCOL[i];d.style.borderColor=DCOL[i];document.body.appendChild(d);return d});
+ function deltas(){const r=st.res;if(!r||!r.a)return null;const a=r.a,b=r.b;return{v:[Math.abs(b[0]-a[0]),Math.abs(b[2]-a[2]),Math.abs(b[1]-a[1])],
+  seg:[[a,[b[0],a[1],a[2]]],[[b[0],a[1],a[2]],[b[0],a[1],b[2]]],[[b[0],a[1],b[2]],b]]}}
+ function redraw(){clearG();[st.A,st.B].forEach(s=>s&&drawItem(s));if(st.res&&st.res.a){seg(st.res.a,st.res.b,.008,lnM,12);ball(st.res.a,.03,lnM);ball(st.res.b,.03,lnM);
+  if(st.delta){const D=deltas();D.seg.forEach((s,i)=>{if(D.v[i]>5e-4)seg(s[0],s[1],.007,dMat[i],13)})}}dirty=true}
  const MN={plane:'płaszczyznę',edge:'krawędź',obj:'obiekt'},dia=s=>s.kind==='cyl'?2*s.r:(s.circ?2*s.circ.r:null),desc=s=>s.kind==='plane'?(s.circ?'Powierzchnia okrągła, średnica '+fmt(2*s.circ.r)+' m':'Płaszczyzna'):s.kind==='obj'?'Cały obiekt':s.kind==='cyl'?'Walec, średnica '+fmt(2*s.r)+' m':'Krawędź, długość '+fmt(MTC.len(MTC.sub(s.b,s.a)))+' m';
  function render(){let h='';if(!st.A)h='<div class="mtl">Zaznacz pierwszy obiekt ('+MN[st.once||st.mode]+').</div>';
   else{h='<div class="mtl">1. '+desc(st.A)+'</div>';if(dia(st.A)!=null&&!st.B)h+='<div class="mtv">Ø '+fmt(dia(st.A))+' m</div><div class="mtl">średnica</div>';
-   if(!st.B)h+='<div class="mtl">2. wskaż drugi obiekt'+(st.once?' ('+MN[st.once]+')':'')+'</div>';else{h+='<div class="mtl">2. '+desc(st.B)+'</div>';const r=st.res;if(r){h+='<div class="mtv">'+fmt(r.d)+' m</div><div class="mtl">minimalna odległość'+(r.d<.005?' (powierzchnie się stykają lub przecinają)':'')+'</div>';if(r.angle!=null)h+='<div class="mtl" style="margin-top:6px"><b>Kąt: '+fa(r.angle)+'</b></div>';else h+='<div class="mtl" style="margin-top:6px">elementy równoległe</div>'}}}
+   if(!st.B)h+='<div class="mtl">2. wskaż drugi obiekt'+(st.once?' ('+MN[st.once]+')':'')+'</div>';else{h+='<div class="mtl">2. '+desc(st.B)+'</div>';const r=st.res;if(r){h+='<div class="mtv">'+fmt(r.d)+' m</div><div class="mtl">minimalna odległość'+(r.d<.005?' (powierzchnie się stykają lub przecinają)':'')+'</div>';if(r.angle!=null)h+='<div class="mtl" style="margin-top:6px"><b>Kąt: '+fa(r.angle)+'</b></div>';else h+='<div class="mtl" style="margin-top:6px">elementy równoległe</div>';if(st.delta){const D=deltas();if(D)h+='<div class="mtd">'+D.v.map((v,i)=>'<span style="border-color:'+DCOL[i]+';color:'+DCOL[i]+'">Δ'+DNM[i]+' '+fmt(v)+' m</span>').join('')+'</div>'}}}}
   if(st.warn)h+='<div class="mtw">'+st.warn+'</div>';rBox.innerHTML=h}
- function reset(){st.once=null;st.A=st.B=st.res=null;st.warn='';lab.style.display='none';clearG();render();dirty=true}
+ function reset(){st.once=null;st.A=st.B=st.res=null;dLab.forEach(d=>d.style.display='none');st.warn='';lab.style.display='none';clearG();render();dirty=true}
  function setMode(m){st.mode=m;bP.classList.toggle('on',m==='plane');bE.classList.toggle('on',m==='edge');bO.classList.toggle('on',m==='obj')}
- bP.onclick=()=>setMode('plane');bE.onclick=()=>setMode('edge');bO.onclick=()=>setMode('obj');bC.onclick=reset;
+ bP.onclick=()=>setMode('plane');bE.onclick=()=>setMode('edge');bO.onclick=()=>setMode('obj');bC.onclick=reset;bD.onclick=()=>{st.delta=!st.delta;bD.classList.toggle('on',st.delta);render();redraw();if(!st.delta)dLab.forEach(d=>d.style.display='none')};
  /* pozycje swiatowe wierzcholkow z cache (obiekty ruchome: klucz = macierz swiata) */
  function worldPos(mesh){const pos=mesh.geometry.attributes.position,e=mesh.matrixWorld.elements,k=e.join(),c=mesh.userData._mw;if(c&&c.k===k&&c.n===pos.count)return c.W;
   const idn=e[0]===1&&e[5]===1&&e[10]===1&&e[12]===0&&e[13]===0&&e[14]===0&&e[1]===0&&e[2]===0&&e[4]===0&&e[6]===0&&e[8]===0&&e[9]===0;let W;
@@ -1606,7 +1613,8 @@ const MTC=(()=>{
  cv.addEventListener('pointerup',e=>{clearTimeout(lpT);if(!dn||!st.on)return;const d=dn;dn=null;if(d.long)return;if(Math.hypot(e.clientX-d.x,e.clientY-d.y)<6&&performance.now()-d.t<700)onPick(e.clientX,e.clientY)});
  cv.addEventListener('pointercancel',()=>{clearTimeout(lpT);dn=null});
  /* etykieta z wynikiem przy srodku odcinka pomiarowego */
- const tv=new THREE.Vector3();window.__mtUpd=()=>{const rs=st.res&&st.res.a,sd=!st.B&&st.A&&dia(st.A)!=null&&st.A.pt;if((!rs&&!sd)||!st.on){if(lab.style.display!=='none')lab.style.display='none';return}if(rs)tv.set((st.res.a[0]+st.res.b[0])/2,(st.res.a[1]+st.res.b[1])/2,(st.res.a[2]+st.res.b[2])/2).project(cam);else tv.set(st.A.pt[0],st.A.pt[1],st.A.pt[2]).project(cam);
+ const tv=new THREE.Vector3();window.__mtUpd=()=>{const DD=st.on&&st.delta?deltas():null;dLab.forEach((d,i)=>{if(!DD||DD.v[i]<=5e-4){if(d.style.display!=='none')d.style.display='none';return}const s=DD.seg[i];tv.set((s[0][0]+s[1][0])/2,(s[0][1]+s[1][1])/2,(s[0][2]+s[1][2])/2).project(cam);if(tv.z>1||tv.z<-1){d.style.display='none';return}d.textContent='Δ'+DNM[i]+' '+fmt(DD.v[i])+' m';d.style.display='block';d.style.left=((tv.x*.5+.5)*innerWidth)+'px';d.style.top=((-tv.y*.5+.5)*innerHeight)+'px'});
+  const rs=st.res&&st.res.a,sd=!st.B&&st.A&&dia(st.A)!=null&&st.A.pt;if((!rs&&!sd)||!st.on){if(lab.style.display!=='none')lab.style.display='none';return}if(rs)tv.set((st.res.a[0]+st.res.b[0])/2,(st.res.a[1]+st.res.b[1])/2,(st.res.a[2]+st.res.b[2])/2).project(cam);else tv.set(st.A.pt[0],st.A.pt[1],st.A.pt[2]).project(cam);
   if(tv.z>1||tv.z<-1){lab.style.display='none';return}lab.textContent=rs?fmt(st.res.d)+' m'+(st.res.angle!=null?' · '+fa(st.res.angle):''):'Ø '+fmt(dia(st.A))+' m';lab.style.display='block';lab.style.left=((tv.x*.5+.5)*innerWidth)+'px';lab.style.top=((-tv.y*.5+.5)*innerHeight)+'px'};
  window.__panelHook=(k,on)=>{if(k!=='meas')return;st.on=on;document.body.classList.toggle('mtool',on);if(!on){st.once=null;reset();hideMenu()}else render()};
  render()})();
