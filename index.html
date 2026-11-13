@@ -22,7 +22,7 @@ canvas{display:block;width:100%;height:100%}
 #pn_cctv{width:min(620px,calc(100vw - 56px))}#cvg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
 .cvt{border-radius:14px;background:var(--card);border:1px solid var(--line);padding:8px}.cvt .cvv{position:relative}.cvt canvas{display:block;width:100%;aspect-ratio:16/9;border-radius:10px;background:#111}
 .cvt .cvh{position:absolute;left:8px;top:6px;font:600 11px/1.2 ui-monospace,Menlo,monospace;color:#fff;text-shadow:0 1px 2px #000,0 0 4px #000;pointer-events:none}.cvt .cvh i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#f33;margin-right:5px;animation:cvb 1.4s infinite}
-@keyframes cvb{50%{opacity:.2}}.cvt .cvc{display:flex;align-items:center;gap:6px;margin-top:8px}.cvt .cvc button{width:38px;height:34px;padding:0;font-size:15px;line-height:1}.cvt .cvc button:disabled{opacity:.3}
+@keyframes cvb{50%{opacity:.2}}.cvt .cvc{display:flex;align-items:center;gap:6px;margin-top:8px}.cvt .pad{display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(2,36px);gap:4px}.cvt .pad button{width:40px;height:36px;padding:0;font-size:15px;line-height:1}.cvt .pad [data-a=u]{grid-area:1/2}.cvt .pad [data-a=l]{grid-area:2/1}.cvt .pad [data-a=d]{grid-area:2/2}.cvt .pad [data-a=r]{grid-area:2/3}.cvt .cvc button:disabled{opacity:.3}
 .cvt .cvr{flex:1;text-align:right;font-size:11px;opacity:.7;line-height:1.3}.cvn{margin-top:10px;font-size:11px;opacity:.6;line-height:1.4}
 .ui.hid{opacity:0;transform:scale(.8);pointer-events:none;visibility:hidden}
 .hd{position:sticky;top:0;z-index:3;margin:0 -12px;padding:16px 16px 12px;background:linear-gradient(var(--ps),var(--ps));border-bottom:1px solid var(--line)}
@@ -1370,7 +1370,7 @@ tap(9.8,.55,-21.0,Math.PI/2);tap(1,.55,-21.1,-Math.PI/2);tap(0,.55,-.6,-Math.PI/
   const ln=new THREE.Group();ln.position.set(0,-.058,0);ln.rotation.z=-.5;cg.add(ln);          /* obiektyw celuje w kierunku pola widzenia, pochylony w dol */
   [[.026,.018,.04,0x0e1013],[.018,.018,.012,0x0a0c0e]].forEach(([r0,r1,h,cl],k)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(r0,r1,h,16),k?lensM:dk);m.rotation.z=-Math.PI/2;m.position.set(.03+(k?.027:0),0,0);m.castShadow=false;ln.add(m);statics.push(m)});
   const ir=new THREE.Mesh(new THREE.TorusGeometry(.024,.004,6,16).rotateY(Math.PI/2),irM);ir.position.set(.042,0,0);ln.add(ir);statics.push(ir);   /* pierscien IR */
-  scene.add(cg);CCTV.push({cg,ln,x,z,n:Math.atan2(c[3],c[2])*180/Math.PI,pan:c[4],tp:c[4],tilt:28.65,tt:28.65,side:c[2]>0?'ściana wschodnia':c[2]<0?'ściana zachodnia':c[3]>0?'ściana tylna':'ściana frontowa'});
+  scene.add(cg);CCTV.push({cg,ln,x,z,n:((Math.atan2(c[3],c[2])*180/Math.PI)+360)%360,pan:c[4],tp:c[4],tilt:28.65,tt:28.65,side:c[2]>0?'ściana wschodnia':c[2]<0?'ściana zachodnia':c[3]>0?'ściana tylna':'ściana frontowa'});
   const pos=[],col=new THREE.Color().setHSL(ci/CM.length,.8,.5);
   c[5].forEach(v=>{const ix=v>>7,iy=v&127,cx=-3.4+.5*ix,cy=-7.5+.5*iy,y=(cx>9.8&&cx<16.1&&cy>8.4&&cy<20.4)?.03:-.27,a=.25;
    pos.push(cx-a,y,-(cy-a),cx+a,y,-(cy-a),cx+a,y,-(cy+a),cx-a,y,-(cy-a),cx+a,y,-(cy+a),cx-a,y,-(cy+a))});
@@ -1384,8 +1384,9 @@ tap(9.8,.55,-21.0,Math.PI/2);tap(1,.55,-21.1,-Math.PI/2);tap(0,.55,-.6,-Math.PI/
  if(pn&&cg&&C&&C.length){
   const dirOf=k=>{const p=k.pan*RD,t=k.tilt*RD;return new THREE.Vector3(Math.cos(t)*Math.cos(p),-Math.sin(t),-Math.cos(t)*Math.sin(p))};
   const lim=k=>{const r=nrm(k.tp-k.n);return{l:r>=PMAX-.01,r:r<=-PMAX+.01,u:k.tt<=.01,d:k.tt>=TMAX-.01}};
+  C.forEach(k=>{k.tp=k.n+nrm(k.tp-k.n);k.pan=k.tp});
   C.forEach((k,i)=>{const d=document.createElement('div');d.className='cvt';
-   d.innerHTML='<div class="cvv"><canvas></canvas><div class="cvh"><i></i>K'+(i+1)+'</div></div><div class="cvc"><button data-a="l" title="W lewo" aria-label="Kamera '+(i+1)+': w lewo">◀</button><button data-a="u" title="W górę" aria-label="Kamera '+(i+1)+': w górę">▲</button><button data-a="d" title="W dół" aria-label="Kamera '+(i+1)+': w dół">▼</button><button data-a="r" title="W prawo" aria-label="Kamera '+(i+1)+': w prawo">▶</button><div class="cvr"></div></div>';
+   d.innerHTML='<div class="cvv"><canvas></canvas><div class="cvh"><i></i>K'+(i+1)+'</div></div><div class="cvc"><div class="pad"><button data-a="u" title="W górę" aria-label="Kamera '+(i+1)+': w górę">▲</button><button data-a="l" title="W lewo" aria-label="Kamera '+(i+1)+': w lewo">◀</button><button data-a="d" title="W dół" aria-label="Kamera '+(i+1)+': w dół">▼</button><button data-a="r" title="W prawo" aria-label="Kamera '+(i+1)+': w prawo">▶</button></div><div class="cvr"></div></div>';
    cg.appendChild(d);k.cv=d.querySelector('canvas');k.cx=k.cv.getContext('2d');k.ro=d.querySelector('.cvr');k.bt={};
    d.querySelectorAll('button').forEach(b=>{k.bt[b.dataset.a]=b;let tm=0,iv=0;
     const mv=st=>{const a=b.dataset.a;if(a==='l')k.tp+=st;else if(a==='r')k.tp-=st;else if(a==='u')k.tt-=st;else k.tt+=st;
@@ -1398,10 +1399,22 @@ tap(9.8,.55,-21.0,Math.PI/2);tap(1,.55,-21.1,-Math.PI/2);tap(0,.55,-.6,-Math.PI/
   let stale=true,last=0,pr=1;
   const ui=k=>{const L=lim(k),az=((k.tp%360)+360)%360;k.ro.innerHTML=k.side+'<br>azymut '+Math.round(az)+'° · pochylenie '+Math.round(k.tt)+'°'+((L.l||L.r||L.u||L.d)?'<br><b>granica ruchu</b>':'');
    k.bt.l.disabled=L.l;k.bt.r.disabled=L.r;k.bt.u.disabled=L.u;k.bt.d.disabled=L.d};
-  const shoot=()=>{const sz=new THREE.Vector2();ren.getSize(sz);pr=ren.getPixelRatio();const pw=Math.round(TW*pr),ph=Math.round(TH*pr),vis=C.grp.visible,bg=scene.background;
+  const nz=document.createElement('canvas');nz.width=nz.height=128;const nq=nz.getContext('2d'),nimg=nq.createImageData(128,128);let tick=0;
+  const mkN=()=>{const d=nimg.data;for(let i=0;i<d.length;i+=4){const v=Math.random()*255;d[i]=d[i+1]=d[i+2]=v;d[i+3]=255}nq.putImageData(nimg,0,0)};mkN();
+  const look=(k,w,h)=>{const q=k.cx,u=w/TW;q.save();
+   q.globalCompositeOperation='saturation';q.fillStyle='hsl(0,0%,50%)';q.globalAlpha=.9;q.fillRect(0,0,w,h);          /* prawie czarno-bialy */
+   q.globalAlpha=1;q.globalCompositeOperation='multiply';q.fillStyle='rgb(214,228,220)';q.fillRect(0,0,w,h);           /* lekki chlodno-zielony odcien matrycy */
+   q.globalCompositeOperation='overlay';q.globalAlpha=.55;q.drawImage(k.cv===null?nz:nz,0,0,w,h);                       /* ziarno */
+   q.globalCompositeOperation='source-over';q.globalAlpha=.22;q.fillStyle='#000';for(let y=0;y<h;y+=Math.max(2,Math.round(3*u)))q.fillRect(0,y,w,Math.max(1,Math.round(u)));   /* linie skanowania */
+   const bar=((tick*3+k.cv.width)%(h+60))-30;q.globalAlpha=.07;q.fillStyle='#fff';q.fillRect(0,bar,w,Math.round(26*u));  /* przesuwajacy sie pas zaklocen */
+   const g=q.createRadialGradient(w/2,h/2,h*.35,w/2,h/2,h*.95);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.6)');q.globalAlpha=1;q.fillStyle=g;q.fillRect(0,0,w,h);   /* winieta */
+   const dt=new Date(),p2=n=>String(n).padStart(2,'0'),ts=p2(dt.getDate())+'-'+p2(dt.getMonth()+1)+'-'+dt.getFullYear()+' '+p2(dt.getHours())+':'+p2(dt.getMinutes())+':'+p2(dt.getSeconds());
+   q.font='600 '+Math.round(11*u)+'px ui-monospace,Menlo,monospace';q.textBaseline='top';q.fillStyle='#fff';q.shadowColor='#000';q.shadowBlur=3*u;q.fillText('CAM '+(C.indexOf(k)+1),w-Math.round(46*u),Math.round(8*u));q.textBaseline='bottom';q.fillText(ts,Math.round(8*u),h-Math.round(7*u));
+   q.restore()};
+  const shoot=()=>{tick++;if(tick%2===0)mkN();const sz=new THREE.Vector2();ren.getSize(sz);pr=ren.getPixelRatio();const pw=Math.round(TW*pr),ph=Math.round(TH*pr),vis=C.grp.visible,bg=scene.background;
    if(pw>ren.domElement.width||ph>ren.domElement.height)return;C.grp.visible=false;ren.setScissorTest(true);ren.setViewport(0,0,TW,TH);ren.setScissor(0,0,TW,TH);
    C.forEach(k=>{const d=dirOf(k);vc.position.set(k.x,E-.33-.058,k.z).addScaledVector(d,.07);vc.lookAt(vc.position.clone().add(d));vc.updateMatrixWorld();ren.render(scene,vc);
-    if(k.cv.width!==pw||k.cv.height!==ph){k.cv.width=pw;k.cv.height=ph}k.cx.drawImage(ren.domElement,0,ren.domElement.height-ph,pw,ph,0,0,pw,ph)});
+    if(k.cv.width!==pw||k.cv.height!==ph){k.cv.width=pw;k.cv.height=ph}k.cx.drawImage(ren.domElement,0,ren.domElement.height-ph,pw,ph,0,0,pw,ph);look(k,pw,ph)});
    ren.setScissorTest(false);ren.setViewport(0,0,sz.x,sz.y);C.grp.visible=vis;drawFrame()};
   (function lp(t){requestAnimationFrame(lp);if(pn.classList.contains('hid'))return;let mv=false;
    C.forEach(k=>{const dp=k.tp-k.pan,dt=k.tt-k.tilt;if(Math.abs(dp)>.05||Math.abs(dt)>.05){const sp=Math.min(1,Math.max(.06,Math.abs(dp)/8)),st=Math.sign(dp)*Math.min(Math.abs(dp),Math.max(.6,Math.abs(dp)*.25)),su=Math.sign(dt)*Math.min(Math.abs(dt),Math.max(.6,Math.abs(dt)*.25));k.pan+=st;k.tilt+=su;mv=true}
