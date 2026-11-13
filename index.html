@@ -697,7 +697,7 @@ function staf(x0,y0,x1,y1,sa,sb){const L=Math.hypot(x1-x0,y1-y0),ux=(x1-x0)/L,uy
   const gc=document.createElement('canvas');gc.width=gc.height=128;const g2=gc.getContext('2d');g2.fillStyle='#a39e92';g2.fillRect(0,0,128,128);let sg=23;const rg=()=>(sg=(sg*16807)%2147483647)/2147483647;
   for(let i=0;i<1100;i++){g2.fillStyle=['#bcb6aa','#8e887c','#a8a296','#827c70','#c4beb2'][i%5];g2.beginPath();g2.ellipse(rg()*128,rg()*128,1.2+rg()*1.8,1+rg()*1.4,rg()*3,0,6.3);g2.fill()}
   const gt2=new THREE.CanvasTexture(gc);gt2.wrapS=gt2.wrapT=THREE.RepeatWrapping;gt2.anisotropy=8;const gm2=M(0xffffff,{map:gt2,roughness:1});gm2.userData.lnTex='grv';
-  {const gg=new THREE.ShapeGeometry(new THREE.Shape([[15.44,-1.05],[16.72,-1.05],[16.72,8.05],[15.44,8.05]].map(p=>new THREE.Vector2(p[0],p[1]))));gg.rotateX(-Math.PI/2);add(gg,gm2,0,-.315,0,false)}
+  {const gg=new THREE.ShapeGeometry(new THREE.Shape([[15.44,-1.05],[16.72,-1.05],[16.72,8.05],[15.44,8.05]].map(p=>new THREE.Vector2(p[0],p[1]))));gg.rotateX(-Math.PI/2);add(gg,gm2,0,-.295,0,false)}
   const pc=document.createElement('canvas');pc.width=pc.height=256;const p2=pc.getContext('2d');p2.fillStyle='#6b6a67';p2.fillRect(0,0,256,256);
   for(let i=0;i<22;i++){const cx=rg()*256,cy=rg()*256,rr=30+rg()*80,gd=p2.createRadialGradient(cx,cy,0,cx,cy,rr);gd.addColorStop(0,rg()<.5?'rgba(130,129,125,.28)':'rgba(70,69,66,.3)');gd.addColorStop(1,'rgba(100,99,95,0)');p2.fillStyle=gd;p2.fillRect(cx-rr,cy-rr,2*rr,2*rr)}
   for(let i=0;i<9000;i++){p2.fillStyle=rg()<.5?'rgba(150,148,143,'+(.05+rg()*.08)+')':'rgba(30,30,28,'+(.07+rg()*.1)+')';const z=rg()<.15?2:1;p2.fillRect(rg()*256,rg()*256,z,z)}
