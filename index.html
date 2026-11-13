@@ -1704,7 +1704,7 @@ const MTC=(()=>{
  function onPick(cx,cy,mode){mode=mode||st.once||st.mode;if(st.kind==='area'&&mode==='edge')mode='plane';st.once=null;st.warn='';const p=pick(cx,cy);if(!p){reset();return}   /* klik w pustke (niebo / poza plansze) = reset wyboru */
   let s;try{s=analyzeHit(p.h,p.dir,mode)}catch(e){console.warn(e);s={err:'Nie udało się przeanalizować tej powierzchni.'}}
   if(s.err){st.warn=s.err;render();return}
-  if(st.kind==='area'){s.area=triArea(s.tris);const key=s.kind+'|'+s.N+'|'+s.area.toFixed(5);s.key=key;if(st.add){if(!st.areas.some(q=>q.key===key))st.areas.push(s)}else st.areas=[s];st.add=false;st.warn='';render();redraw();return}
+  if(st.kind==='area'){s.area=triArea(s.tris);const key=s.kind+'|'+s.N+'|'+s.area.toFixed(5);s.key=key;if(st.add){if(!st.areas.some(q=>q.key===key))st.areas.push(s)}else st.areas=[s];st.warn='';render();redraw();return}
   if(st.A&&st.B){st.A=st.B=st.res=null}
   if(!st.A){st.A=s;st.res=null}else{
    if(st.A.kind==='plane'&&s.kind==='plane'&&Math.abs(MTC.dot(st.A.n,s.n))>.9999&&Math.abs(MTC.dot(st.A.n,s.pt)-st.A.d)<.004){st.warn='To ta sama płaszczyzna – wskaż inną.';render();return}
