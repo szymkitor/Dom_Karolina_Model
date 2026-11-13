@@ -725,6 +725,21 @@ function staf(x0,y0,x1,y1,sa,sb){const L=Math.hypot(x1-x0,y1-y0),ux=(x1-x0)/L,uy
  add(new THREE.BoxGeometry(.3,.012,.004),bk,MX,MY+.07,zf+.132);
  add(new THREE.BoxGeometry(.12,.045,.004),al,MX,MY-.07,zf+.132);add(new THREE.BoxGeometry(.105,.03,.002),M(0xf2f0e6,{roughness:.8}),MX,MY-.07,zf+.135);
  add(new THREE.BoxGeometry(.012,.012,.012),al,MX+.14,MY-.1,zf+.136)}
+/* czujnik ruchu / obecnosci w swietle bramy: na slupie muru po prawej od bramy (x 6,13), na licu od ulicy, na kliniowym uchwycie skierowany w strone swiatla bramy (obrot ok. 33 st. w kierunku bramy), na wysokosci domofonu (G0+1,4) */
+{const rr=(w,h,r)=>{const q=new THREE.Shape(),x=-w/2,y=-h/2;q.moveTo(x+r,y);q.lineTo(x+w-r,y);q.quadraticCurveTo(x+w,y,x+w,y+r);q.lineTo(x+w,y+h-r);q.quadraticCurveTo(x+w,y+h,x+w-r,y+h);q.lineTo(x+r,y+h);q.quadraticCurveTo(x,y+h,x,y+h-r);q.lineTo(x,y+r);q.quadraticCurveTo(x,y,x+r,y);return q},
+ dk=M(0x2f3338,{roughness:.5,metalness:.4}),fr=M(0xe6e9ec,{roughness:.35,metalness:.05,transparent:true,opacity:.96}),led=M(0xff3b30,{emissive:0xc01208,emissiveIntensity:.9,roughness:.4}),
+ g=new THREE.Group();g.position.set(6.13,G0+1.4,-FY+.2);scene.add(g);
+ const put=(p,geo,m,x,y,z,ry)=>{const me=new THREE.Mesh(geo,m);me.position.set(x,y,z);if(ry)me.rotation.y=ry;me.castShadow=true;p.add(me);statics.push(me);return me};
+ /* klin: gorna-dolna plaszczyzna uchwytu, plaska scianka przy murze, skos 33 st. */
+ const ws=new THREE.Shape();ws.moveTo(-.05,0);ws.lineTo(.05,0);ws.lineTo(.05,.07);ws.lineTo(-.05,.005);ws.closePath();
+ const wg=new THREE.ExtrudeGeometry(ws,{depth:.13,bevelEnabled:false});wg.rotateX(Math.PI/2);wg.translate(0,.065,0);   /* os wytloczenia -> y */
+ put(g,wg,dk,0,0,0);
+ const sb=new THREE.Group();sb.position.set(0,0,.0375);sb.rotation.y=-.576;g.add(sb);                                      /* ukl. czujnika na skosie klina */
+ put(sb,new THREE.ExtrudeGeometry(rr(.1,.125,.016),{depth:.034,bevelEnabled:true,bevelSize:.004,bevelThickness:.004,bevelSegments:2,curveSegments:6}),dk,0,0,0);   /* korpus */
+ put(sb,new THREE.SphereGeometry(.036,28,14,0,Math.PI*2,0,Math.PI/2).rotateX(Math.PI/2),fr,0,.012,.038);                    /* kopulka soczewki Fresnela */
+ put(sb,new THREE.CylinderGeometry(.006,.006,.004,12).rotateX(Math.PI/2),led,0,-.047,.041);                                  /* dioda sygnalizacyjna */
+ put(sb,new THREE.CylinderGeometry(.005,.005,.003,12).rotateX(Math.PI/2),M(0x15181b,{roughness:.3}),.03,-.047,.041);        /* czujnik zmierzchu */
+ put(sb,new THREE.BoxGeometry(.11,.012,.05),dk,0,.068,.02)}                                                                  /* daszek przeciwdeszczowy */
 /* zlacze kablowo-pomiarowe nN, dwulicznikowe przelotowo-rozgalezne (PGE: WP 26-G4/WP/01251/1 pkt 5.2, 5.3, 7): w linii ogrodzenia na granicy dzialek 935/933 (x=-3), licem do ulicy w linii frontu muru, tylem do dzialki; wolnostojaca szafka czterodrzwiowa (jak spotykane przy domach w rejonie): gora 2 drzwi TL (tablice licznikowe), dol 2 drzwi ZK (zlacze z rozlacznikami), pokrywa-daszek, tabliczka z numerem, naklejki ostrzegawcze, na betonowym cokole prefabrykowanym; numer zlacza nadaje PGE */
 {const cx=-3,W=1.0,Dp=.28,yF=FY-.125,zF=-yF,zc=zF-Dp/2,LH=.30,yb=PGR+LH,Hb=1.05,
   bd=M(0xc6c9c6,{roughness:.6,metalness:.05}),dr=M(0xd4d6d2,{roughness:.55,metalness:.05}),cp=M(0xdcdedb,{roughness:.55}),lg=M(0x2b2c2f,{roughness:.5,metalness:.5}),hn=M(0xb9bcbf,{roughness:.35,metalness:.6}),yl=M(0xe4c21a,{roughness:.6}),lk=M(0x16181b,{roughness:.4,metalness:.5}),
