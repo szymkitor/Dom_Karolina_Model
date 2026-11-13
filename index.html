@@ -1041,15 +1041,16 @@ PIPES.forEach(([px,py,wx,wy,rd=.045],k)=>{
   for(let k=-3;k<=3;k++){const yy=k*r*.27,ch=2*Math.sqrt(Math.max(0,r*r*.94-yy*yy));put(new THREE.BoxGeometry(.034,.007,ch),vm,L-.002,yy,0,-.55)}};   /* zaluzja przeciwdeszczowa, lamele skosem w dol */
  vent(0,1.8,2.55,.08,.13);                   /* czerpnia: srodek wolnego odcinka sciany przed oknem garazu (y 0–3,6) */
  vent(0,7.0,2.55,.08,.13)}                   /* wyrzutnia: srodek wolnego odcinka za oknem (y 5,2–8,8); 5,2 m od czerpni */
-// syrena alarmowa (sygnalizator zewnetrzny) jak popularne syreny z rynku: biala podstawa z ABS i duza, wypukla, polprzezroczysta kopula lampy blyskowej (czerwono-pomaranczowa) zakrywajaca prawie caly przod, widoczna w srodku bialo-czerwona lampa LED; elewacja frontowa, na osi kinkietu i numeru domu (x 6,73), 25 cm nad gorna krawedzia kinkietu
+// syrena alarmowa (sygnalizator zewnetrzny) wg zdjecia od uzytkownika: pionowa, biala, blyszczaca obudowa ABS 15 x 25,5 cm z mocno zaokraglonymi krawedziami na cienkiej podkladce, w dolnej czesci czerwona przezroczysta soczewka lampy blyskowej (ok. 1/3 wysokosci), srubka pod soczewka; elewacja frontowa, na osi kinkietu i numeru domu (x 6,73), srodek na wys. 2,59 m
 {const rr=(w,h,r)=>{const q=new THREE.Shape(),x=-w/2,y=-h/2;q.moveTo(x+r,y);q.lineTo(x+w-r,y);q.quadraticCurveTo(x+w,y,x+w,y+r);q.lineTo(x+w,y+h-r);q.quadraticCurveTo(x+w,y+h,x+w-r,y+h);q.lineTo(x+r,y+h);q.quadraticCurveTo(x,y+h,x,y+h-r);q.lineTo(x,y+r);q.quadraticCurveTo(x,y,x+r,y);return q},
- wm=M(0xeff0f1,{roughness:.5}),cm=M(0xe0331c,{roughness:.1,metalness:0,emissive:0x5a0f06,transparent:true,opacity:.68,depthWrite:false}),lm=M(0xfff2e6,{roughness:.4,emissive:0xff4a2a,emissiveIntensity:.9}),dm=M(0x2a2c2f,{roughness:.8}),
+ wm=M(0xf4f4f2,{roughness:.22,metalness:.02}),pl=M(0xd9d6d0,{roughness:.6}),rm=M(0xd3141c,{roughness:.1,metalness:0,emissive:0x5a0509,transparent:true,opacity:.78}),ri=M(0x6e0a10,{roughness:.5}),sc=M(0xb8bcc0,{roughness:.3,metalness:.8}),
  g=new THREE.Group();g.position.set(6.73,2.59,.004);scene.add(g);
  const put=(geo,m,x,y,z)=>{const me=new THREE.Mesh(geo,m);me.position.set(x,y,z);me.castShadow=true;g.add(me);statics.push(me);return me};
- put(new THREE.ExtrudeGeometry(rr(.25,.185,.03),{depth:.03,bevelEnabled:true,bevelSize:.006,bevelThickness:.006,bevelSegments:3,curveSegments:10}),wm,0,0,0);   /* podstawa */
- put(new THREE.SphereGeometry(1,32,14,0,6.2832,0,1.5708).rotateX(Math.PI/2).scale(.112,.082,.05),cm,0,0,.036).renderOrder=2;   /* czerwona kopula lampy blyskowej */
- put(new THREE.SphereGeometry(1,16,10).scale(.05,.04,.012),lm,0,0,.05);   /* lampa LED w srodku */
-}
+ put(new THREE.ExtrudeGeometry(rr(.17,.27,.025),{depth:.006,bevelEnabled:false,curveSegments:10}),pl,0,0,0);   /* podkladka montazowa */
+ put(new THREE.ExtrudeGeometry(rr(.14,.246,.034),{depth:.044,bevelEnabled:true,bevelSize:.011,bevelThickness:.011,bevelSegments:5,curveSegments:12}),wm,0,0,.017);   /* obudowa */
+ put(new THREE.ExtrudeGeometry(rr(.13,.088,.016),{depth:.012,bevelEnabled:true,bevelSize:.005,bevelThickness:.005,bevelSegments:3,curveSegments:8}),rm,0,-.066,.067);   /* czerwona soczewka */
+ put(new THREE.BoxGeometry(.09,.05,.01),ri,0,-.066,.073);   /* wnetrze lampy w soczewce */
+ put(new THREE.CylinderGeometry(.0055,.0055,.004,12).rotateX(Math.PI/2),sc,0,-.1255,.0735)}   /* srubka */
 // przycisk dzwonka przy wejsciu: po lewej stronie drzwi, na scianie prostopadlej do drzwi (wschodnia sciana garazu we wnece podcienia, x 7,25; y 1,75), wysokosc srodka 1,30 m; plytka grafitowa, czarny przycisk w jasnoszarym pierscieniu, ikona dzwonka
 {const rr=(w,h,r)=>{const q=new THREE.Shape(),x=-w/2,y=-h/2;q.moveTo(x+r,y);q.lineTo(x+w-r,y);q.quadraticCurveTo(x+w,y,x+w,y+r);q.lineTo(x+w,y+h-r);q.quadraticCurveTo(x+w,y+h,x+w-r,y+h);q.lineTo(x+r,y+h);q.quadraticCurveTo(x,y+h,x,y+h-r);q.lineTo(x,y+r);q.quadraticCurveTo(x,y,x+r,y);return q},
  pm=M(0x3b3e42,{roughness:.45,metalness:.5}),bm=M(0x111214,{roughness:.35,metalness:.3}),rm=M(0x9a9ea3,{roughness:.35,metalness:.7}),
