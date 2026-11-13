@@ -923,13 +923,13 @@ BD.forEach(([ax,c,s,a0,a1])=>{const ops=U.filter(o=>o.ax==ax&&o.c==c&&o.s==s&&o.
  for(let i=0;i<6;i++){const o=(i-2.5)*.0667;[-1,1].forEach(sg=>add(new THREE.BoxGeometry(.03,H,.05),wm[(i+(sg>0))%3],cx+sg*.215,.005+H/2,-(cy+o)))}
  for(let i=0;i<7;i++){const o=(i-3)*.0657;[-1,1].forEach(sg=>add(new THREE.BoxGeometry(.05,H,.03),wm[(i+(sg>0))%3],cx+o,.005+H/2,-(cy+sg*.215)))}}
 const ub=(o,al,zc,sa,sz,sd,m)=>{const ac=o.c-o.s*(D+.04);add(o.ax=='y'?new THREE.BoxGeometry(sa,sz,sd):new THREE.BoxGeometry(sd,sz,sa),m,o.ax=='y'?al:ac,zc,o.ax=='y'?-ac:-al,false)};
-/* numer domu 12: szare cyfry na elewacji frontowej pod kinkietem na prawo od bramy garazowej (x 6,73, wysokosc 1,57 m), cyfry ok. 22 cm; w trybie liniowym ukryty */
+/* numer domu 12: szare cyfry na elewacji frontowej nad kinkietem na prawo od bramy garazowej (x 6,73, srodek 2,07 m; kinkiety zamienione miejscami z numerem), cyfry ok. 22 cm; w trybie liniowym ukryty */
 {const c=document.createElement('canvas');c.width=512;c.height=256;const q=c.getContext('2d');q.textAlign='center';q.textBaseline='middle';q.font='bold 200px Arial, Helvetica, sans-serif';
  q.fillStyle='rgba(20,22,25,.55)';q.fillText('12',262,138);q.fillStyle='#8d9298';q.fillText('12',256,132);
  const t=new THREE.CanvasTexture(c);t.anisotropy=8;const nm=new THREE.Mesh(new THREE.PlaneGeometry(.8,.4),(window.NUMM=new THREE.MeshStandardMaterial({map:t,transparent:true,alphaTest:.35,roughness:.45,metalness:.15})));
- nm.position.set(6.73,1.568,.004);nm.userData.hl=1;scene.add(nm);
+ nm.position.set(6.73,2.068,.004);nm.userData.hl=1;scene.add(nm);
  /* swiatlo kinkietu padajace w dol po elewacji: oswietla numer (kinkiet swieci tylko aureola, bez zrodla swiatla) */
- const nl=new THREE.SpotLight(0xffe2b4,0,4,.62,.9,1.2);nl.position.set(6.73,2.12,.16);nl.target.position.set(6.73,1.2,.0);scene.add(nl,nl.target);window.NUML=nl}
+ const nl=new THREE.SpotLight(0xffe2b4,0,4,.62,.9,1.2);nl.position.set(6.73,1.62,.16);nl.target.position.set(6.73,2.3,.0);scene.add(nl,nl.target);window.NUML=nl}
 /* roleta zewnetrzna (czarna) osadzona we wneku okiennym sypialni w tylnej scianie (x=5,4; sciana y=21,35; wneka glebokosci 24 cm, okno w plaszczyznie y=21,11): kaseta pod nadprozem w licu wneki (2 cm za lico elewacji), prowadnice na ościeżach, pancerz z listew (skok 3,7 cm) z listwa koncowa opierajaca sie o parapet; jeden przycisk zwija / rozwija; w trybie liniowym linie poziome = zawiasy listew */
 {const cx=5.4,wy=21.35,yT=2.25,yB=.88,wC=.96,HM=yT-yB-.04,PIT=.037,blk=M(0x1f2124,{roughness:.5,metalness:.4}),
   c=document.createElement('canvas');c.width=c.height=64;{const q=c.getContext('2d');q.fillStyle='#232427';q.fillRect(0,0,64,64);q.fillStyle='#34363a';q.fillRect(0,0,64,5);q.fillStyle='#0d0e0f';q.fillRect(0,58,64,6)}
@@ -1568,7 +1568,7 @@ tap(9.8,.55,-21.0,Math.PI/2);tap(1,.55,-21.1,-Math.PI/2);tap(0,.55,-.6,-Math.PI/
     if(mv){k.cg.rotation.y=k.pan*RD;k.ln.rotation.z=-k.tilt*RD;placeFr(k)}});
    if(stale){C.forEach(ui);stale=false}
    if(mv||t-last>400){if(t-last>(mv?90:400)){last=t;shoot()}}})(0)}}
-// kinkiety dekoracyjne (czarne, światło w górę i w dół): K6a, M6a, M7a, P8c, P9c, N11a, N12a, wszystkie osadzone tak, ze gorna krawedz (srodek 2,068 m + 0,182) lezy na 2,25 m = gorna krawedz drzwi garazowych; poświata na ścianie jest symulowana (bez dodatkowych świateł, dla wydajności)
+// kinkiety dekoracyjne (czarne, światło w górę i w dół): K6a, M6a, M7a, P8c, P9c, N11a, N12a, wszystkie osadzone tak, ze gorna krawedz (srodek 1,568 m; wszystkie na tej samej wysokosci, numer domu nad kinkietem przy bramie); poświata na ścianie jest symulowana (bez dodatkowych świateł, dla wydajności)
 {const blk=M(0x111214,{roughness:.55,metalness:.4,side:THREE.DoubleSide}),lensM=new THREE.MeshBasicMaterial({color:0xffe9c0,side:THREE.DoubleSide}),gc=document.createElement('canvas');gc.width=128;gc.height=256;
  {const q=gc.getContext('2d'),im=q.createImageData(128,256);
   for(let j=0;j<256;j++)for(let i=0;i<128;i++){const dx=(i-64)/64,ay=Math.abs((j-128)/128),t=Math.max(0,(ay-.1)/.9),w=.07+.8*t,I=ay<.1?0:Math.exp(-2*Math.pow(dx/w,2))*Math.pow(1-t,1.3),k=(j*128+i)*4;im.data[k]=255;im.data[k+1]=226;im.data[k+2]=170;im.data[k+3]=Math.round(255*I)}
@@ -1579,7 +1579,7 @@ tap(9.8,.55,-21.0,Math.PI/2);tap(1,.55,-21.1,-Math.PI/2);tap(0,.55,-.6,-Math.PI/
  const sc=(x,y,z,yaw,k)=>{const g=new THREE.Group(),m=(geo,mat,px,py,pz)=>{const q=new THREE.Mesh(geo,mat);q.position.set(px,py,pz);g.add(q);return q};
   m(plate,blk,0,0,.007);m(body,blk,0,0,.014);{const ll=new THREE.LineSegments(sgL,sgLM);ll.position.set(0,0,.014);ll.visible=false;ll.userData.ln=1;g.add(ll);LNX.push(ll)}m(cap,blk,0,.1,.014);m(cap,blk,0,-.1,.014);m(lg,SG[k].lens,0,.1008,.014);m(lg,SG[k].lens,0,-.1008,.014);m(wash,SG[k].glow,0,0,.004).renderOrder=4;
   g.position.set(x,y,z);g.rotation.y=yaw;g.scale.setScalar(1.4);scene.add(g);g.traverse(o=>{if(o.isMesh&&o.material!==SG[k].glow)statics.push(o)})};
- sc(.58,2.068,0,0,'f');sc(6.73,2.068,0,0,'f');sc(10.06,2.068,-2.5,0,'f');sc(14.9,2.068,-3.6,Math.PI/2,'s');sc(14.9,2.068,-6.6,Math.PI/2,'s');sc(9.8,2.068,-13.665,Math.PI/2,'t');sc(9.8,2.068,-17.28,Math.PI/2,'t')}
+ sc(.58,1.568,0,0,'f');sc(6.73,1.568,0,0,'f');sc(10.06,1.568,-2.5,0,'f');sc(14.9,1.568,-3.6,Math.PI/2,'s');sc(14.9,1.568,-6.6,Math.PI/2,'s');sc(9.8,1.568,-13.665,Math.PI/2,'t');sc(9.8,1.568,-17.28,Math.PI/2,'t')}
 const LL=['l1','l2','l3','l4','l6','l7','l8','l9'];
 function syncM(){const any=LL.some(id=>lights[id]&&lights[id].on)||(SG&&SCK.some(k=>SG[k].on));$("lm").classList.toggle('on',any);if(window.__fabSync)__fabSync(any)}
 updSc();SCK.forEach(k=>{$(SCI[k]).onclick=()=>{SG[k].on=!SG[k].on;$(SCI[k]).classList.toggle('on',SG[k].on);updSc();syncM()}});
