@@ -713,7 +713,7 @@ function staf(x0,y0,x1,y1,sa,sb){const L=Math.hypot(x1-x0,y1-y0),ux=(x1-x0)/L,uy
  add(new THREE.BoxGeometry(.3,.012,.004),bk,MX,MY+.07,zf+.132);
  add(new THREE.BoxGeometry(.12,.045,.004),al,MX,MY-.07,zf+.132);add(new THREE.BoxGeometry(.105,.03,.002),M(0xf2f0e6,{roughness:.8}),MX,MY-.07,zf+.135);
  add(new THREE.BoxGeometry(.012,.012,.012),al,MX+.14,MY-.1,zf+.136)}
-/* zlacze kablowo-pomiarowe nN, dwulicznikowe przelotowo-rozgalezne (PGE: WP 26-G4/WP/01251/1 pkt 5.2, 5.3, 7): w linii ogrodzenia na granicy dzialek 935/933 (x=-3), licem do ulicy w linii frontu muru, tylem do dzialki; wolnostojaca szafka czterodrzwiowa (jak spotykane przy domach w rejonie): gora 2 drzwi TL (tablice licznikowe), dol 2 drzwi ZK (zlacze z rozlacznikami), pokrywa-daszek, tabliczka z numerem, naklejki ostrzegawcze, na trzech slupkach nad gruntem; numer zlacza nadaje PGE */
+/* zlacze kablowo-pomiarowe nN, dwulicznikowe przelotowo-rozgalezne (PGE: WP 26-G4/WP/01251/1 pkt 5.2, 5.3, 7): w linii ogrodzenia na granicy dzialek 935/933 (x=-3), licem do ulicy w linii frontu muru, tylem do dzialki; wolnostojaca szafka czterodrzwiowa (jak spotykane przy domach w rejonie): gora 2 drzwi TL (tablice licznikowe), dol 2 drzwi ZK (zlacze z rozlacznikami), pokrywa-daszek, tabliczka z numerem, naklejki ostrzegawcze, na betonowym cokole prefabrykowanym; numer zlacza nadaje PGE */
 {const cx=-3,W=1.0,Dp=.28,yF=FY-.125,zF=-yF,zc=zF-Dp/2,LH=.30,yb=PGR+LH,Hb=1.05,
   bd=M(0xc6c9c6,{roughness:.6,metalness:.05}),dr=M(0xd4d6d2,{roughness:.55,metalness:.05}),cp=M(0xdcdedb,{roughness:.55}),lg=M(0x2b2c2f,{roughness:.5,metalness:.5}),hn=M(0xb9bcbf,{roughness:.35,metalness:.6}),yl=M(0xe4c21a,{roughness:.6}),lk=M(0x16181b,{roughness:.4,metalness:.5}),
   tex=(w,h,fn)=>{const c=document.createElement('canvas');c.width=w;c.height=h;fn(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.anisotropy=4;return t},
@@ -722,7 +722,8 @@ function staf(x0,y0,x1,y1,sa,sb){const L=Math.hypot(x1-x0,y1-y0),ux=(x1-x0)/L,uy
   plate=tex(512,224,(q,w,h)=>{q.fillStyle='#e9ecf2';q.fillRect(0,0,w,h);q.fillStyle='#16306e';q.fillRect(14,14,w-28,h-28);q.fillStyle='#fff';q.font='900 120px Arial Black,Arial,sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText('05Z',w/2,h/2+6)}),
   tnc=tex(256,112,(q,w,h)=>{q.fillStyle='#f2f2ee';q.fillRect(0,0,w,h);q.fillStyle='#0b0b0c';q.font='900 70px Arial Black,Arial,sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText('TN-C',w/2,h/2+4)}),
   rows=[yb+.03+.235,yb+.03+.47+.03+.235];
-  [-.38,0,.38].forEach(dx=>add(new THREE.CylinderGeometry(.045,.045,LH+.06,14),lg,cx+dx,PGR-.04+(LH+.06)/2,zc));   /* trzy slupki (nozki) wbite w grunt */
+  {const cc=M(0x9d9c97,{roughness:.92});add(new THREE.BoxGeometry(W+.06,LH+.04,Dp+.06),cc,cx,PGR-.04+(LH+.04)/2,zc);   /* betonowy cokol prefabrykowany pod szafke: fundament do gruntu (spod -0,04 pod terenem), szafka stoi na nim */
+   add(new THREE.BoxGeometry(W+.08,.025,Dp+.08),cc,cx,yb-.0125,zc);                                                     /* gorna plyta cokolu z lekkim wysunieciem */}
   add(new THREE.BoxGeometry(W,Hb-.05,Dp),bd,cx,yb+(Hb-.05)/2,zc);
   add(new THREE.BoxGeometry(W+.04,.045,Dp+.04),cp,cx,yb+Hb-.0225,zc);                       /* pokrywa-daszek */
   add(new THREE.BoxGeometry(W-.01,.03,.02),cp,cx,yb+.03+.47+.015,zF-.002);                   /* listwa miedzy rzedami */
