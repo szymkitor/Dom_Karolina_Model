@@ -838,7 +838,7 @@ function wuv(g,ox,oy,oz){const p=g.attributes.position,n=g.attributes.normal,u=g
 const T_=.45,D=.2,wallMat=M(0xf1eee7,{roughness:.95}),frM=M(0xffffff,{map:wtx(),roughness:.5}),glM=glassM,doorM=M(0x5a4332,{roughness:.5}),gdM=M(0xffffff,{map:wtx(),roughness:.55});
 const BD=[['y',0,-1,0,7.25],['x',7.25,1,0,2.5],['y',2.5,-1,6.8,14.9],['x',14.9,1,2.5,11.3],['y',11.3,1,9.35,14.9],['x',9.8,1,11.3,21.35],['y',21.35,1,1,9.8],['x',1,-1,8.8,21.35],['y',8.8,1,0,1.45],['x',0,-1,0,8.8]];
 const U=[],u=(ax,c,s,ctr,w,sill,h,o={})=>U.push(Object.assign({ax,c,s,ctr,w,sill,h,n:1},o));
-u('y',2.5,-1,12.3,3.1,.6,1.75,{n:3});u('y',2.5,-1,8.35,2,0,1.95,{kind:'door'});
+u('y',2.5,-1,12.3,3.1,.6,1.75,{n:3});u('y',2.5,-1,8.35,2,0,2.1,{kind:'door'});
 u('x',9.8,1,19.14,1.8,.85,1.54,{n:2});u('x',9.8,1,15.42,1.8,.85,1.54,{n:2});u('x',9.8,1,12.05,1.5,.85,1.54);
 u('x',1,-1,18.37,1,1.25,1.14);u('x',1,-1,14.58,1.8,.85,1.54,{n:2});u('x',1,-1,12.16,1,.85,1.54);u('x',1,-1,10.07,.6,1.25,1.14);
 u('y',21.35,1,5.4,1,.85,1.54);u('x',0,-1,4.4,1.6,1.4,1.2,{kind:'lux'});u('y',0,-1,3.66,5,-.25,2.25,{kind:'garage'});
@@ -959,9 +959,10 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
   SILL.push(P[0][0],yb,P[0][1],P[1][0],yb,P[1][1],P[0][0],yt,P[0][1],P[1][0],yt,P[1][1],P[0][0],yb,P[0][1],P[0][0],yt,P[0][1],P[1][0],yb,P[1][1],P[1][0],yt,P[1][1])}const ac=o.c-o.s*.08;add(o.ax=='y'?new THREE.BoxGeometry(w+.1,.03,D+.04):new THREE.BoxGeometry(D+.04,.03,w+.1),sillM,o.ax=='y'?a:ac,z+.015,o.ax=='y'?-ac:-a,false)}
  if(o.kind=='lux'){const mt=M(0xb9b6ad,{roughness:.9}),lx=M(0x9fd0d4,{roughness:.1,metalness:.2,transparent:true,opacity:.8}),nc=8,nr=6,bw=w/nc,bh=h/nr;ub(o,a,zc,w,h,.06,mt);for(let i=0;i<nc;i++)for(let j=0;j<nr;j++)ub(o,x0+bw*(i+.5),z+bh*(j+.5),bw-.02,bh-.02,.08,lx);return}
  if(o.kind=='garage'){const n=4,ph=(h-.1)/n;const jM=M(0x2a2d31,{roughness:.7});for(let i=0;i<n;i++){ub(o,a,z+ph*(i+.5),w-.12,ph,.06,gdM);if(i)ub(o,a,z+ph*i,w-.12,.01,.07,jM)}ub(o,a,z+h-.05,w,.1,.1,frM);[x0+.03,x1-.03].forEach(x=>ub(o,x,z+(h-.1)/2,.06,h-.1,.1,frM));return}
- ub(o,a,z+fw/2,w,fw,.08,frM);ub(o,a,z+h-fw/2,w,fw,.08,frM);
- [x0+fw/2,x1-fw/2].forEach((x,i)=>{if(!(o.nofr&&i))ub(o,x,zc,fw,h-2*fw,.08,frM)});
- if(o.kind=='door'){[a-.5,a+.5].forEach(x=>ub(o,x,zc,.05,h-2*fw,.08,frM));[x0+.25,x1-.25].forEach(x=>ub(o,x,zc,.47,h-.12,.03,glM));ub(o,a,zc,.97,h-.08,.06,doorM);{const ac=o.c-o.s*(D+.04),hx=a+.36,hy=zc-.05,fz=e=>-(ac+o.s*(.03+e)),ix=M(0xcfd3d8,{metalness:.9,roughness:.26}),bk=M(0x16181b,{metalness:.5,roughness:.45}),
+ const dr=o.kind=='door';   /* drzwi: bez dolnej belki ramy - skrzydlo i ościeżnice siegaja posadzki */
+ if(!dr)ub(o,a,z+fw/2,w,fw,.08,frM);ub(o,a,z+h-fw/2,w,fw,.08,frM);
+ [x0+fw/2,x1-fw/2].forEach((x,i)=>{if(!(o.nofr&&i)){if(dr)ub(o,x,z+(h-fw)/2,fw,h-fw,.08,frM);else ub(o,x,zc,fw,h-2*fw,.08,frM)}});
+ if(o.kind=='door'){[a-.5,a+.5].forEach(x=>ub(o,x,z+(h-fw)/2,.05,h-fw,.08,frM));[x0+.25,x1-.25].forEach(x=>ub(o,x,zc,.47,h-.12,.03,glM));ub(o,a,z+.01+(h-fw-.02)/2,.97,h-fw-.02,.06,doorM);{const ac=o.c-o.s*(D+.04),hx=a+.36,hy=zc-.05,fz=e=>-(ac+o.s*(.03+e)),ix=M(0xcfd3d8,{metalness:.9,roughness:.26}),bk=M(0x16181b,{metalness:.5,roughness:.45}),
    cy=(r,l,x,y,e,rx,rz,m)=>{const q=add(new THREE.CylinderGeometry(r,r,l,24),m,x,y,fz(e),false);q.rotation.x=rx;q.rotation.z=rz;return q};
   cy(.034,.012,hx,hy,.006,Math.PI/2,0,bk);cy(.026,.004,hx,hy,.014,Math.PI/2,0,ix);   /* rozeta */
   cy(.0095,.05,hx,hy,.039,Math.PI/2,0,ix);add(new THREE.SphereGeometry(.0125,18,12),ix,hx,hy,fz(.055),false);   /* szyjka i przegub */
