@@ -387,12 +387,13 @@ function lnBuild(){if(LN.built)return;LN.built=true;LN.occ=new THREE.MeshBasicMa
   if(o.userData.plant||(m&&m.userData&&m.userData.plant))return;let e=cache.get(g.uuid);if(e===undefined){e=lnEdges(g,12);cache.set(g.uuid,e)}if(!e)return;
   const ls=new THREE.LineSegments(e,LN.lm);ls.visible=false;ls.userData.ln=1;o.add(ls);LN.ls.push(ls)})}
 function lnMat(m){if(Array.isArray(m))return m.map(lnMat);return m===fenM?LN.ghost:(m===pvM||m===pvD)?LN.pav:(m&&m.userData&&m.userData.lnTex&&LN[m.userData.lnTex])||LN.occ}
-function lnSet(on){if(on===LN.on)return;if(on){lnBuild();LN.sw=[];LN.hid=[];scene.traverse(o=>{if(o.userData.ln||o.userData.mt||o===gridMesh||o.parent===gridMesh)return;   /* siatka pomocnicza zostaje bez zmian */
+function lnSet(on){if(on===LN.on)return;if(on){lnBuild();LN.sw=[];LN.hid=[];if(window.CCTV&&CCTV.grp&&CCTV.grp.visible){CCTV.grp.visible=false;const cb=document.getElementById('camv');if(cb)cb.classList.remove('on')}   /* tryb liniowy zawsze wylacza bryly pola widzenia kamer */
+ scene.traverse(o=>{if(o.userData.ln||o.userData.mt||o.userData.cctv||o===gridMesh||o.parent===gridMesh)return;   /* siatka pomocnicza zostaje bez zmian */
   if(o.userData.hl){if(o.visible){o.visible=false;LN.hid.push(o)}return}
    if(o.isMesh){const m=o.material;if(o.isInstancedMesh||o.userData.plant||(m&&m.userData&&m.userData.plant)||(m&&!Array.isArray(m)&&m.blending===THREE.AdditiveBlending)){if(o.visible){o.visible=false;LN.hid.push(o)}}else{LN.sw.push([o,m]);o.material=lnMat(m)}}
    else if((o.isPoints||o.isSprite||o===gridMesh)&&o.visible){o.visible=false;LN.hid.push(o)}});LN.ls.forEach(l=>l.visible=true);LNX.forEach(l=>l.visible=true)}
  else{LN.ls.forEach(l=>l.visible=false);LNX.forEach(l=>l.visible=false);LN.sw.forEach(([o,m])=>o.material=m);LN.hid.forEach(o=>o.visible=true);LN.sw=[];LN.hid=[];ren.shadowMap.needsUpdate=true;shReq=true}
- LN.on=on;['lm','l1','l2','l3','l4','l5f','l5s','l5t','l6','l7','l8','l9','tm','dy','pl','ptgo'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=on});if(on){playing=false;document.getElementById('pl').textContent='▶'}dirty=true}
+ LN.on=on;['lm','l1','l2','l3','l4','l5f','l5s','l5t','l6','l7','l8','l9','tm','dy','pl','ptgo','camv'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=on});if(on){playing=false;document.getElementById('pl').textContent='▶'}dirty=true}
 function drawFrame(){applyProj();if(window.__mtUpd)window.__mtUpd();if(!LN.on){ren.render(scene,cam);return}
  ren.shadowMap.needsUpdate=false;const bg=scene.background,sv=bg&&bg.clone?bg.clone():null;if(sv)bg.set(0xffffff);ren.render(scene,cam);if(sv)bg.copy(sv)}
 document.getElementById('orth').onclick=e=>{const o=!ORTHO;setProj(o);e.currentTarget.classList.toggle('on',o)};
@@ -1449,7 +1450,7 @@ tap(9.8,.55,-21.0,Math.PI/2);tap(1,.55,-21.1,-Math.PI/2);tap(0,.55,-.6,-Math.PI/
    cp=[new THREE.Plane(new THREE.Vector3(0,1,0),-G0)],   /* przyciecie do poziomu terenu: bryla nie schodzi pod podloge */
    fmat=new THREE.MeshBasicMaterial({color:0x8fd3ff,transparent:true,opacity:.2,depthWrite:false,side:THREE.DoubleSide,clippingPlanes:cp}),emat=new THREE.LineBasicMaterial({color:0x5db8ff,transparent:true,opacity:.75,depthWrite:false,clippingPlanes:cp});ren.localClippingEnabled=true;
   const placeFr=k=>{const f=k.fr,d=dirOf(k);f.position.set(k.x,E-.33-.058,k.z).addScaledVector(d,.07);f.lookAt(f.position.clone().add(d));f.updateMatrixWorld()};
-  C.forEach(k=>{const f=new THREE.Group(),m=new THREE.Mesh(fgeo,fmat),l=new THREE.LineSegments(new THREE.EdgesGeometry(fgeo),emat);m.renderOrder=l.renderOrder=3;m.frustumCulled=l.frustumCulled=false;f.add(m,l);C.grp.add(f);k.fr=f;placeFr(k)});
+  C.forEach(k=>{const f=new THREE.Group(),m=new THREE.Mesh(fgeo,fmat),l=new THREE.LineSegments(new THREE.EdgesGeometry(fgeo),emat);m.renderOrder=l.renderOrder=3;m.frustumCulled=l.frustumCulled=false;f.userData.cctv=m.userData.cctv=l.userData.cctv=true;f.add(m,l);C.grp.add(f);k.fr=f;placeFr(k)});
   const lim=k=>{const r=nrm(k.tp-k.n);return{l:r>=PMAX-.01,r:r<=-PMAX+.01,u:k.tt<=.01,d:k.tt>=TMAX-.01}};
   C.forEach(k=>{k.tp=k.n+nrm(k.tp-k.n);k.pan=k.tp});
   C.forEach((k,i)=>{const d=document.createElement('div');d.className='cvt';
