@@ -937,8 +937,8 @@ const ub=(o,al,zc,sa,sz,sd,m)=>{const ac=o.c-o.s*(D+.04);add(o.ax=='y'?new THREE
  q.fillStyle='rgba(20,22,25,.55)';q.fillText('12',262,138);q.fillStyle='#8d9298';q.fillText('12',256,132);
  const t=new THREE.CanvasTexture(c);t.anisotropy=8;const nm=new THREE.Mesh(new THREE.PlaneGeometry(.8,.4),(window.NUMM=new THREE.MeshStandardMaterial({map:t,transparent:true,alphaTest:.35,roughness:.45,metalness:.15})));
  nm.position.set(6.73,2.068,.004);nm.userData.hl=1;scene.add(nm);
- /* swiatlo kinkietu padajace w dol po elewacji: oswietla numer (kinkiet swieci tylko aureola, bez zrodla swiatla) */
- const nl=new THREE.SpotLight(0xffe2b4,0,4,.62,.9,1.2);nl.position.set(6.73,1.62,.16);nl.target.position.set(6.73,2.3,.0);scene.add(nl,nl.target);window.NUML=nl}
+ /* swiatlo kinkietu na numer: zasieg 1 m (konczy sie ok. 1,3 m pod podbitka - nie oswietla podbitki ani dachu, bo reflektor nie ma cieni): oswietla numer (kinkiet swieci tylko aureola, bez zrodla swiatla) */
+ const nl=new THREE.SpotLight(0xffe2b4,0,1.0,.5,1,1.2);nl.position.set(6.73,1.62,.16);nl.target.position.set(6.73,2.0,.0);scene.add(nl,nl.target);window.NUML=nl}
 /* roleta zewnetrzna (czarna) osadzona we wneku okiennym sypialni w tylnej scianie (x=5,4; sciana y=21,35; wneka glebokosci 24 cm, okno w plaszczyznie y=21,11): kaseta pod nadprozem w licu wneki (2 cm za lico elewacji), prowadnice na ościeżach, pancerz z listew (skok 3,7 cm) z listwa koncowa opierajaca sie o parapet; jeden przycisk zwija / rozwija; w trybie liniowym linie poziome = zawiasy listew */
 {const cx=5.4,wy=21.35,yT=2.25,yB=.88,wC=.96,HM=yT-yB-.04,PIT=.037,blk=M(0x1f2124,{roughness:.5,metalness:.4}),
   c=document.createElement('canvas');c.width=c.height=64;{const q=c.getContext('2d');q.fillStyle='#232427';q.fillRect(0,0,64,64);q.fillStyle='#34363a';q.fillRect(0,0,64,5);q.fillStyle='#0d0e0f';q.fillRect(0,58,64,6)}
@@ -1432,7 +1432,7 @@ const stP=[];for(let i=0;i<500;i++){const a=Math.random()*6.283,e=Math.random()*
 const stars=new THREE.Points(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(stP,3)),new THREE.PointsMaterial({color:0xffffff,size:1.6,sizeAttenuation:false,transparent:true,opacity:0,depthWrite:false}));scene.add(stars);
 let shReq=false,lastSh=0,tH=14,dN=199,nB=114.3,playing=false;const $=id=>document.getElementById(id),c01=v=>Math.max(0,Math.min(1,v)),mx=(a,b,t)=>new THREE.Color(a).lerp(new THREE.Color(b),t),RD=Math.PI/180;
 const SIM={g:0};var SG=null;const SCK=['f','s','t'],SCI={f:'l5f',s:'l5s',t:'l5t'};
-function updSc(){if(!SG)return;SCK.forEach(k=>{const g=SG[k],a=g.on?Math.min(1,.2+1.0*SIM.g):0;g.glow.opacity=a;g.glow.visible=a>.001;g.lens.color.setHex(g.on?0xffe9c0:0x2a2a2a)});if(window.NUML)NUML.intensity=SG.f.on?2.6*SIM.g:0;dirty=true}
+function updSc(){if(!SG)return;SCK.forEach(k=>{const g=SG[k],a=g.on?Math.min(1,.2+1.0*SIM.g):0;g.glow.opacity=a;g.glow.visible=a>.001;g.lens.color.setHex(g.on?0xffe9c0:0x2a2a2a)});if(window.NUML)NUML.intensity=SG.f.on?3.4*SIM.g:0;dirty=true}
 function sim(){const lat=52.2*RD,dec=23.44*RD*Math.sin(2*Math.PI*(284+dN)/365),dst=(dN>=87&&dN<=300)?1:0,H=(tH-(1+dst)+21.58/15-12)*15*RD,
  sE=Math.sin(lat)*Math.sin(dec)+Math.cos(lat)*Math.cos(dec)*Math.cos(H),el=Math.asin(sE),az=Math.atan2(Math.sin(H),Math.cos(H)*Math.sin(lat)-Math.tan(dec)*Math.cos(lat))+Math.PI,d=az-nB*RD,
  vx=Math.sin(d)*Math.cos(el),vy=Math.sin(el),vz=-Math.cos(d)*Math.cos(el),ed=el/RD,day=c01((ed+3)/10),tw=Math.exp(-Math.pow(ed/7,2))*.55;
