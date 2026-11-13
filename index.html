@@ -1019,6 +1019,16 @@ PIPES.forEach(([px,py,wx,wy,rd=.045],k)=>{
   for(let k=-3;k<=3;k++){const yy=k*r*.27,ch=2*Math.sqrt(Math.max(0,r*r*.94-yy*yy));put(new THREE.BoxGeometry(.034,.007,ch),vm,L-.002,yy,0,-.55)}};   /* zaluzja przeciwdeszczowa, lamele skosem w dol */
  vent(0,1.8,2.55,.08,.13);                   /* czerpnia: srodek wolnego odcinka sciany przed oknem garazu (y 0–3,6) */
  vent(0,7.0,2.55,.08,.13)}                   /* wyrzutnia: srodek wolnego odcinka za oknem (y 5,2–8,8); 5,2 m od czerpni */
+// syrena alarmowa (sygnalizator zewnetrzny): bialy korpus z czerwona soczewka lampy blyskowej; elewacja frontowa, na osi kinkietu i numeru domu (x 6,73), 25 cm nad gorna krawedzia kinkietu, 21 cm pod podbitka - widoczna z ulicy, nie koliduje z zadnym elementem elewacji
+{const rr=(w,h,r)=>{const q=new THREE.Shape(),x=-w/2,y=-h/2;q.moveTo(x+r,y);q.lineTo(x+w-r,y);q.quadraticCurveTo(x+w,y,x+w,y+r);q.lineTo(x+w,y+h-r);q.quadraticCurveTo(x+w,y+h,x+w-r,y+h);q.lineTo(x+r,y+h);q.quadraticCurveTo(x,y+h,x,y+h-r);q.lineTo(x,y+r);q.quadraticCurveTo(x,y,x+r,y);return q},
+ wm=M(0xf2f3f4,{roughness:.38,metalness:.05}),rm=M(0xc8141b,{roughness:.12,metalness:.1,emissive:0x5e0609,transparent:true,opacity:.92}),dm=M(0x1a1c1f,{roughness:.7}),
+ g=new THREE.Group();g.position.set(6.73,2.59,.004);scene.add(g);
+ const put=(geo,m,x,y,z)=>{const me=new THREE.Mesh(geo,m);me.position.set(x,y,z);me.castShadow=true;g.add(me);statics.push(me);return me};
+ put(new THREE.ExtrudeGeometry(rr(.27,.19,.03),{depth:.07,bevelEnabled:true,bevelSize:.007,bevelThickness:.007,bevelSegments:3,curveSegments:8}),wm,0,0,0);       /* korpus */
+ put(new THREE.ExtrudeGeometry(rr(.2,.062,.022),{depth:.006,bevelEnabled:true,bevelSize:.003,bevelThickness:.003,bevelSegments:2,curveSegments:8}),rm,0,.043,.077);   /* czerwona soczewka lampy blyskowej */
+ put(new THREE.ExtrudeGeometry(rr(.215,.077,.026),{depth:.002,bevelEnabled:false,curveSegments:8}),dm,0,.043,.0775);                                                   /* ciemna ramka soczewki */
+ for(let k=0;k<5;k++)put(new THREE.BoxGeometry(.15,.004,.004),dm,0,-.012-k*.016,.085);                                                                                 /* otwory glosnika */
+ put(new THREE.BoxGeometry(.018,.018,.003),dm,.098,-.07,.0845)}                                                                                                          /* dioda / tabliczka */
 function pineTex(){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d'),cl=['#e0c496','#d7b886','#e6cca0','#d2b180','#dcbd8d'];
  for(let i=0;i<8;i++){x.fillStyle=cl[i%5];x.fillRect(0,i*16,128,16);x.fillStyle='#a98a5c';x.fillRect(0,i*16+14.5,128,1.5);
   for(let j=0;j<14;j++){x.fillStyle='rgba(150,110,60,.35)';x.fillRect(Math.random()*128,i*16+1+Math.random()*12,20+Math.random()*60,.8)}
