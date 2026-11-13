@@ -713,19 +713,29 @@ function staf(x0,y0,x1,y1,sa,sb){const L=Math.hypot(x1-x0,y1-y0),ux=(x1-x0)/L,uy
  add(new THREE.BoxGeometry(.3,.012,.004),bk,MX,MY+.07,zf+.132);
  add(new THREE.BoxGeometry(.12,.045,.004),al,MX,MY-.07,zf+.132);add(new THREE.BoxGeometry(.105,.03,.002),M(0xf2f0e6,{roughness:.8}),MX,MY-.07,zf+.135);
  add(new THREE.BoxGeometry(.012,.012,.012),al,MX+.14,MY-.1,zf+.136)}
-/* zlacze kablowo-pomiarowe nN, dwulicznikowe przelotowo-rozgalezne (PGE: WP 26-G4/WP/01251/1 pkt 5.2, 5.3, 7): w linii ogrodzenia na granicy dzialek 935/933 (x=-3), licem do ulicy w linii frontu muru, tylem do dzialki; obudowa SMC 900x1150x280 mm na cokole */
-{const cx=-3,W=.9,Dp=.28,yF=FY-.125,zF=-yF,zc=zF-Dp/2,y0=CT,Hh=G0+1.2-CT,
-  bd=M(0xb4b9bc,{roughness:.55,metalness:.1}),dr=M(0xa3a9ad,{roughness:.5,metalness:.15}),rf=M(0x7d8387,{roughness:.6,metalness:.15}),cc=M(0x9d9c97,{roughness:.9}),gl=M(0x1c2630,{roughness:.1,metalness:.3}),lk=M(0x16181b,{roughness:.4,metalness:.5}),yl=M(0xd9b400,{roughness:.6});
-  add(new THREE.BoxGeometry(W+.06,CH,Dp+.06),cc,cx,PGR+CH/2,zc);   /* fundament cokolu do gruntu - skrzynka stoi na ziemi, nie wisi */
-  add(new THREE.BoxGeometry(W,Hh,Dp),bd,cx,y0+Hh/2,zc);
-  add(new THREE.BoxGeometry(W+.04,.05,Dp+.04),rf,cx,y0+Hh+.025,zc);add(new THREE.BoxGeometry(W+.01,.012,Dp+.01),rf,cx,y0+Hh-.006,zc);
-  [-.2,.2].forEach(dx=>{const x=cx+dx;
-   add(new THREE.BoxGeometry(.38,.5,.014),dr,x,y0+.69,zF+.007);                       /* drzwi licznikowe (gorne) */
-   add(new THREE.BoxGeometry(.24,.2,.006),gl,x,y0+.71,zF+.016);                     /* okienko do odczytu licznika */
-   add(new THREE.BoxGeometry(.38,.36,.014),dr,x,y0+.26,zF+.007);                      /* drzwi rozlacznikowe (dolne) */
-   for(let i=0;i<5;i++)add(new THREE.BoxGeometry(.24,.008,.006),lk,x,y0+.18+i*.03,zF+.017);   /* szczeliny wentylacyjne */
-   const sx=dx<0?cx-.03:cx+.03;[y0+.69,y0+.26].forEach(yy=>{const q=add(new THREE.CylinderGeometry(.014,.014,.012,16),lk,sx,yy,zF+.02);q.rotation.x=Math.PI/2})});
-  add(new THREE.BoxGeometry(.1,.04,.004),yl,cx,y0+.945,zF+.002)}   /* tabliczka ostrzegawcza */
+/* zlacze kablowo-pomiarowe nN, dwulicznikowe przelotowo-rozgalezne (PGE: WP 26-G4/WP/01251/1 pkt 5.2, 5.3, 7): w linii ogrodzenia na granicy dzialek 935/933 (x=-3), licem do ulicy w linii frontu muru, tylem do dzialki; wolnostojaca szafka czterodrzwiowa (jak spotykane przy domach w rejonie): gora 2 drzwi TL (tablice licznikowe), dol 2 drzwi ZK (zlacze z rozlacznikami), pokrywa-daszek, tabliczka z numerem, naklejki ostrzegawcze, na trzech slupkach nad gruntem; numer zlacza nadaje PGE */
+{const cx=-3,W=1.0,Dp=.28,yF=FY-.125,zF=-yF,zc=zF-Dp/2,LH=.30,yb=PGR+LH,Hb=1.05,
+  bd=M(0xc6c9c6,{roughness:.6,metalness:.05}),dr=M(0xd4d6d2,{roughness:.55,metalness:.05}),cp=M(0xdcdedb,{roughness:.55}),lg=M(0x2b2c2f,{roughness:.5,metalness:.5}),hn=M(0xb9bcbf,{roughness:.35,metalness:.6}),yl=M(0xe4c21a,{roughness:.6}),lk=M(0x16181b,{roughness:.4,metalness:.5}),
+  tex=(w,h,fn)=>{const c=document.createElement('canvas');c.width=w;c.height=h;fn(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.anisotropy=4;return t},
+  lab=(t,sx,sy,x,y)=>add(new THREE.PlaneGeometry(sx,sy),M(0xffffff,{map:t,alphaTest:.5,roughness:.8}),x,y,zF+.0165,false),
+  txt=s=>tex(256,128,(q,w,h)=>{q.fillStyle='#0b0b0c';q.font='900 104px Arial Black,Arial,sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText(s,w/2,h/2+4)}),
+  plate=tex(512,224,(q,w,h)=>{q.fillStyle='#e9ecf2';q.fillRect(0,0,w,h);q.fillStyle='#16306e';q.fillRect(14,14,w-28,h-28);q.fillStyle='#fff';q.font='900 120px Arial Black,Arial,sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText('05Z',w/2,h/2+6)}),
+  tnc=tex(256,112,(q,w,h)=>{q.fillStyle='#f2f2ee';q.fillRect(0,0,w,h);q.fillStyle='#0b0b0c';q.font='900 70px Arial Black,Arial,sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText('TN-C',w/2,h/2+4)}),
+  rows=[yb+.03+.235,yb+.03+.47+.03+.235];
+  [-.38,0,.38].forEach(dx=>add(new THREE.CylinderGeometry(.045,.045,LH+.06,14),lg,cx+dx,PGR-.04+(LH+.06)/2,zc));   /* trzy slupki (nozki) wbite w grunt */
+  add(new THREE.BoxGeometry(W,Hb-.05,Dp),bd,cx,yb+(Hb-.05)/2,zc);
+  add(new THREE.BoxGeometry(W+.04,.045,Dp+.04),cp,cx,yb+Hb-.0225,zc);                       /* pokrywa-daszek */
+  add(new THREE.BoxGeometry(W-.01,.03,.02),cp,cx,yb+.03+.47+.015,zF-.002);                   /* listwa miedzy rzedami */
+  rows.forEach((yy,ri)=>[-1,1].forEach(sd=>{const x=cx+sd*.245;
+   add(new THREE.BoxGeometry(.47,.47,.014),dr,x,yy,zF+.007);                                   /* skrzydlo drzwi */
+   for(let k=0;k<4;k++)add(new THREE.BoxGeometry(.012,.2,.004),bd,x+(k-1.5)*.075,yy-.12,zF+.016);   /* przetloczenia dolnej czesci skrzydla */
+   add(new THREE.BoxGeometry(.036,.15,.02),hn,cx+sd*.05,yy-.02,zF+.02);add(new THREE.CylinderGeometry(.011,.011,.012,12),lk,cx+sd*.05,yy-.055,zF+.031).rotation.x=Math.PI/2;   /* uchwyt z wkladka przy srodku */
+   add(new THREE.BoxGeometry(.075,.095,.003),yl,x+sd*.13,yy-.13,zF+.0155);                    /* naklejka ostrzegawcza (trojkat) */
+   add(new THREE.BoxGeometry(.05,.008,.003),lk,x+sd*.13,yy-.18,zF+.0155);
+   add(new THREE.BoxGeometry(.04,.012,.006),hn,x,yy+.225,zF+.015);                            /* zaczep zamka u gory */
+  }));
+  lab(txt('TL'),.12,.06,cx-.26,rows[1]+.165);lab(txt('ZK'),.12,.06,cx-.33,rows[0]+.17);
+  lab(plate,.17,.075,cx-.17,rows[0]+.17);lab(tnc,.09,.04,cx+.4,rows[0]-.2);}
 function leaf(g,cx,w,z){const b=(sx,sy,sz,x,y,m=gateM)=>{const me=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);me.position.set(x,y,z);me.castShadow=true;g.add(me)};
  /* rama spawana: slupki na pelna wysokosc, poprzeczki wstawione miedzy nimi (styk czolowy, bez przenikania i szczelin), szczeble dzielone przez poprzeczke srodkowa */
  b(.08,1.7,.07,cx-w/2+.04,G0+1.02);b(.08,1.7,.07,cx+w/2-.04,G0+1.02);b(w-.16,.1,.07,cx,G0+.22);b(w-.16,.08,.07,cx,G0+1.02);b(w-.16,.1,.07,cx,G0+1.82);
