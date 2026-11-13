@@ -1488,7 +1488,9 @@ const MTC=(()=>{
   const pts2=ts=>{const seen=new Set(),o=[];for(const t of ts)for(let k=0;k<3;k++){const q=M.K(t,k);if(seen.has(q))continue;seen.add(q);const p=M.V(t,k);o.push([dot(p,u0),dot(p,v0),dot(p,d)])}return o};
   const kasa=pts=>{let sx=0,sy=0;for(const p of pts){sx+=p[0];sy+=p[1]}sx/=pts.length;sy/=pts.length;let Sxx=0,Sxy=0,Syy=0,Sxz=0,Syz=0,Szz=0;for(const p of pts){const x=p[0]-sx,y=p[1]-sy,z=x*x+y*y;Sxx+=x*x;Sxy+=x*y;Syy+=y*y;Sxz+=x*z;Syz+=y*z;Szz+=z}
    const det=Sxx*Syy-Sxy*Sxy;if(Math.abs(det)<1e-12)return null;const cx=(Sxz*Syy-Syz*Sxy)/(2*det),cy=(Syz*Sxx-Sxz*Sxy)/(2*det);return{x:sx+cx,y:sy+cy,r:Math.sqrt(cx*cx+cy*cy+Szz/pts.length)}};
-  const h0=dot(hit,d),A=grow(p=>Math.abs(dot(p,d)-h0)<.06);if(A.length<2)return null;const C0=kasa(pts2(A));if(!C0||!(C0.r>.004&&C0.r<3))return null;
+  /* faza A: tylko obwod wokol jednego przekroju - przechodzimy przez krawedzie rownolegle do osi lub przekatne pary trojkatow (nie wzdluz osi) */
+  const shE=(t,u)=>{const kt=[0,1,2].map(k=>M.K(t,k)),r=[];for(let k=0;k<3;k++)if(kt.indexOf(M.K(u,k))>=0)r.push(M.V(u,k));return r.length>=2?nrm(sub(r[0],r[1])):null};
+  const A=(()=>{const reg=new Set([f0]),st=[f0];while(st.length){const t=st.pop(),n=gn(t);for(const u of(nb.get(t)||[])){if(reg.has(u))continue;const m=gn(u);if(!m||dot(n,m)<c50||Math.abs(dot(m,d))>.05)continue;const e=shE(t,u);if(!e)continue;if(!(Math.abs(dot(e,d))>.98||dot(n,m)>.9999999))continue;reg.add(u);st.push(u)}if(reg.size>400)break}return[...reg]})();if(A.length<2)return null;const C0=kasa(pts2(A));if(!C0||!(C0.r>.004&&C0.r<3))return null;
   const tol=Math.max(.004,.03*C0.r),B=grow(p=>Math.abs(Math.hypot(dot(p,u0)-C0.x,dot(p,v0)-C0.y)-C0.r)<tol);if(B.length<2)return null;
   const pb=pts2(B),C=kasa(pb);if(!C||!(C.r>.004&&C.r<3))return null;let bad=0;for(const p of pb)bad=Math.max(bad,Math.abs(Math.hypot(p[0]-C.x,p[1]-C.y)-C.r));if(bad>Math.max(.003,.02*C.r))return null;
   let zs=0;for(const p of pb)zs+=p[2];zs/=pb.length;const cen=add(add(mul(u0,C.x),mul(v0,C.y)),mul(d,zs));
@@ -1564,7 +1566,7 @@ const MTC=(()=>{
   if(C.kind==='cyl'&&E.kind==='edge'){const u=dir(E),par=len(cross(u,C.axis))<.01;if(par){const mid=mul(add(E.a,E.b),.5),w=sub(mid,C.c),pr=sub(w,mul(C.axis,dot(w,C.axis))),D=len(pr),n=D>1e-9?mul(pr,1/D):[1,0,0],dd=Math.max(0,D-C.r),sp=add(sub(mid,mul(pr,1)),mul(n,C.r));return A===C?out(dd,sp,mid,null):out(dd,mid,sp,null)}
    const r=soupSeg(C.tris,E.a,E.b);return A===C?out(r.d,r.b,r.a,ang(u,C.axis)):out(r.d,r.a,r.b,ang(u,C.axis))}
   return null}
- return{mk,analyze,comp,pickEdge,measure,soupDist,soupSeg,segSeg,fitCyl,dot,cross,sub,add,mul,nrm,len}})();
+ return{mk,analyze,comp,fitCyl2,pickEdge,measure,soupDist,soupSeg,segSeg,fitCyl,dot,cross,sub,add,mul,nrm,len}})();
 
 /* ===== narzedzie pomiarowe: obsluga sceny i panelu ===== */
 (()=>{const el=id=>document.getElementById(id),rBox=el('mtr'),bP=el('mtp'),bE=el('mte'),bO=el('mto'),bC=el('mtc'),bD=el('mtd');if(!rBox||!bP)return;
