@@ -1163,18 +1163,19 @@ function thujaM(){const S=128,c=document.createElement('canvas');c.width=c.heigh
   im.setColorAt(i,rnd()<.45?cl.setHSL(.2+rnd()*.03,.16+.1*rnd(),.55+.12*rnd()):cl.setHSL(.24+rnd()*.04,.3+.15*rnd(),.30+.12*rnd()))});
  im.position.set(cx,ys,-cy);im.frustumCulled=false;im.castShadow=im.receiveShadow=true;scene.add(im);window.OLV={n:LV.length,v:BP.length/3}}
 /* trzy kwadratowe donice (szare, plastikowe, 38 cm u gory, wys. 55 cm) na tarasie przy wyjsciu (N7a/N7c): w rzedzie miedzy slupem podcienia (y 0,545 z lamelami) a elewacja (y 2,5), rowne odstepy (4 x ok. 20 cm, tez od slupa i od sciany); w kazdej niskie drzewko oliwne (ok. 0,95 m nad brzegiem) */
-{const W=.38,Wb=.31,Hh=.55,gp=(2.5-.545-3*W)/4,px=9.5,pm=(()=>{const c=document.createElement('canvas');c.width=c.height=128;const q=c.getContext('2d');q.fillStyle='#4a4e53';q.fillRect(0,0,128,128);let sd=9;const r=()=>(sd=(sd*16807)%2147483647)/2147483647;
+{const W=.38,Wb=.31,Hh=.72,gp=(2.5-.545-3*W)/4,px=9.5,pm=(()=>{const c=document.createElement('canvas');c.width=c.height=128;const q=c.getContext('2d');q.fillStyle='#4a4e53';q.fillRect(0,0,128,128);let sd=9;const r=()=>(sd=(sd*16807)%2147483647)/2147483647;
   for(let i=0;i<2600;i++){q.fillStyle=r()<.5?'rgba(255,255,255,'+(.03+r()*.05)+')':'rgba(0,0,0,'+(.05+r()*.08)+')';q.fillRect(r()*128,r()*128,1+r()*1.5,1+r()*1.5)}
   for(let i=0;i<14;i++){q.strokeStyle='rgba(0,0,0,.07)';q.lineWidth=1;const y=r()*128;q.beginPath();q.moveTo(0,y);q.lineTo(128,y+(r()-.5)*4);q.stroke()}
-  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(2,2);t.anisotropy=8;return M(0xffffff,{map:t,roughness:.88,metalness:0})})(),sm=M(0x3a3226,{roughness:1}),lfM=M(0xffffff,{roughness:.65,side:THREE.DoubleSide});pm.userData.plant=sm.userData.plant=lfM.userData.plant=1;
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(2,2);t.anisotropy=8;return M(0xffffff,{map:t,roughness:.88,metalness:0,side:THREE.DoubleSide})})(),sm=M(0x3a3226,{roughness:1}),lfM=M(0xffffff,{roughness:.65,side:THREE.DoubleSide});pm.userData.plant=sm.userData.plant=lfM.userData.plant=1;
  const vs=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],va=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],vm=(a,k)=>[a[0]*k,a[1]*k,a[2]*k],vn=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]},vc=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
  const crm=(P,sub)=>{const o=[],n=P.length;for(let i=0;i<n-1;i++){const p0=P[Math.max(0,i-1)],p1=P[i],p2=P[i+1],p3=P[Math.min(n-1,i+2)];for(let s=0;s<sub;s++){const t=s/sub,t2=t*t,t3=t2*t;o.push([0,1,2].map(k=>.5*(2*p1[k]+(-p0[k]+p2[k])*t+(2*p0[k]-5*p1[k]+4*p2[k]-p3[k])*t2+(-p0[k]+3*p1[k]-3*p2[k]+p3[k])*t3)))}}o.push(P[n-1]);return o};
  const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.Float32BufferAttribute([0,0,0,.1,.45,.012,0,1,0,-.1,.45,.012,0,.45,.045],3));lg.setIndex([0,1,4,1,2,4,2,3,4,3,0,4]);lg.computeVertexNormals();
  const bkM=M(0x6f6556,{roughness:1,side:THREE.DoubleSide});bkM.userData.plant=1;
- for(let n=0;n<3;n++){const cy=.545+gp+W/2+n*(W+gp),ys=Hh-.05;
-  const g=new THREE.Mesh(new THREE.CylinderGeometry(W/Math.SQRT2,Wb/Math.SQRT2,Hh,4,1,true).rotateY(Math.PI/4),pm);add(g.geometry,pm,px,0+Hh/2,-cy);
+ for(let n=0;n<3;n++){const cy=.545+gp+W/2+n*(W+gp),ys=Hh-.07;
+  add(new THREE.CylinderGeometry(W/Math.SQRT2,Wb/Math.SQRT2,Hh,4,1,true).rotateY(Math.PI/4),pm,px,Hh/2,-cy);
+  add(new THREE.CylinderGeometry((W-.036)/Math.SQRT2,(Wb-.036)/Math.SQRT2,Hh-.02,4,1,true).rotateY(Math.PI/4),pm,px,Hh/2+.01,-cy,false);add(new THREE.BoxGeometry(Wb,.02,Wb),pm,px,.01,-cy,false);
   [[0,1],[0,-1],[1,0],[-1,0]].forEach(([a,b])=>add(new THREE.BoxGeometry(a?.022:W+.022,.035,a?W+.022:.022),pm,px+a*(W/2+.0),Hh-.0175,-(cy+b*(W/2))));
-  add(new THREE.BoxGeometry(W-.03,.012,W-.03),sm,px,Hh-.06,-cy,false);
+  add(new THREE.BoxGeometry(W-.04,.012,W-.04),sm,px,Hh-.07,-cy,false);
   const rnd=(()=>{let s=131+n*47;return()=>(s=(s*16807)%2147483647)/2147483647})(),gs=()=>rnd()+rnd()+rnd()-1.5,BP=[],BI=[],LV=[],RG=6;
   const tube=(pts,rad)=>{const m=pts.length,base=BP.length/3,ax=vs(pts[m-1],pts[0]),al=ax.map(Math.abs),ref=al[1]<=al[0]&&al[1]<=al[2]?[0,1,0]:al[0]<=al[2]?[1,0,0]:[0,0,1];
    for(let k=0;k<m;k++){const t=vn(vs(pts[Math.min(m-1,k+1)],pts[Math.max(0,k-1)])),u=vn(vc(t,ref)),v=vc(t,u),r=rad(k/(m-1)),p=pts[k];
