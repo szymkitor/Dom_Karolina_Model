@@ -1319,6 +1319,13 @@ tap(9.8,.55,-21.0,Math.PI/2);tap(1,.55,-21.1,-Math.PI/2);tap(0,.55,-.6,-Math.PI/
  [[0,.011],[-.016,.003],[.016,.003],[-.016,-.011],[.016,-.011]].forEach(([a,b])=>{const p=new THREE.Mesh(new THREE.CylinderGeometry(.0035,.0035,.008,8),mt);p.rotation.x=Math.PI/2-.6;p.position.set(a,-.027+b*Math.cos(.6)+.0,.0965+b*Math.sin(.6)*0);g.add(p)});
  bx(.065,.012,.03,0,.065,.06,bk,-.5);const gl=new THREE.Mesh(new THREE.CylinderGeometry(.014,.014,.04,10),bk);gl.position.set(0,-.1,.02);g.add(gl);
  g.position.set(1,1,-11.02);g.rotation.y=-Math.PI/2;scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})}
+// drugie gniazdo siłowe CEE 16 A / 400 V (jak wyżej: 5-biegunowe, czerwone, IP44, natynkowe) na ścianie wschodniej szopy, tej z oknem: 0,33 m od krawędzi okna w stronę rogu (z = -36,45), na wys. 1,0 m
+{const g=new THREE.Group(),rd=M(0xc1272d,{roughness:.5}),bk=M(0x1c1d20,{roughness:.6}),mt=M(0xd9dcdf,{roughness:.4,metalness:.6}),bx=(w,h,d,x,y,z,m,rx)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);q.position.set(x,y,z);q.rotation.x=rx||0;q.castShadow=true;g.add(q)};
+ bx(.1,.17,.045,0,0,.0225,rd);const sk=new THREE.Mesh(new THREE.CylinderGeometry(.043,.043,.05,20),rd);sk.rotation.x=Math.PI/2-.6;sk.position.set(0,-.01,.07);sk.castShadow=true;g.add(sk);
+ const fc=new THREE.Mesh(new THREE.CylinderGeometry(.033,.033,.006,20),bk);fc.rotation.x=Math.PI/2-.6;fc.position.set(0,-.027,.0935);g.add(fc);
+ [[0,.011],[-.016,.003],[.016,.003],[-.016,-.011],[.016,-.011]].forEach(([a,b])=>{const p=new THREE.Mesh(new THREE.CylinderGeometry(.0035,.0035,.008,8),mt);p.rotation.x=Math.PI/2-.6;p.position.set(a,-.027+b*Math.cos(.6)+.0,.0965+b*Math.sin(.6)*0);g.add(p)});
+ bx(.065,.012,.03,0,.065,.06,bk,-.5);const gl=new THREE.Mesh(new THREE.CylinderGeometry(.014,.014,.04,10),bk);gl.position.set(0,-.1,.02);g.add(gl);
+ g.position.set(1.1,G0+1,-36.45);g.rotation.y=Math.PI/2;scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})}
 // kinkiety dekoracyjne (czarne, światło w górę i w dół): K6a, M6a, M7a, P8c, P9c, N11a, N12a, wszystkie osadzone tak, ze gorna krawedz (srodek 2,068 m + 0,182) lezy na 2,25 m = gorna krawedz drzwi garazowych; poświata na ścianie jest symulowana (bez dodatkowych świateł, dla wydajności)
 {const blk=M(0x111214,{roughness:.55,metalness:.4,side:THREE.DoubleSide}),lensM=new THREE.MeshBasicMaterial({color:0xffe9c0,side:THREE.DoubleSide}),gc=document.createElement('canvas');gc.width=128;gc.height=256;
  {const q=gc.getContext('2d'),im=q.createImageData(128,256);
