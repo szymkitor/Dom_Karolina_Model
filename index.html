@@ -1307,11 +1307,11 @@ function kerbRun(P,rs,re,o){o=o||{};const n=P.length,hw=o.hw||.075,H=o.H||.14,BT
  /* wiazka glowna wchodzi na plansze (teren z jezdnia) od zachodniej krawedzi (x=-12) i konczy sie na wschodniej (x=32); poza plansza nie ma ani slupow, ani kabla - przesla poza krawedziami sa tylko obciete (zwis jak w pelnym przesle 15 m) */
  {const zz=-(-7.8125-.14),part=(x0,x1,xa,xb)=>{const pts=[];for(let q=0;q<=18;q++){const x=xa+(xb-xa)*q/18,t=(x-x0)/(x1-x0);pts.push(new THREE.Vector3(x,AT-4*.3*t*(1-t),zz))}add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),24,.011,6,false),cb,0,0,0,false)};
   part(-26.2,-11.2,-12,-11.2);part(30.8,45.8,30.8,32)}
- /* odejscie do domu: zacisk na slupie przy zlaczu (3,4 m) -> hak pod okapem (x=0,2; z=0; wys. 2,95 m) -> skrzynka zakonczeniowa */
+ /* odejscie do domu: zacisk na slupie przy zlaczu (3,4 m) -> hak pod okapem (x=0,2; z=0; wys. 2,78 m, 11 cm pod podbitka) -> skrzynka zakonczeniowa */
  {const x=PS[1][0],z=-PS[1][1];add(new THREE.CylinderGeometry(.062,.062,.04,16),dk,x,3.4,z);add(new THREE.BoxGeometry(.03,.03,.12),dk,x,3.4,z-.1);
-  wire([x,3.4,z-.17],[.2,2.95,.07],.15,.009)}
- add(new THREE.CylinderGeometry(.013,.013,.1,8),sl,.2,2.95,.035).rotation.x=Math.PI/2;add(new THREE.BoxGeometry(.04,.04,.05),sl,.2,2.95,.012);
- wire([.2,2.95,.07],[.2,2.74,.05],0,.008);add(new THREE.BoxGeometry(.14,.2,.06),wh,.2,2.64,.03);add(new THREE.BoxGeometry(.1,.015,.065),cb,.2,2.745,.03)}
+  wire([x,3.4,z-.17],[.2,2.78,.07],.15,.009)}
+ add(new THREE.CylinderGeometry(.013,.013,.1,8),sl,.2,2.78,.035).rotation.x=Math.PI/2;add(new THREE.BoxGeometry(.04,.04,.05),sl,.2,2.78,.012);
+ wire([.2,2.78,.07],[.2,2.57,.05],0,.008);add(new THREE.BoxGeometry(.14,.2,.06),wh,.2,2.47,.03);add(new THREE.BoxGeometry(.1,.015,.065),cb,.2,2.575,.03)}
 // brzozy brodawkowate (4 szt.) tuż za tylnym ogrodzeniem, nad kolumnami K–N; wysokość ok. 3× wysokość domu (+6,80 m); liście jako przezroczyste kępki rzucające cień
 {let sd=11;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647,gs=()=>rnd()+rnd()+rnd()-1.5;
  const bc=document.createElement('canvas');bc.width=128;bc.height=256;{const q=bc.getContext('2d');q.fillStyle='#e8e5dd';q.fillRect(0,0,128,256);
