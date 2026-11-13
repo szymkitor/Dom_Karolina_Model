@@ -98,6 +98,8 @@ button.on{background:var(--line);font-weight:600}
 .mtr{margin:2px 0 10px;line-height:1.45}.mtl{font-size:12px;opacity:.85}.mtv{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;margin:6px 0 2px}.mtw{color:#c0392b;font-size:12px;margin-top:6px;font-weight:600}
 .mtlab{position:fixed;left:0;top:0;z-index:25;pointer-events:none;transform:translate(-50%,-130%);background:rgba(255,255,255,.78);color:#8a1313;border:1px solid rgba(220,40,40,.6);border-radius:10px;padding:3px 9px;font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);white-space:nowrap;display:none}
 body.mtool canvas{cursor:crosshair}
+.mtmenu{position:fixed;z-index:30;display:none;gap:6px;padding:6px;border-radius:20px;background:linear-gradient(145deg,var(--gl1),var(--gl2));backdrop-filter:blur(8px) saturate(1.6);-webkit-backdrop-filter:blur(8px) saturate(1.6);border:1px solid var(--glb);box-shadow:0 10px 30px rgba(10,20,40,.3),inset 0 1.5px 1px rgba(255,255,255,.7);color:inherit}.mtmenu button{all:unset;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:78px;padding:8px 10px;border-radius:14px;background:var(--glk);border:1px solid var(--glb);font:600 11px system-ui,sans-serif;cursor:pointer;text-shadow:var(--tsh)}.mtmenu button:active{background:rgba(255,60,60,.35)}body.mtool{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+
 </style></head><body>
 <div id="cmp" style="position:fixed;right:10px;top:calc(10px + env(safe-area-inset-top,0px));width:46px;height:46px;border:1px solid var(--line);border-radius:50%;background:var(--panel);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600"><div id="cma" style="line-height:1;text-align:center">▲<br>N</div></div>
 <button class="fab sub" data-p="pn_view" data-k="view" aria-label="Widok i siatka" title="Widok i siatka" aria-expanded="false"><svg class="h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
@@ -1569,12 +1571,12 @@ const MTC=(()=>{
   scene.traverse(o=>{if(!o.isMesh||!o.visible||o.isInstancedMesh||o.userData.mt||o.userData.ln||o.userData.hl||!o.geometry||!o.geometry.attributes.position)return;for(let p=o.parent;p;p=p.parent)if(!p.visible||p.userData.mt||p.userData.hl)return;
    const ms=Array.isArray(o.material)?o.material:[o.material];if(ms.every(q=>!q||(q.userData&&q.userData.plant)||q.blending===THREE.AdditiveBlending||(q.transparent&&q.opacity<.5)))return;list.push(o)});
   const hs=ray.intersectObjects(list,false);return hs.length?{h:hs[0],dir:ray.ray.direction.clone()}:null}
- function analyzeHit(h,dir){const mesh=h.object,g=mesh.geometry;mesh.updateMatrixWorld(true);const W=worldPos(mesh),M=MTC.mk(W,g.index?g.index.array:null),hp=[h.point.x,h.point.y,h.point.z];
-  const s=MTC.analyze(M,h.faceIndex,hp,st.mode==='edge');if(s.err)return s;
-  if(st.mode==='edge'){const o=MTC.pickEdge(s.outline,hp);if(!o)return{err:'Nie znaleziono krawędzi w tym miejscu.'};return{kind:'edge',a:o.a,b:o.b}}
+ function analyzeHit(h,dir,mode){const mesh=h.object,g=mesh.geometry;mesh.updateMatrixWorld(true);const W=worldPos(mesh),M=MTC.mk(W,g.index?g.index.array:null),hp=[h.point.x,h.point.y,h.point.z];
+  const s=MTC.analyze(M,h.faceIndex,hp,mode==='edge');if(s.err)return s;
+  if(mode==='edge'){const o=MTC.pickEdge(s.outline,hp);if(!o)return{err:'Nie znaleziono krawędzi w tym miejscu.'};return{kind:'edge',a:o.a,b:o.b}}
   s.pt=hp;if(s.kind==='plane'){const dn=MTC.dot(s.n,[dir.x,dir.y,dir.z]);s.vn=dn>0?MTC.mul(s.n,-1):s.n.slice()}return s}
- function onPick(cx,cy){st.warn='';const p=pick(cx,cy);if(!p){st.warn='Tu nie ma nic do zmierzenia.';render();return}
-  let s;try{s=analyzeHit(p.h,p.dir)}catch(e){console.warn(e);s={err:'Nie udało się przeanalizować tej powierzchni.'}}
+ function onPick(cx,cy,mode){mode=mode||st.mode;st.warn='';const p=pick(cx,cy);if(!p){st.warn='Tu nie ma nic do zmierzenia.';render();return}
+  let s;try{s=analyzeHit(p.h,p.dir,mode)}catch(e){console.warn(e);s={err:'Nie udało się przeanalizować tej powierzchni.'}}
   if(s.err){st.warn=s.err;render();return}
   if(st.A&&st.B){st.A=st.B=st.res=null}
   if(!st.A){st.A=s;st.res=null}else{
@@ -1583,13 +1585,21 @@ const MTC=(()=>{
   render();redraw()}
  /* klik (bez przeciagania) w scenie przy aktywnym narzedziu */
  let dn=null;const cv=ren.domElement;
- cv.addEventListener('pointerdown',e=>{dn=st.on&&e.isPrimary&&e.button===0?{x:e.clientX,y:e.clientY,t:performance.now()}:null});
- cv.addEventListener('pointerup',e=>{if(!dn||!st.on)return;const d=dn;dn=null;if(Math.hypot(e.clientX-d.x,e.clientY-d.y)<6&&performance.now()-d.t<700)onPick(e.clientX,e.clientY)});
- cv.addEventListener('pointercancel',()=>{dn=null});
+ /* dlugie przytrzymanie: male okno z wyborem lapania (powierzchnia / krawedz) dla tego jednego kliku */
+ const mn=document.createElement('div');mn.className='mtmenu';mn.innerHTML='<button data-m="plane" title="Złap powierzchnię" aria-label="Złap powierzchnię"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M3 18 8 6h13l-5 12z" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Powierzchnia</span></button><button data-m="edge" title="Złap krawędź" aria-label="Złap krawędź"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M5 19 19 5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="5" cy="19" r="2.6" fill="currentColor"/><circle cx="19" cy="5" r="2.6" fill="currentColor"/></svg><span>Krawędź</span></button>';document.body.appendChild(mn);
+ let mpos=null,lpT=0;const hideMenu=()=>{mn.style.display='none';mpos=null};
+ function showMenu(x,y){mpos={x,y};mn.style.display='flex';const w=mn.offsetWidth,h=mn.offsetHeight;mn.style.left=Math.max(8,Math.min(innerWidth-w-8,x-w/2))+'px';mn.style.top=Math.max(8,y-h-26<8?y+26:y-h-26)+'px'}
+ mn.addEventListener('pointerdown',e=>e.stopPropagation());
+ mn.querySelectorAll('button').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const p=mpos,m=b.dataset.m;hideMenu();if(p)onPick(p.x,p.y,m)}));
+ cv.addEventListener('contextmenu',e=>{if(st.on)e.preventDefault()});
+ cv.addEventListener('pointerdown',e=>{clearTimeout(lpT);hideMenu();dn=st.on&&e.isPrimary&&e.button===0?{x:e.clientX,y:e.clientY,t:performance.now(),long:false}:null;if(dn){const d=dn;lpT=setTimeout(()=>{if(dn===d){d.long=true;showMenu(d.x,d.y)}},520)}});
+ cv.addEventListener('pointermove',e=>{if(dn&&!dn.long&&Math.hypot(e.clientX-dn.x,e.clientY-dn.y)>8)clearTimeout(lpT)});
+ cv.addEventListener('pointerup',e=>{clearTimeout(lpT);if(!dn||!st.on)return;const d=dn;dn=null;if(d.long)return;if(Math.hypot(e.clientX-d.x,e.clientY-d.y)<6&&performance.now()-d.t<700)onPick(e.clientX,e.clientY)});
+ cv.addEventListener('pointercancel',()=>{clearTimeout(lpT);dn=null});
  /* etykieta z wynikiem przy srodku odcinka pomiarowego */
  const tv=new THREE.Vector3();window.__mtUpd=()=>{const rs=st.res&&st.res.a,sd=!st.B&&st.A&&dia(st.A)!=null&&st.A.pt;if((!rs&&!sd)||!st.on){if(lab.style.display!=='none')lab.style.display='none';return}if(rs)tv.set((st.res.a[0]+st.res.b[0])/2,(st.res.a[1]+st.res.b[1])/2,(st.res.a[2]+st.res.b[2])/2).project(cam);else tv.set(st.A.pt[0],st.A.pt[1],st.A.pt[2]).project(cam);
   if(tv.z>1||tv.z<-1){lab.style.display='none';return}lab.textContent=rs?fmt(st.res.d)+' m'+(st.res.angle!=null?' · '+fa(st.res.angle):''):'Ø '+fmt(dia(st.A))+' m';lab.style.display='block';lab.style.left=((tv.x*.5+.5)*innerWidth)+'px';lab.style.top=((-tv.y*.5+.5)*innerHeight)+'px'};
- window.__panelHook=(k,on)=>{if(k!=='meas')return;st.on=on;document.body.classList.toggle('mtool',on);if(!on){reset()}else render()};
+ window.__panelHook=(k,on)=>{if(k!=='meas')return;st.on=on;document.body.classList.toggle('mtool',on);if(!on){reset();hideMenu()}else render()};
  render()})();
 
 </script></body></html>
