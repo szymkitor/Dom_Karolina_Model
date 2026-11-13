@@ -1283,10 +1283,10 @@ function kerbRun(P,rs,re,o){o=o||{};const n=P.length,hw=o.hw||.075,H=o.H||.14,BT
  WL=offP(RBn,.64),ER=offP(RBn,-.64);WL[0]=Q(2.51,1.95);ER[0]=Q(4.19,1.95);WL[1]=[WL[1][0]-ux*.2,WL[1][1]-uy*.2];ER[1]=[ER[1][0]+ux*.2,ER[1][1]+uy*.2];   /* krawezniki chodnika od ogrodu: czolem do slupow wiaty */
  [2.51,4.19].forEach(t=>{K([Q(t,-.125),Q(t,-.5)],{RD0:-.26,RD1:-.26,bot:-.48})});   /* krawezniki chodnika od ulicy: czolem do slupow */
  {const lA=Q(4.19,1.95),lB=Q(4.19,3.118),lC=Q(2.51,1.95),lD=Q(2.51,3.449);
- K([[15.44,.04],[15.44,lB[1]],lA]);   /* wschodnia krawedz nowej kostki (od tarasu w dol) i skos do wiaty (pas 1,6 m) - zarazem zachodni krawieznik zwirowego przejscia */
+ K([[10.05,.04],[15.44,.04],[15.44,lB[1]],lA]);   /* wschodnia krawedz nowej kostki (od tarasu w dol) i skos do wiaty (pas 1,6 m) - zarazem zachodni krawieznik zwirowego przejscia */
  K([lC,lD,[10.28,-3.3],[10.28,-7.2]]);}   /* poludniowa krawedz kostki: od wiaty, wzdluz y -3,3, dalej sciezka do furtki (strona wschodnia) */
  
- K([[10.05,.04],[15.44,.04]]);                    /* kostka przy tarasie od polnocy */
+ 
  /* waskie krawezniki po bokach wjazdu i furtki: od lica cokolu slupow (y -7,75) prosto do boku krawezników drogi (y -8,0); czola proste */[1.34,5.92,8.83,10.03].forEach(x=>K([[x,-7.75],[x,-8.0]],{RD0:-.26,RD1:-.26,bot:-.48}));
  K([[.87,-7.2],[.87,-5.0]]);K([[.87,-5.0],[.87,0]],{RD1:0,bot:-.48});   /* podjazd: lewa strona (plaska + pochylnia) */
  K([[6.45,0],[6.45,-5.0]],{RD0:0,RD1:-.30,bot:-.48});                    /* podjazd: prawa strona (pochylnia) */
