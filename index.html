@@ -291,8 +291,8 @@ addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
-/* przyciecie WSZYSTKICH elementow do linii gruntu (-0,30): nic nie schodzi pod teren (rowniez w trybie liniowym); wyjatek: bryla gruntu (userData.noClip) */
-const GCP=[new THREE.Plane(new THREE.Vector3(0,1,0),.301)];
+/* przyciecie WSZYSTKICH elementow do linii gruntu (-0,305): nic nie schodzi pod teren (rowniez w trybie liniowym); wyjatek: bryla gruntu (userData.noClip) */
+const GCP=[new THREE.Plane(new THREE.Vector3(0,1,0),.3055)];
 Object.defineProperty(THREE.Material.prototype,'clippingPlanes',{configurable:true,get(){if(this.userData&&this.userData.noClip)return null;return this._cp||GCP},set(v){this._cp=v}});
 const T=Math.tan(Math.PI/6),E=3.22;           // spadek 30°, okap +3,22 (przekrój A-A)
 const scene=new THREE.Scene();scene.background=new THREE.Color(0xcfe2f3);
@@ -456,8 +456,6 @@ const asphM=(()=>{const S=256,c=document.createElement('canvas');c.width=c.heigh
  for(let i=0;i<700;i++){a.fillStyle='rgba(150,150,152,'+(.15+rnd()*.3)+')';a.fillRect(rnd()*S,rnd()*S,1,1)}
  for(let i=0;i<260;i++){a.fillStyle='rgba(20,20,22,'+(.2+rnd()*.3)+')';a.fillRect(rnd()*S,rnd()*S,2,2)}
  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(.5,.5);t.anisotropy=8;return M(0xffffff,{map:t,roughness:.95})})();
-pvM.polygonOffset=true;pvM.polygonOffsetFactor=-2;pvM.polygonOffsetUnits=-2;   /* nawierzchnie na tym samym poziomie co trawnik (-0,30) wygrywaja z nim w buforze glebi */
-asphM.polygonOffset=true;asphM.polygonOffsetFactor=-2;asphM.polygonOffsetUnits=-2;
 const pvD=pvM.clone();pvD.side=THREE.DoubleSide;
 // wstęga chodnika o stałej szerokości z mitrowymi załamaniami (ciągłość bez szpar)
 function pathRibbon(pts,w,y){const n=pts.length,sg=[],pos=[],uv=[],idx=[];for(let i=0;i<n-1;i++){const dx=pts[i+1][0]-pts[i][0],dy=pts[i+1][1]-pts[i][1],L=Math.hypot(dx,dy);sg.push([-dy/L,dx/L])}
@@ -466,7 +464,7 @@ function pathRibbon(pts,w,y){const n=pts.length,sg=[],pos=[],uv=[],idx=[];for(le
  for(let i=0;i<n-1;i++){const a=2*i;idx.push(a,a+1,a+2,a+1,a+3,a+2)}
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();add(g,pvD,0,0,0,false)}
 /* grunt: JEDEN prostopadloscian na calej planszy (x -12..32, y -19..43), gora na poziomie terenu -0,30 (trawnik), boki i spod - ziemia; wszystkie nawierzchnie, zwir i jezdnia leza na tej plaszczyznie */
-{const GW=44,GD=62,gb=new THREE.BoxGeometry(GW,1,GD),gu=gb.attributes.uv;for(let i=8;i<12;i++)gu.setXY(i,gu.getX(i)*GW,gu.getY(i)*GD);const sd=M(0x6a5844,{roughness:1}),gm0=new THREE.Mesh(gb,[sd,sd,grM,sd,sd,sd]);gm0.position.set(10,-.8,-12);gm0.receiveShadow=true;gm0.userData.plant=1;sd.userData.noClip=1;grM.userData.noClip=1;scene.add(gm0)}
+{const GW=44,GD=62,gb=new THREE.BoxGeometry(GW,1,GD),gu=gb.attributes.uv;for(let i=8;i<12;i++)gu.setXY(i,gu.getX(i)*GW,gu.getY(i)*GD);const sd=M(0x6a5844,{roughness:1}),gm0=new THREE.Mesh(gb,[sd,sd,grM,sd,sd,sd]);gm0.position.set(10,-.805,-12);gm0.receiveShadow=true;gm0.userData.plant=1;sd.userData.plant=1;grM.userData.plant=1;sd.userData.noClip=1;grM.userData.noClip=1;scene.add(gm0)}
 [[[-12,-8],[1.38,-8],[1.38,-7.5],[-12,-7.5]],[[5.88,-8],[8.87,-8],[8.87,-7.5],[5.88,-7.5]],[[9.99,-8],[14.78,-8],[14.78,-7.5],[9.99,-7.5]],[[29.38,-8],[32,-8],[32,-7.5],[29.38,-7.5]]].forEach(pl=>flat(pl,-.30,0x82ad63));   /* pas trawnika przy ulicy na tym samym poziomie co dzialka (-0,34) */                           // ulica
 const PL=[[-3,-7.5],[14.78,-7.5],[19.45,-2.65],[19.45,21.35],[21.9,21.35],[21.8,37.4],[-3.4,37.4]];
 flat(PL,-.30,0x82ad63); // działka (bez linii granicy)
@@ -844,7 +842,7 @@ u('y',21.35,1,5.4,1,.85,1.5);u('x',0,-1,4.4,1.6,1.15,1.2,{kind:'lux'});u('y',0,-
 u('x',14.9,1,9.75,2.4,0,2.35,{n:2,cut:[8.55,11.3]});u('y',11.3,1,12.94,3.2,0,2.35,{n:2,cut:[11.34,14.9]});   // przeszklenia salonu z slupkiem narozn. 20x20 w rogu
 const wb=(ax,c,s,a0,a1,z0,z1)=>{if(a1-a0<1e-3||z1-z0<1e-3)return;const l=a1-a0,h=z1-z0,ac=c-s*T_/2,al=(a0+a1)/2,zc=(z0+z1)/2,g=ax=='y'?new THREE.BoxGeometry(l,h,T_):new THREE.BoxGeometry(T_,h,l),X=ax=='y'?al:ac,Z=ax=='y'?-ac:-al;wuv(g,X,zc,Z);add(g,wallMat,X,zc,Z)};
 BD.forEach(([ax,c,s,a0,a1])=>{const ops=U.filter(o=>o.ax==ax&&o.c==c&&o.s==s&&o.ctr>=a0&&o.ctr<=a1).map(o=>({sill:o.sill,h:o.h,l:o.cut||[o.ctr-o.w/2,o.ctr+o.w/2]})).sort((p,q)=>p.l[0]-q.l[0]);
- let cur=a0;ops.forEach(o=>{wb(ax,c,s,cur,o.l[0],G0,E);wb(ax,c,s,o.l[0],o.l[1],G0,o.sill);wb(ax,c,s,o.l[0],o.l[1],o.sill+o.h,E);cur=o.l[1]});wb(ax,c,s,cur,a1,G0,E)});
+ let cur=a0;ops.forEach(o=>{wb(ax,c,s,cur,o.l[0],-.305,E);wb(ax,c,s,o.l[0],o.l[1],-.305,o.sill);wb(ax,c,s,o.l[0],o.l[1],o.sill+o.h,E);cur=o.l[1]});wb(ax,c,s,cur,a1,-.305,E)});
 [[14.57,12.97,2.35,-.34],[9.47,.33,2.63,-.1]].forEach(([x,y,Ht,bt])=>{const g=new THREE.BoxGeometry(.4,Ht-bt,.4),yy=(Ht+bt)/2;wuv(g,x,yy,-y);add(g,wallMat,x,yy,-y)});   // słup wejścia kończy się pod stropem podcienia (+2,63)
 // podcień wejścia wg elewacji frontowej i rzutu: strop podcienia (spód +2,63) i zamurowana część nad nim aż do okapu (+3,22); bez podbitki PCV nad wejściem; x 7,25–9,90, y -0,17–2,5
 {const x0=7.25,x1=9.9,y0=0,y1=2.5,h0=2.63,h1=E,g=new THREE.BoxGeometry(x1-x0,h1-h0,y1-y0),X=(x0+x1)/2,Yc=(h0+h1)/2,Z=-(y0+y1)/2;wuv(g,X,Yc,Z);add(g,wallMat,X,Yc,Z)}
