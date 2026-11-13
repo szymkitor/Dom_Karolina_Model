@@ -838,7 +838,7 @@ function wuv(g,ox,oy,oz){const p=g.attributes.position,n=g.attributes.normal,u=g
 const T_=.45,D=.2,wallMat=M(0xf1eee7,{roughness:.95}),frM=M(0xffffff,{map:wtx(),roughness:.5}),glM=glassM,doorM=M(0x5a4332,{roughness:.5}),gdM=M(0xffffff,{map:wtx(),roughness:.55});
 const BD=[['y',0,-1,0,7.25],['x',7.25,1,0,2.5],['y',2.5,-1,6.8,14.9],['x',14.9,1,2.5,11.3],['y',11.3,1,9.35,14.9],['x',9.8,1,11.3,21.35],['y',21.35,1,1,9.8],['x',1,-1,8.8,21.35],['y',8.8,1,0,1.45],['x',0,-1,0,8.8]];
 const U=[],u=(ax,c,s,ctr,w,sill,h,o={})=>U.push(Object.assign({ax,c,s,ctr,w,sill,h,n:1},o));
-u('y',2.5,-1,12.3,3.1,.6,1.75,{n:3});u('y',2.5,-1,8.35,2,0,2.1,{kind:'door'});
+u('y',2.5,-1,12.3,3.1,.6,1.75,{n:3});u('y',2.5,-1,8.35,2,0,1.95,{kind:'door'});
 u('x',9.8,1,19.14,1.8,.85,1.54,{n:2});u('x',9.8,1,15.42,1.8,.85,1.54,{n:2});u('x',9.8,1,12.05,1.5,.85,1.54);
 u('x',1,-1,18.37,1,1.25,1.14);u('x',1,-1,14.58,1.8,.85,1.54,{n:2});u('x',1,-1,12.16,1,.85,1.54);u('x',1,-1,10.07,.6,1.25,1.14);
 u('y',21.35,1,5.4,1,.85,1.54);u('x',0,-1,4.4,1.6,1.4,1.2,{kind:'lux'});u('y',0,-1,3.66,5,-.25,2.25,{kind:'garage'});
@@ -846,9 +846,9 @@ u('x',14.9,1,9.75,2.4,0,2.39,{n:2,cut:[8.55,11.3]});u('y',11.3,1,12.94,3.2,0,2.3
 const wb=(ax,c,s,a0,a1,z0,z1)=>{if(a1-a0<1e-3||z1-z0<1e-3)return;const l=a1-a0,h=z1-z0,ac=c-s*T_/2,al=(a0+a1)/2,zc=(z0+z1)/2,g=ax=='y'?new THREE.BoxGeometry(l,h,T_):new THREE.BoxGeometry(T_,h,l),X=ax=='y'?al:ac,Z=ax=='y'?-ac:-al;wuv(g,X,zc,Z);add(g,wallMat,X,zc,Z)};
 BD.forEach(([ax,c,s,a0,a1])=>{const ops=U.filter(o=>o.ax==ax&&o.c==c&&o.s==s&&o.ctr>=a0&&o.ctr<=a1).map(o=>({sill:o.sill,h:o.h,l:o.cut||[o.ctr-o.w/2,o.ctr+o.w/2]})).sort((p,q)=>p.l[0]-q.l[0]);
  let cur=a0;ops.forEach(o=>{wb(ax,c,s,cur,o.l[0],-.305,E);wb(ax,c,s,o.l[0],o.l[1],-.305,o.sill);wb(ax,c,s,o.l[0],o.l[1],o.sill+o.h,E);cur=o.l[1]});wb(ax,c,s,cur,a1,-.305,E)});
-[[14.57,12.97,2.39,-.34],[9.47,.33,2.63,-.1]].forEach(([x,y,Ht,bt])=>{const g=new THREE.BoxGeometry(.4,Ht-bt,.4),yy=(Ht+bt)/2;wuv(g,x,yy,-y);add(g,wallMat,x,yy,-y)});   // słup wejścia kończy się pod stropem podcienia (+2,63)
+[[14.57,12.97,2.39,-.34],[9.47,.33,2.35,-.1]].forEach(([x,y,Ht,bt])=>{const g=new THREE.BoxGeometry(.4,Ht-bt,.4),yy=(Ht+bt)/2;wuv(g,x,yy,-y);add(g,wallMat,x,yy,-y)});   // słup wejścia kończy się pod stropem podcienia (+2,63)
 // podcień wejścia wg elewacji frontowej i rzutu: strop podcienia (spód +2,63) i zamurowana część nad nim aż do okapu (+3,22); bez podbitki PCV nad wejściem; x 7,25–9,90, y -0,17–2,5
-{const x0=7.25,x1=9.9,y0=0,y1=2.5,h0=2.63,h1=E,g=new THREE.BoxGeometry(x1-x0,h1-h0,y1-y0),X=(x0+x1)/2,Yc=(h0+h1)/2,Z=-(y0+y1)/2;wuv(g,X,Yc,Z);add(g,wallMat,X,Yc,Z)}
+{const x0=7.25,x1=9.9,y0=0,y1=2.5,h0=2.35,h1=E,g=new THREE.BoxGeometry(x1-x0,h1-h0,y1-y0),X=(x0+x1)/2,Yc=(h0+h1)/2,Z=-(y0+y1)/2;wuv(g,X,Yc,Z);add(g,wallMat,X,Yc,Z)}
 // zadaszony taras tylny (x 9,8–14,9: bok wschodni w licu ściany wschodniej, do okapu 15,65 zostaje przerwa; południowy w licu elewacji y=11,3; y 11,3–14,0): strop na +2,63 i zamurowana część nad nim do okapu (+3,22), bez podbitki PCV na pełnej wysokości
 {const x0=9.8,x1=14.9,y0=11.3,y1=13.3,h0=2.39,g=new THREE.BoxGeometry(x1-x0,E-h0,y1-y0),X=(x0+x1)/2,Yc=(h0+E)/2,Z=-(y0+y1)/2;wuv(g,X,Yc,Z);add(g,wallMat,X,Yc,Z)}   // słupy podcienia (ten sam tynk)
 // grill gazowy zamknięty (rodzinny, ok. 1,75×0,65×1,23 m z półkami), tyłem do elewacji x=9,8, środek między oknami y=15,42 i 19,14 → y=17,28; front na wschód
@@ -919,7 +919,7 @@ BD.forEach(([ax,c,s,a0,a1])=>{const ops=U.filter(o=>o.ax==ax&&o.c==c&&o.s==s&&o.
 {const wc=document.createElement('canvas');wc.width=64;wc.height=256;const q=wc.getContext('2d');let sd=77;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;q.fillStyle='#b48c5e';q.fillRect(0,0,64,256);
  for(let i=0;i<70;i++){const x=rnd()*64;q.strokeStyle=rnd()<.5?'rgba(95,62,32,'+(.12+rnd()*.2)+')':'rgba(230,200,150,'+(.10+rnd()*.15)+')';q.lineWidth=.6+rnd()*1.4;q.beginPath();q.moveTo(x,0);q.bezierCurveTo(x+(rnd()-.5)*6,80,x+(rnd()-.5)*6,170,x+(rnd()-.5)*4,256);q.stroke()}
  for(let i=0;i<10;i++){q.fillStyle='rgba(90,58,30,.35)';q.beginPath();q.ellipse(8+rnd()*48,rnd()*256,1.6,5,0,0,6.3);q.fill()}
- const tx=new THREE.CanvasTexture(wc);tx.anisotropy=8;const wm=[0xffffff,0xf1e3d1,0xe4d2bb].map(c=>M(c,{map:tx,roughness:.7})),cx=9.47,cy=.33,H=2.62;
+ const tx=new THREE.CanvasTexture(wc);tx.anisotropy=8;const wm=[0xffffff,0xf1e3d1,0xe4d2bb].map(c=>M(c,{map:tx,roughness:.7})),cx=9.47,cy=.33,H=2.34;
  for(let i=0;i<6;i++){const o=(i-2.5)*.0667;[-1,1].forEach(sg=>add(new THREE.BoxGeometry(.03,H,.05),wm[(i+(sg>0))%3],cx+sg*.215,.005+H/2,-(cy+o)))}
  for(let i=0;i<7;i++){const o=(i-3)*.0657;[-1,1].forEach(sg=>add(new THREE.BoxGeometry(.05,H,.03),wm[(i+(sg>0))%3],cx+o,.005+H/2,-(cy+sg*.215)))}}
 const ub=(o,al,zc,sa,sz,sd,m)=>{const ac=o.c-o.s*(D+.04);add(o.ax=='y'?new THREE.BoxGeometry(sa,sz,sd):new THREE.BoxGeometry(sd,sz,sa),m,o.ax=='y'?al:ac,zc,o.ax=='y'?-ac:-al,false)};
@@ -1429,7 +1429,7 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
  tr.position.set(x,H-.004,-Y);ln.position.set(x,H-.011,-Y);scene.add(tr,ln);
  addLight(id,ln,new THREE.SpotLight(0xffe2b4,1.8,7,1.15,.7,1),new THREE.Vector3(x,H-.06,-Y),new THREE.Vector3(x,H-3.4,-Y))});
 /* podcien wejscia: czarna natynkowa lampa sufitowa LED (plafon okragly o srednicy 28 cm, czarny aluminiowy korpus + dyfuzor opalowy), w miejscu dawnego punktu swietlnego */
-{const x=8.35,Y=1.0,H=2.63,bk=new THREE.MeshStandardMaterial({color:0x15171a,roughness:.42,metalness:.65}),gr=new THREE.Group(),cy=(r0,r1,h,y,m)=>{const q=new THREE.Mesh(new THREE.CylinderGeometry(r0,r1,h,48),m);q.position.y=y;q.castShadow=false;gr.add(q);return q};
+{const x=8.35,Y=1.0,H=2.35,bk=new THREE.MeshStandardMaterial({color:0x15171a,roughness:.42,metalness:.65}),gr=new THREE.Group(),cy=(r0,r1,h,y,m)=>{const q=new THREE.Mesh(new THREE.CylinderGeometry(r0,r1,h,48),m);q.position.y=y;q.castShadow=false;gr.add(q);return q};
  cy(.155,.155,.012,-.006,bk);cy(.14,.14,.05,-.037,bk);cy(.147,.143,.012,-.068,bk);
  const rg=new THREE.Mesh(new THREE.TorusGeometry(.139,.007,10,48),bk);rg.rotation.x=Math.PI/2;rg.position.y=-.075;gr.add(rg);
  const ln=cy(.117,.117,.006,-.0735,new THREE.MeshBasicMaterial({color:0xfff1cf}));
