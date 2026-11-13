@@ -494,27 +494,35 @@ function roofCreases(R,E,T){
  return res}
 // gasiory (polokragle, Ø190 mm, co 40 cm z nasuwana obejma) na grzbietach i narozach oraz blacha koszowa w koszach dachu
 {const SEG=roofCreases(R,E,T).filter(s=>Math.hypot(s.B[0]-s.A[0],s.B[1]-s.A[1],s.B[2]-s.A[2])>.3),
-  W=s=>[s[0],s[1],-s[2]],V=THREE.Vector3,capM=M(0x30363a,{roughness:.5,metalness:.55,side:THREE.DoubleSide}),flM=M(0x24292c,{roughness:.42,metalness:.65,side:THREE.DoubleSide});
- const rp=[],ri=[],fp=[],fi=[];
- const ends=[];SEG.forEach(s=>{ends.push(s.A,s.B)});
+  W=s=>[s[0],s[1],-s[2]],V=THREE.Vector3;
+ /* tekstury: matowa blacha powlekana (ziarno, cien nasuwanej obejmy co 40 cm) i blacha koszowa z przetloczeniami wzdluz */
+ const cvT=(w,h,fn)=>{const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');fn(x,w,h);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=4;return t};
+ const grain=(x,w,h,n,a)=>{for(let i=0;i<n;i++){const v=Math.random()<.5?255:0;x.fillStyle='rgba('+v+','+v+','+v+','+Math.random()*a+')';x.fillRect(Math.random()*w,Math.random()*h,1,1)}};
+ const capTx=cvT(128,256,(x,w,h)=>{x.fillStyle='#dadddf';x.fillRect(0,0,w,h);const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'rgba(0,0,0,.38)');g.addColorStop(.1,'rgba(0,0,0,.05)');g.addColorStop(.12,'rgba(255,255,255,.22)');g.addColorStop(.14,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,w,h);
+  const g2=x.createLinearGradient(0,0,w,0);g2.addColorStop(0,'rgba(0,0,0,.18)');g2.addColorStop(.5,'rgba(255,255,255,.1)');g2.addColorStop(1,'rgba(0,0,0,.18)');x.fillStyle=g2;x.fillRect(0,0,w,h);grain(x,w,h,2500,.07)});
+ const flTx=cvT(128,128,(x,w,h)=>{x.fillStyle='#d6d9db';x.fillRect(0,0,w,h);for(const u of[.3,.5,.7]){x.fillStyle='rgba(0,0,0,.28)';x.fillRect(u*w-2,0,2,h);x.fillStyle='rgba(255,255,255,.3)';x.fillRect(u*w,0,2,h)}x.fillStyle='rgba(0,0,0,.4)';x.fillRect(0,0,6,h);x.fillRect(w-6,0,6,h);grain(x,w,h,1500,.07)});
+ const capM=M(0x383e42,{map:capTx,roughness:.62,metalness:.25,side:THREE.DoubleSide}),flM=M(0x2c3236,{map:flTx,roughness:.5,metalness:.5,side:THREE.DoubleSide});
+ const rp=[],ru=[],ri=[],fp=[],fu=[],fi=[];
  const isFree=(P,self)=>!SEG.some(o=>o!==self&&[o.A,o.B].some(Q=>Math.hypot(P[0]-Q[0],P[1]-Q[1],P[2]-Q[2])<.3));
- const RC=.095,MM=22,F0=-32*Math.PI/180,F1=212*Math.PI/180;
+ const RC=.095,TH=.004,MM=20,F0=-32*Math.PI/180,F1=212*Math.PI/180,LP=2*(MM+1);
  SEG.filter(s=>s.kind==='ridge').forEach(s=>{const a=new V(...W(s.A)),b=new V(...W(s.B)),d=b.clone().sub(a),L=d.length();d.normalize();
   let u=new V().crossVectors(d,new V(0,1,0));if(u.lengthSq()<1e-8)return;u.normalize();let w=new V().crossVectors(u,d).normalize();if(w.y<0){w.negate();u.negate()}
-  const ring=(sOf,r)=>{const c=a.clone().addScaledVector(d,sOf).addScaledVector(w,.02),o=[];for(let j=0;j<=MM;j++){const ph=F0+(F1-F0)*j/MM;o.push(c.clone().addScaledVector(u,r*Math.cos(ph)).addScaledVector(w,r*Math.sin(ph)))}return{o,c}};
-  const N=Math.max(1,Math.round(L/.4)),TL=L/N;
-  const quad=(r0,r1)=>{const base=rp.length/3;r0.o.concat(r1.o).forEach(p=>rp.push(p.x,p.y,p.z));for(let j=0;j<MM;j++){const A=base+j,B=A+1,C=base+MM+1+j,D=C+1;ri.push(A,C,B,B,C,D)}};
-  for(let k=0;k<N;k++){const s0=k*TL,s1=(k+1)*TL;const R0=ring(s0+.002,RC+.008),R1=ring(s0+.02,RC+.008),R2=ring(s0+.026,RC),R3=ring(s1-.001,RC);quad(R0,R1);quad(R1,R2);quad(R2,R3)}
-  [[0,s.A,-1],[L,s.B,1]].forEach(([sOf,P,sg])=>{if(!isFree(P,s))return;const e=ring(sOf+sg*-.001,RC+(sg<0?.008:0)),base=rp.length/3;rp.push(e.c.x,e.c.y,e.c.z);e.o.forEach(p=>rp.push(p.x,p.y,p.z));for(let j=0;j<MM;j++)ri.push(base,base+1+j,base+2+j)})});
- if(rp.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(rp,3));g.setIndex(ri);g.computeVertexNormals();add(g,capM)}
- /* kosze: blacha koszowa 2 x 15 cm po powierzchni polaci + podniesione brzegi 1 cm */
+  /* przekroj jako zamknieta petla: zewnetrzny luk + wewnetrzny luk (grubosc blachy) */
+  const ring=(sOf,r,v)=>{const c=a.clone().addScaledVector(d,sOf).addScaledVector(w,.02),o=[],uv=[];for(let j=0;j<=MM;j++){const ph=F0+(F1-F0)*j/MM;o.push(c.clone().addScaledVector(u,r*Math.cos(ph)).addScaledVector(w,r*Math.sin(ph)));uv.push([j/MM*.5,v])}
+   for(let j=MM;j>=0;j--){const ph=F0+(F1-F0)*j/MM;o.push(c.clone().addScaledVector(u,(r-TH)*Math.cos(ph)).addScaledVector(w,(r-TH)*Math.sin(ph)));uv.push([.5+(MM-j)/MM*.5,v])}return{o,uv,c}};
+  const N=Math.max(1,Math.round(L/.4)),TL=L/N,quad=(r0,r1)=>{const base=rp.length/3;[r0,r1].forEach(r=>r.o.forEach((p,i)=>{rp.push(p.x,p.y,p.z);ru.push(r.uv[i][0],r.uv[i][1])}));for(let j=0;j<LP;j++){const A=base+j,B=base+(j+1)%LP,C=base+LP+j,D=base+LP+(j+1)%LP;ri.push(A,C,B,B,C,D)}};
+  for(let k=0;k<N;k++){const s0=k*TL,s1=(k+1)*TL;quad(ring(s0+.002,RC+.008,0),ring(s0+.02,RC+.008,.1));quad(ring(s0+.02,RC+.008,.1),ring(s0+.026,RC,.13));quad(ring(s0+.026,RC,.13),ring(s1-.001,RC,1))}
+  /* zaslepka: wachlarz z polowy cieciwy dolnej (zamyka koniec gasiora) */
+  [[0,-1],[L,1]].forEach(([sOf,sg])=>{const e=ring(sOf-sg*.001,RC+(sg<0?.008:0),0),base=rp.length/3,mid=e.o[0].clone().add(e.o[MM]).multiplyScalar(.5);rp.push(mid.x,mid.y,mid.z);ru.push(.5,.5);for(let j=0;j<=MM;j++){const p=e.o[j];rp.push(p.x,p.y,p.z);ru.push(j/MM,.5)}for(let j=0;j<MM;j++)ri.push(base,base+1+j,base+2+j)});
+ });
+ if(rp.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(rp,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(ru,2));g.setIndex(ri);g.computeVertexNormals();add(g,capM)}
+ /* kosze: blacha koszowa 2 x 15 cm po powierzchni polaci, przetloczenia wzdluz, podniesione brzegi 1 cm */
  const zA=(x,y)=>{let z=-9;for(const[a,b,c,d]of R)if(x>a&&x<c&&y>b&&y<d)z=Math.max(z,E+T*Math.min(x-a,c-x,y-b,d-y));return z};
- SEG.filter(s=>s.kind==='valley').forEach(s=>{const A=s.A,B=s.B,dx=B[0]-A[0],dy=B[2]-A[2],l=Math.hypot(dx,dy),nx=-dy/l,ny=dx/l,mx=(A[0]+B[0])/2,my=(A[2]+B[2])/2,zm=zA(mx,my);
-  [1,-1].forEach(sd=>{const px=mx+sd*nx*.4,py=my+sd*ny*.4,zs=zA(px,py);if(zs<-8)return;const hv=new V(sd*nx*.4,zs-zm,sd*ny*.4).normalize(),vx=hv.x*.15,vh=hv.y*.15,vy=hv.z*.15,lift=.006;
-   const P=[[A[0],A[1]+lift,A[2]],[B[0],B[1]+lift,B[2]],[B[0]+vx,B[1]+vh+lift,B[2]+vy],[A[0]+vx,A[1]+vh+lift,A[2]+vy],[B[0]+vx,B[1]+vh+lift+.012,B[2]+vy],[A[0]+vx,A[1]+vh+lift+.012,A[2]+vy]],base=fp.length/3;
-   P.forEach(p=>{const q=W(p);fp.push(q[0],q[1],q[2])});fi.push(base,base+1,base+2,base,base+2,base+3,base+3,base+2,base+4,base+3,base+4,base+5)})});
- if(fp.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(fp,3));g.setIndex(fi);g.computeVertexNormals();add(g,flM)}}
-
+ SEG.filter(s=>s.kind==='valley').forEach(s=>{const A=s.A,B=s.B,dx=B[0]-A[0],dy=B[2]-A[2],l=Math.hypot(dx,dy),nx=-dy/l,ny=dx/l,mx=(A[0]+B[0])/2,my=(A[2]+B[2])/2,zm=zA(mx,my),len3=Math.hypot(dx,B[1]-A[1],dy);
+  [1,-1].forEach(sd=>{const px=mx+sd*nx*.4,py=my+sd*ny*.4,zs=zA(px,py);if(zs<-8)return;const hv=new V(sd*nx*.4,zs-zm,sd*ny*.4).normalize(),vx=hv.x*.15,vh=hv.y*.15,vy=hv.z*.15,lift=.007;
+   const P=[[A[0],A[1]+lift,A[2]],[B[0],B[1]+lift,B[2]],[B[0]+vx,B[1]+vh+lift,B[2]+vy],[A[0]+vx,A[1]+vh+lift,A[2]+vy],[B[0]+vx,B[1]+vh+lift+.012,B[2]+vy],[A[0]+vx,A[1]+vh+lift+.012,A[2]+vy]],UV=[[0,0],[0,len3*3],[1,len3*3],[1,0],[1,len3*3],[1,0]],base=fp.length/3;
+   P.forEach((p,i)=>{const q=W(p);fp.push(q[0],q[1],q[2]);fu.push(UV[i][0],UV[i][1])});fi.push(base,base+1,base+2,base,base+2,base+3,base+3,base+2,base+4,base+3,base+4,base+5)})});
+ if(fp.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(fp,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(fu,2));g.setIndex(fi);g.computeVertexNormals();add(g,flM)}}
 // stolarka wg rzutu parteru: [oś,stała,znak,środek,szer,dół(parapet),wys,kolor]
 const glass=0x6f93bd;
 // otoczenie (niebo) do odbić w szybach
