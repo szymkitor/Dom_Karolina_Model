@@ -969,6 +969,19 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
   cy(.0095,.05,hx,hy,.039,Math.PI/2,0,ix);add(new THREE.SphereGeometry(.0125,18,12),ix,hx,hy,fz(.055),false);   /* szyjka i przegub */
   cy(.0095,.152,hx-.064,hy,.055,0,Math.PI/2,ix);add(new THREE.SphereGeometry(.0095,16,10),ix,hx-.14,hy,fz(.055),false);   /* dzwignia pozioma w strone srodka skrzydla */
   cy(.019,.01,hx,hy-.1,.005,Math.PI/2,0,bk);cy(.011,.012,hx,hy-.1,.011,Math.PI/2,0,ix)}   /* wkladka zamka */
+ {/* szczegoly skrzydla i ościeznicy drzwi: ramiaki z listwami (ramka), uszczelka, 3 zawiasy po lewej, szyld i blaszki zaczepow zamka wielopunktowego po prawej */
+  const ac=o.c-o.s*(D+.04),pl=(xc,zc2,w2,h2,t,off,m)=>{const q=add(new THREE.BoxGeometry(w2,h2,t),m,xc,zc2,-(ac+o.s*off),false);return q},
+   Lz0=z+.02,Lz1=z+h-fw,Lh=Lz1-Lz0,Lc=(Lz0+Lz1)/2,bdM=M(0x6a5240,{roughness:.45}),gkM=M(0x131415,{roughness:.8}),sv=M(0xc2c6cc,{metalness:.85,roughness:.28});
+  const fo=.03+.007;   /* lico skrzydla .03 + polowa grubosci listwy */
+  pl(a-.485+.045,Lc,.09,Lh,.014,fo,bdM);pl(a+.485-.045,Lc,.09,Lh,.014,fo,bdM);   /* ramiaki pionowe */
+  pl(a,Lz1-.06,.80,.12,.014,fo,bdM);pl(a,Lz0+.09,.80,.18,.014,fo,bdM);pl(a,z+h*.5+.1,.80,.04,.01,fo-.002,bdM);   /* rygle: gorny, dolny, srodkowy */
+  pl(a,Lz0+.008,.97,.016,.016,.03+.004,gkM);   /* uszczelka dolna */
+  [-1,1].forEach(k=>pl(a+k*.4925,Lc,.01,Lh+.004,.07,.03,gkM));   /* szczeliny / uszczelki przy ościeznicy */
+  pl(a,Lz1+.002,.99,.012,.07,.03,gkM);   /* uszczelka gorna */
+  [.28,1.05,1.82].forEach(y=>{const hy2=z+y;pl(a-.485,hy2,.03,.11,.028,.03,sv);const b=add(new THREE.CylinderGeometry(.0085,.0085,.11,12),sv,a-.5,hy2,-(ac+o.s*.04),false)});   /* 3 zawiasy */
+  pl(a+.36,z+1.0,.05,.42,.006,.03+.003,sv);   /* szyld pod klamke */
+  [.35,1.0,1.65].forEach(y=>{pl(a+.4795,z+y,.012,.13,.01,.036,sv);pl(a+.4795,z+y,.006,.07,.012,.04,gkM)});   /* blaszki zaczepow / ryglowanie */
+ }
  return}
  for(let i=0;i<o.n;i++){ub(o,x0+w*(i+.5)/o.n,zc,w/o.n-fw+.012,h-2*fw+.012,.03,glM);if(i)ub(o,x0+w*i/o.n,zc,.05,h-2*fw,.08,frM)}});
 {const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.Float32BufferAttribute(SILL,3));const sl=new THREE.LineSegments(gg,new THREE.LineBasicMaterial({color:0x10151a}));sl.visible=false;sl.userData.ln=1;sl.frustumCulled=false;scene.add(sl);LNX.push(sl)}   // styk parapetow z elewacja (tryb liniowy)
