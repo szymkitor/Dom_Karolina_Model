@@ -931,7 +931,7 @@ const ub=(o,al,zc,sa,sz,sd,m)=>{const ac=o.c-o.s*(D+.04);add(o.ax=='y'?new THREE
  /* swiatlo kinkietu padajace w dol po elewacji: oswietla numer (kinkiet swieci tylko aureola, bez zrodla swiatla) */
  const nl=new THREE.SpotLight(0xffe2b4,0,4,.62,.9,1.2);nl.position.set(6.73,2.12,.16);nl.target.position.set(6.73,1.2,.0);scene.add(nl,nl.target);window.NUML=nl}
 /* roleta zewnetrzna (czarna) osadzona we wneku okiennym sypialni w tylnej scianie (x=5,4; sciana y=21,35; wneka glebokosci 24 cm, okno w plaszczyznie y=21,11): kaseta pod nadprozem w licu wneki (2 cm za lico elewacji), prowadnice na ościeżach, pancerz z listew (skok 3,7 cm) z listwa koncowa opierajaca sie o parapet; jeden przycisk zwija / rozwija; w trybie liniowym linie poziome = zawiasy listew */
-{const cx=5.4,wy=21.35,yT=2.21,yB=.88,wC=.96,HM=yT-yB-.04,PIT=.037,blk=M(0x1f2124,{roughness:.5,metalness:.4}),
+{const cx=5.4,wy=21.35,yT=2.25,yB=.88,wC=.96,HM=yT-yB-.04,PIT=.037,blk=M(0x1f2124,{roughness:.5,metalness:.4}),
   c=document.createElement('canvas');c.width=c.height=64;{const q=c.getContext('2d');q.fillStyle='#232427';q.fillRect(0,0,64,64);q.fillStyle='#34363a';q.fillRect(0,0,64,5);q.fillStyle='#0d0e0f';q.fillRect(0,58,64,6)}
  const tx=new THREE.CanvasTexture(c);tx.wrapS=tx.wrapT=THREE.RepeatWrapping;tx.anisotropy=4;const cm=new THREE.MeshStandardMaterial({map:tx,roughness:.45,metalness:.45}),Z=o=>-(wy-o);
  add(new THREE.BoxGeometry(.99,.14,.13),blk,cx,yT+.07,Z(.085));   /* kaseta w nadprozu wneki */
