@@ -1062,7 +1062,7 @@ PIPES.forEach(([px,py,wx,wy,rd=.045],k)=>{
  [(c[1]+f[1])/2,f[1]+.2].forEach(y=>pipe([wx,y-.02,-wy],[wx,y+.02,-wy],rd+.011))});
 // jednostka zewnetrzna klimatyzacji / pompy ciepla (split) na elewacji wschodniej salonu (sciana x 14,9, strona tarasu tylnego): na dwoch wspornikach, gora ok. 0,34 m pod podbitka (2,89), srodek w polowie odleglosci miedzy kinkietami (y 5,1), na lewo od rury spustowej (y 7,7); front z wentylatorem skierowany na zewnatrz, instalacja chlodnicza (dwie izolowane rurki) wchodzi w sciane z boku
 {const bd=M(0xe3e5e6,{roughness:.55}),dk=M(0x1c1e21,{roughness:.6,metalness:.3,side:THREE.DoubleSide}),st=M(0x3a3d41,{roughness:.5,metalness:.6}),ins=M(0x23252a,{roughness:.8}),cu=M(0xb87333,{roughness:.4,metalness:.7});
- const g=new THREE.Group();g.position.set(14.9,2.2,-5.1);scene.add(g);   /* lokalnie: +X = na zewnatrz, prostopadle do sciany; y=0 srodek jednostki */
+ const g=new THREE.Group();g.position.set(14.9,2.32,-5.6);scene.add(g);   /* lokalnie: +X = na zewnatrz, prostopadle do sciany; y=0 srodek jednostki */
  const put=(geo,m,x,y,z,ry,rz)=>{const me=new THREE.Mesh(geo,m);me.position.set(x,y,z);if(ry)me.rotation.y=ry;if(rz)me.rotation.z=rz;me.castShadow=me.receiveShadow=true;g.add(me);statics.push(me);return me};
  const W=.86,H=.70,D=.31,X0=.07;   /* szer. wzdluz sciany, wys., glebokosc; X0 = odstep od sciany (wsporniki) */
  put(new THREE.BoxGeometry(D,H,W),bd,X0+D/2,0,0);
