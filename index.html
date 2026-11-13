@@ -94,7 +94,7 @@ button.on{background:var(--line);font-weight:600}
 .chips button.on{background:linear-gradient(135deg,rgba(255,170,80,.5),rgba(232,100,58,.34))}
 .ui .swb.on,#gr.on,#lm.on,#ptgo{background:linear-gradient(135deg,var(--ac),var(--ac2));text-shadow:none}
 /* narzedzie pomiarowe */
-.seg2{display:grid;grid-template-columns:1fr 1fr;gap:6px}.seg2 button.on{background:linear-gradient(135deg,rgba(255,170,80,.55),rgba(232,100,58,.4));border-color:var(--ac);font-weight:600}
+.seg2{display:grid;grid-template-columns:1fr 1fr;gap:6px}#pn_meas .seg2{grid-template-columns:repeat(3,1fr)}.seg2 button.on{background:linear-gradient(135deg,rgba(255,170,80,.55),rgba(232,100,58,.4));border-color:var(--ac);font-weight:600}
 .mtr{margin:2px 0 10px;line-height:1.45}.mtl{font-size:12px;opacity:.85}.mtv{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;margin:6px 0 2px}.mtw{color:#c0392b;font-size:12px;margin-top:6px;font-weight:600}
 .mtlab{position:fixed;left:0;top:0;z-index:25;pointer-events:none;transform:translate(-50%,-130%);background:rgba(255,255,255,.78);color:#8a1313;border:1px solid rgba(220,40,40,.6);border-radius:10px;padding:3px 9px;font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);white-space:nowrap;display:none}
 body.mtool canvas{cursor:crosshair}
@@ -188,7 +188,7 @@ const gr=document.getElementById('gr');gr.addEventListener('click',()=>gr.classL
 </script>
 <div class="ui hid" id="pn_meas">
  <div class="hd"><div class="tt">Pomiar</div><div class="st">Odległości, kąty i średnice</div></div>
- <section><h3>Łapanie</h3><div class="seg2"><button id="mtp" class="on">Płaszczyzna</button><button id="mte">Krawędź</button></div>
+ <section><h3>Łapanie</h3><div class="seg2"><button id="mtp" class="on">Płaszczyzna</button><button id="mte">Krawędź</button><button id="mto">Obiekt</button></div>
   <small class="hint">Kliknij w scenie pierwszy, a potem drugi obiekt. Zaznaczone elementy podświetlają się na czerwono. Powierzchnie nieregularne i nieplaskie (auto, rośliny, itp.) są pomijane.</small></section>
  <section><h3>Wynik</h3><div id="mtr" class="mtr"><div class="mtl">Zaznacz pierwszy obiekt</div></div><button id="mtc">Nowy pomiar</button></section></div>
 <div id="ptov"><div class="ptbar"><span id="ptmsg"></span><label style="display:flex;gap:6px;align-items:center;font-size:12px">Ekspozycja<input id="ptx" type="range" min=".3" max="4" step=".05" value="1"></label><button id="ptsave" disabled>Zapisz PNG</button><button id="ptclose">Zamknij</button></div><div class="ptprog"><i id="ptbar"></i></div><div id="ptwrap"><img id="ptimg" alt="Render"></div></div>
@@ -1475,6 +1475,8 @@ const MTC=(()=>{
   let bad=0;const an=[];for(const p of q){const dx=p[0]-sx-cx,dy=p[1]-sy-cy;bad=Math.max(bad,Math.abs(Math.hypot(dx,dy)-r));an.push(Math.atan2(dy,dx))}if(bad>Math.max(.003,.02*r))return null;
   an.sort((a,b)=>a-b);let gap=an[0]+2*Math.PI-an[an.length-1];for(let i=1;i<an.length;i++)gap=Math.max(gap,an[i]-an[i-1]);if(gap>Math.PI*.55)return null;
   const z=q[0][2];return{r,c:add(add(mul(u,sx+cx),mul(v,sy+cy)),mul(n0,z))}}
+ /* caly obiekt = spojny (przez wspolne wierzcholki) element siatki */
+ function comp(M,f0){const all=new Array(M.T);for(let i=0;i<M.T;i++)all[i]=i;const set=bfsVerts(M,all,f0);if(set.size>200000)return{err:'Obiekt jest zbyt złożony do pomiaru.'};return{kind:'obj',tris:triWorld(M,[...set]),N:set.size}}
  /* analiza trojkata f0 (swiat): plaszczyzna / walec / odrzucenie. zwraca powierzchnie albo {err} */
  function analyze(M,f0,hit,wantEdges){const n0=M.N(f0);if(!n0)return{err:'Nie można odczytać powierzchni w tym miejscu.'};const d0=dot(n0,M.V(f0,0)),cand=[];
   for(let t=0;t<M.T;t++){let ok=true;for(let k=0;k<3&&ok;k++){const v=M.vi(t,k);if(Math.abs(M.P[3*v]*n0[0]+M.P[3*v+1]*n0[1]+M.P[3*v+2]*n0[2]-d0)>EPSP)ok=false}if(!ok)continue;const n=M.N(t);if(n&&Math.abs(dot(n,n0))>.9999)cand.push(t)}
@@ -1512,6 +1514,11 @@ const MTC=(()=>{
    const r=segTri(p,q,[S[o],S[o+1],S[o+2]],[S[o+3],S[o+4],S[o+5]],[S[o+6],S[o+7],S[o+8]]);if(r.d<best.d)best=r;if(best.d<1e-9)break}return best}
  function soupDist(A,B){let best={d:1e9};const na=A.length/9,nb=B.length/9,bb=(S,o)=>{const r=[1e9,1e9,1e9,-1e9,-1e9,-1e9];for(let k=0;k<3;k++)for(let d=0;d<3;d++){const x=S[o+3*k+d];if(x<r[d])r[d]=x;if(x>r[3+d])r[3+d]=x}return r};
   const bbB=[];for(let j=0;j<nb;j++)bbB.push(bb(B,9*j));
+  /* poczatkowe ograniczenie z gory: dokladny dystans dla pary o najblizszych srodkach (probka A x wszystkie B) - bardzo przyspiesza odrzucanie */
+  {const cB=new Float64Array(nb*3);for(let j=0;j<nb;j++)for(let d=0;d<3;d++)cB[3*j+d]=(B[9*j+d]+B[9*j+3+d]+B[9*j+6+d])/3;const stp=Math.max(1,Math.floor(na/300));let bi=-1,bj=-1,bd=1e30;
+   for(let i=0;i<na;i+=stp){const cx=(A[9*i]+A[9*i+3]+A[9*i+6])/3,cy=(A[9*i+1]+A[9*i+4]+A[9*i+7])/3,cz=(A[9*i+2]+A[9*i+5]+A[9*i+8])/3;for(let j=0;j<nb;j++){const d=(cx-cB[3*j])**2+(cy-cB[3*j+1])**2+(cz-cB[3*j+2])**2;if(d<bd){bd=d;bi=i;bj=j}}}
+   if(bi>=0){const o=9*bi,p=9*bj,A0=[A[o],A[o+1],A[o+2]],A1=[A[o+3],A[o+4],A[o+5]],A2=[A[o+6],A[o+7],A[o+8]],B0=[B[p],B[p+1],B[p+2]],B1=[B[p+3],B[p+4],B[p+5]],B2=[B[p+6],B[p+7],B[p+8]];
+    for(const[x,y]of[[A0,A1],[A1,A2],[A2,A0]]){const r=segTri(x,y,B0,B1,B2);if(r.d<best.d)best=r}for(const[x,y]of[[B0,B1],[B1,B2],[B2,B0]]){const r=segTri(x,y,A0,A1,A2);if(r.d<best.d)best={d:r.d,a:r.b,b:r.a}}}}
   for(let i=0;i<na;i++){const o=9*i,ba=bb(A,o),A0=[A[o],A[o+1],A[o+2]],A1=[A[o+3],A[o+4],A[o+5]],A2=[A[o+6],A[o+7],A[o+8]];
    for(let j=0;j<nb;j++){const bj=bbB[j];let g=0;for(let d=0;d<3;d++){const x=Math.max(ba[d]-bj[3+d],bj[d]-ba[3+d],0);g+=x*x}if(g>=best.d*best.d)continue;const p=9*j,B0=[B[p],B[p+1],B[p+2]],B1=[B[p+3],B[p+4],B[p+5]],B2=[B[p+6],B[p+7],B[p+8]];
     for(const[x,y]of[[A0,A1],[A1,A2],[A2,A0]]){const r=segTri(x,y,B0,B1,B2);if(r.d<best.d)best=r}
@@ -1526,6 +1533,7 @@ const MTC=(()=>{
   const lineDist=(p,l0,u)=>{const w=sub(p,l0),pr=sub(w,mul(u,dot(w,u)));return{d:len(pr),q:add(p,mul(pr,-1))}};
   if(A.kind==='plane'&&B.kind==='plane'){const par=Math.abs(dot(A.n,B.n))>PAR;if(par){const sd=dot(B.n,A.pt)-B.d;return out(Math.abs(sd),A.pt,sub(A.pt,mul(B.n,sd)),null)}
    const r=soupDist(A.tris,B.tris),a=180-Math.acos(Math.max(-1,Math.min(1,dot(A.vn,B.vn))))/RAD;return out(r.d,r.a,r.b,a)}
+  if(A.kind==='obj'||B.kind==='obj'){if(A.kind==='edge'||B.kind==='edge'){const E=A.kind==='edge'?A:B,Sx=A.kind==='edge'?B:A,r=soupSeg(Sx.tris,E.a,E.b);return A===E?out(r.d,r.a,r.b,null):out(r.d,r.b,r.a,null)}const r=soupDist(A.tris,B.tris);return out(r.d,r.a,r.b,null)}
   let P=null,O=null;if(A.kind==='plane'||B.kind==='plane'){P=A.kind==='plane'?A:B;O=A.kind==='plane'?B:A}
   if(P&&O.kind==='edge'){const u=dir(O),sn=Math.abs(dot(u,P.n));if(sn<.01){const mid=mul(add(O.a,O.b),.5),sd=dot(P.n,mid)-P.d,b=sub(mid,mul(P.n,sd));return A===P?out(Math.abs(sd),b,mid,null):out(Math.abs(sd),mid,b,null)}
    const r=soupSeg(P.tris,O.a,O.b),an=Math.asin(Math.min(1,sn))/RAD;return A===P?out(r.d,r.b,r.a,an):out(r.d,r.a,r.b,an)}
@@ -1538,10 +1546,10 @@ const MTC=(()=>{
   if(C.kind==='cyl'&&E.kind==='edge'){const u=dir(E),par=len(cross(u,C.axis))<.01;if(par){const mid=mul(add(E.a,E.b),.5),w=sub(mid,C.c),pr=sub(w,mul(C.axis,dot(w,C.axis))),D=len(pr),n=D>1e-9?mul(pr,1/D):[1,0,0],dd=Math.max(0,D-C.r),sp=add(sub(mid,mul(pr,1)),mul(n,C.r));return A===C?out(dd,sp,mid,null):out(dd,mid,sp,null)}
    const r=soupSeg(C.tris,E.a,E.b);return A===C?out(r.d,r.b,r.a,ang(u,C.axis)):out(r.d,r.a,r.b,ang(u,C.axis))}
   return null}
- return{mk,analyze,pickEdge,measure,soupDist,soupSeg,segSeg,fitCyl,dot,cross,sub,add,mul,nrm,len}})();
+ return{mk,analyze,comp,pickEdge,measure,soupDist,soupSeg,segSeg,fitCyl,dot,cross,sub,add,mul,nrm,len}})();
 
 /* ===== narzedzie pomiarowe: obsluga sceny i panelu ===== */
-(()=>{const el=id=>document.getElementById(id),rBox=el('mtr'),bP=el('mtp'),bE=el('mte'),bC=el('mtc');if(!rBox||!bP)return;
+(()=>{const el=id=>document.getElementById(id),rBox=el('mtr'),bP=el('mtp'),bE=el('mte'),bO=el('mto'),bC=el('mtc');if(!rBox||!bP)return;
  const st={on:false,mode:'plane',once:null,A:null,B:null,res:null,warn:''},G=new THREE.Group();G.userData.mt=1;scene.add(G);
  const redM=new THREE.MeshBasicMaterial({color:0xff2020,transparent:true,opacity:.55,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}),
   edgeM=new THREE.MeshBasicMaterial({color:0xff2020,depthTest:false,transparent:true}),lnM=new THREE.MeshBasicMaterial({color:0xffc800,depthTest:false,transparent:true});
@@ -1552,14 +1560,14 @@ const MTC=(()=>{
  function clearG(){while(G.children.length){const o=G.children.pop();if(o.geometry)o.geometry.dispose()}}
  function drawItem(s){if(s.kind==='edge'){seg(s.a,s.b,.014,edgeM,10);return}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(Float32Array.from(s.tris),3));const me=new THREE.Mesh(g,redM);me.userData.mt=1;me.renderOrder=5;me.frustumCulled=false;G.add(me)}
  function redraw(){clearG();[st.A,st.B].forEach(s=>s&&drawItem(s));if(st.res&&st.res.a){seg(st.res.a,st.res.b,.008,lnM,12);ball(st.res.a,.03,lnM);ball(st.res.b,.03,lnM)}dirty=true}
- const dia=s=>s.kind==='cyl'?2*s.r:(s.circ?2*s.circ.r:null),desc=s=>s.kind==='plane'?(s.circ?'Powierzchnia okrągła, średnica '+fmt(2*s.circ.r)+' m':'Płaszczyzna'):s.kind==='cyl'?'Walec, średnica '+fmt(2*s.r)+' m':'Krawędź, długość '+fmt(MTC.len(MTC.sub(s.b,s.a)))+' m';
- function render(){let h='';if(!st.A)h='<div class="mtl">Zaznacz pierwszy obiekt ('+((st.once||st.mode)==='plane'?'płaszczyznę':'krawędź')+').</div>';
+ const MN={plane:'płaszczyznę',edge:'krawędź',obj:'obiekt'},dia=s=>s.kind==='cyl'?2*s.r:(s.circ?2*s.circ.r:null),desc=s=>s.kind==='plane'?(s.circ?'Powierzchnia okrągła, średnica '+fmt(2*s.circ.r)+' m':'Płaszczyzna'):s.kind==='obj'?'Cały obiekt':s.kind==='cyl'?'Walec, średnica '+fmt(2*s.r)+' m':'Krawędź, długość '+fmt(MTC.len(MTC.sub(s.b,s.a)))+' m';
+ function render(){let h='';if(!st.A)h='<div class="mtl">Zaznacz pierwszy obiekt ('+MN[st.once||st.mode]+').</div>';
   else{h='<div class="mtl">1. '+desc(st.A)+'</div>';if(dia(st.A)!=null&&!st.B)h+='<div class="mtv">Ø '+fmt(dia(st.A))+' m</div><div class="mtl">średnica</div>';
-   if(!st.B)h+='<div class="mtl">2. wskaż drugi obiekt'+(st.once?' ('+(st.once==='plane'?'płaszczyznę':'krawędź')+')':'')+'</div>';else{h+='<div class="mtl">2. '+desc(st.B)+'</div>';const r=st.res;if(r){h+='<div class="mtv">'+fmt(r.d)+' m</div><div class="mtl">minimalna odległość'+(r.d<.005?' (powierzchnie się stykają lub przecinają)':'')+'</div>';if(r.angle!=null)h+='<div class="mtl" style="margin-top:6px"><b>Kąt: '+fa(r.angle)+'</b></div>';else h+='<div class="mtl" style="margin-top:6px">elementy równoległe</div>'}}}
+   if(!st.B)h+='<div class="mtl">2. wskaż drugi obiekt'+(st.once?' ('+MN[st.once]+')':'')+'</div>';else{h+='<div class="mtl">2. '+desc(st.B)+'</div>';const r=st.res;if(r){h+='<div class="mtv">'+fmt(r.d)+' m</div><div class="mtl">minimalna odległość'+(r.d<.005?' (powierzchnie się stykają lub przecinają)':'')+'</div>';if(r.angle!=null)h+='<div class="mtl" style="margin-top:6px"><b>Kąt: '+fa(r.angle)+'</b></div>';else h+='<div class="mtl" style="margin-top:6px">elementy równoległe</div>'}}}
   if(st.warn)h+='<div class="mtw">'+st.warn+'</div>';rBox.innerHTML=h}
  function reset(){st.once=null;st.A=st.B=st.res=null;st.warn='';lab.style.display='none';clearG();render();dirty=true}
- function setMode(m){st.mode=m;bP.classList.toggle('on',m==='plane');bE.classList.toggle('on',m==='edge')}
- bP.onclick=()=>setMode('plane');bE.onclick=()=>setMode('edge');bC.onclick=reset;
+ function setMode(m){st.mode=m;bP.classList.toggle('on',m==='plane');bE.classList.toggle('on',m==='edge');bO.classList.toggle('on',m==='obj')}
+ bP.onclick=()=>setMode('plane');bE.onclick=()=>setMode('edge');bO.onclick=()=>setMode('obj');bC.onclick=reset;
  /* pozycje swiatowe wierzcholkow z cache (obiekty ruchome: klucz = macierz swiata) */
  function worldPos(mesh){const pos=mesh.geometry.attributes.position,e=mesh.matrixWorld.elements,k=e.join(),c=mesh.userData._mw;if(c&&c.k===k&&c.n===pos.count)return c.W;
   const idn=e[0]===1&&e[5]===1&&e[10]===1&&e[12]===0&&e[13]===0&&e[14]===0&&e[1]===0&&e[2]===0&&e[4]===0&&e[6]===0&&e[8]===0&&e[9]===0;let W;
@@ -1572,6 +1580,7 @@ const MTC=(()=>{
    const ms=Array.isArray(o.material)?o.material:[o.material];if(ms.every(q=>!q||(q.userData&&q.userData.plant)||q.blending===THREE.AdditiveBlending||(q.transparent&&q.opacity<.5)))return;list.push(o)});
   const hs=ray.intersectObjects(list,false);return hs.length?{h:hs[0],dir:ray.ray.direction.clone()}:null}
  function analyzeHit(h,dir,mode){const mesh=h.object,g=mesh.geometry;mesh.updateMatrixWorld(true);const W=worldPos(mesh),M=MTC.mk(W,g.index?g.index.array:null),hp=[h.point.x,h.point.y,h.point.z];
+  if(mode==='obj'){const o=MTC.comp(M,h.faceIndex);if(o.err)return o;o.pt=hp;return o}
   const s=MTC.analyze(M,h.faceIndex,hp,mode==='edge');if(s.err)return s;
   if(mode==='edge'){const o=MTC.pickEdge(s.outline,hp);if(!o)return{err:'Nie znaleziono krawędzi w tym miejscu.'};return{kind:'edge',a:o.a,b:o.b}}
   s.pt=hp;if(s.kind==='plane'){const dn=MTC.dot(s.n,[dir.x,dir.y,dir.z]);s.vn=dn>0?MTC.mul(s.n,-1):s.n.slice()}return s}
@@ -1586,7 +1595,7 @@ const MTC=(()=>{
  /* klik (bez przeciagania) w scenie przy aktywnym narzedziu */
  let dn=null;const cv=ren.domElement;
  /* dlugie przytrzymanie: male okno z wyborem lapania (powierzchnia / krawedz) dla tego jednego kliku */
- const mn=document.createElement('div');mn.className='mtmenu';mn.innerHTML='<button data-m="plane" title="Złap powierzchnię" aria-label="Złap powierzchnię"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M3 18 8 6h13l-5 12z" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Powierzchnia</span></button><button data-m="edge" title="Złap krawędź" aria-label="Złap krawędź"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M5 19 19 5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="5" cy="19" r="2.6" fill="currentColor"/><circle cx="19" cy="5" r="2.6" fill="currentColor"/></svg><span>Krawędź</span></button>';document.body.appendChild(mn);
+ const mn=document.createElement('div');mn.className='mtmenu';mn.innerHTML='<button data-m="plane" title="Złap powierzchnię" aria-label="Złap powierzchnię"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M3 18 8 6h13l-5 12z" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Powierzchnia</span></button><button data-m="edge" title="Złap krawędź" aria-label="Złap krawędź"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M5 19 19 5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="5" cy="19" r="2.6" fill="currentColor"/><circle cx="19" cy="5" r="2.6" fill="currentColor"/></svg><span>Krawędź</span></button><button data-m="obj" title="Złap cały obiekt" aria-label="Złap cały obiekt"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 3 20 7.5v9L12 21 4 16.5v-9z M4 7.5 12 12l8-4.5M12 12v9" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Obiekt</span></button>';document.body.appendChild(mn);
  let mpos=null,lpT=0;const hideMenu=()=>{mn.style.display='none';mpos=null};
  function showMenu(x,y){mpos={x,y};mn.style.display='flex';const w=mn.offsetWidth,h=mn.offsetHeight;mn.style.left=Math.max(8,Math.min(innerWidth-w-8,x-w/2))+'px';mn.style.top=Math.max(8,y-h-26<8?y+26:y-h-26)+'px'}
  mn.addEventListener('pointerdown',e=>e.stopPropagation());
