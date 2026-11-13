@@ -986,7 +986,7 @@ const pipeM=M(0x4a4f55,{roughness:.5,metalness:.4,side:THREE.DoubleSide}),fasM=M
 function pipe(a,b,r){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A),me=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),10),pipeM);me.position.copy(A).add(B).multiplyScalar(.5);me.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());me.castShadow=true;scene.add(me);statics.push(me)}
 const EV=[[-.9,-.9],[10.5,-.9],[10.5,1.6],[15.65,1.6],[15.65,14],[10.5,14],[10.5,22.1],[.1,22.1],[.1,9.5],[-.9,9.5]];
 // deska okapowa na krawędzi dachu, do niej przymocowana rynna Ø125 (haki co 60 cm), rury spustowe Ø90; narożniki mitrowane
-const FT=.022,GRAD=.0625,GOFF=FT+GRAD,GYT=E-.04;
+const FT=.022,GRAD=.0625,GOFF=FT+GRAD,GYT=E-.085;   /* rynna: krawedz ok. 8 cm pod czubkiem okapu (przekroj A-5: rynna tuz pod krawedzia pokrycia) */
 // spadki rynien 4 mm/m ku rurom; punkty rozdziału (najwyższe) między rurami: kosz-tył (x=11,5; tylna rynna x=8,0) przesunięte, reszta w połowie odległości
 const KS=.004,PIPES=[[-.9,.35,-.06,.35],[-.9,8.2,-.06,8.2],[.1,20.6,.94,20.6],[10.5,21.27,9.86,21.27],[14.5,1.6,14.5,2.44],[15.65,7.7,14.96,7.7]];
 const GEL=EV.map((p,i)=>{const q=EV[(i+1)%EV.length];return Math.hypot(q[0]-p[0],q[1]-p[1])}),GCUM=[0];GEL.forEach(L=>GCUM.push(GCUM[GCUM.length-1]+L));const GPER=GCUM[GCUM.length-1];
@@ -998,9 +998,15 @@ const gyAt=s=>{s=((s%GPER)+GPER)%GPER;for(let j=0;j<GM;j++){const lo=GW[(j+GM-1)
 {const n=EV.length,nm=EV.map((p,i)=>{const q=EV[(i+1)%n],dx=q[0]-p[0],dy=q[1]-p[1],L=Math.hypot(dx,dy);return[dy/L,-dx/L]}),
  mt=EV.map((p,i)=>{const a=nm[(i+n-1)%n],b=nm[i],k=1/(1+a[0]*b[0]+a[1]*b[1]);return[(a[0]+b[0])*k,(a[1]+b[1])*k]}),
  V3=(i,u,y)=>{const P=EV[i%n],m=mt[i%n];return[P[0]+m[0]*u,y,-(P[1]+m[1]*u)]},K=12;
- const fp=[],prof=[[0,E-.33],[FT,E-.33],[FT,E+.035],[0,E+.035]];
+ const fp=[],prof=[[0,E-.33],[FT,E-.33],[FT,E-.03],[0,E-.03]];
  for(let i=0;i<n;i++)for(let e=0;e<4;e++){const a=prof[e],b=prof[(e+1)%4],A=V3(i,a[0],a[1]),B=V3(i,b[0],b[1]),C=V3(i+1,b[0],b[1]),D=V3(i+1,a[0],a[1]);fp.push(...A,...B,...C,...A,...C,...D)}
  const fg=new THREE.BufferGeometry();fg.setAttribute('position',new THREE.Float32BufferAttribute(fp,3));fg.computeVertexNormals();const fm=new THREE.Mesh(fg,fasM);fm.castShadow=fm.receiveShadow=true;scene.add(fm);
+ /* grubosc pokrycia dachu na okapie: krawedz pokrycia (dachowka + lacie + kontrlacie, ok. 6 cm) wysunieta o 3 cm przed deske okapowa i rynne, widoczna jako pas o przekroju prostokatnym; zgodnie z przekrojem A-5 pokrycie siega dalej niz deska okapowa */
+ {const U=.03,th=.062,pr=[[-.002,E+T*.002],[U,E-T*U],[U,E-T*U-th],[-.002,E+T*.002-th]],lp=[];
+  for(let i=0;i<n;i++)for(let e=0;e<4;e++){const a=pr[e],b=pr[(e+1)%4],A=V3(i,a[0],a[1]),B=V3(i,b[0],b[1]),C=V3(i+1,b[0],b[1]),D=V3(i+1,a[0],a[1]);lp.push(...A,...B,...C,...A,...C,...D)}
+  const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.Float32BufferAttribute(lp,3));lg.computeVertexNormals();
+  const lm=new THREE.Mesh(lg,M(0x30363a,{roughness:.8,side:THREE.DoubleSide}));lm.castShadow=lm.receiveShadow=true;scene.add(lm)}
+
  const GGAP=.0006,gRing=(i,sx)=>{const o=[],L=GEL[i],P0=EV[i],Q0=EV[(i+1)%n],ux=(Q0[0]-P0[0])/L,uy=(Q0[1]-P0[1])/L,gy0=gyAt(GCUM[i]+sx);for(let j=0;j<=K;j++){const ph=Math.PI*j/K,u=GOFF+GRAD*Math.cos(ph),y=gy0-GRAD*Math.sin(ph);o.push(...(sx<1e-6?(p=>[p[0]+ux*GGAP,p[1],p[2]-uy*GGAP])(V3(i,u,y)):sx>L-1e-6?(p=>[p[0]-ux*GGAP,p[1],p[2]+uy*GGAP])(V3(i+1,u,y)):[P0[0]+ux*sx+nm[i][0]*u,y,-(P0[1]+uy*sx+nm[i][1]*u)]))}return o};
  /* kazdy bok dachu = osobna rynna (osobny obiekt); na rogach scieta pod 45 st., miedzy sasiednimi odcinkami szczelina 1,2 mm */
  for(let i=0;i<n;i++){const pos=[],idx=[],bps=[0,GEL[i]];GO.concat(GW).forEach(s=>{const x=s-GCUM[i];if(x>1e-6&&x<GEL[i]-1e-6)bps.push(x)});bps.sort((a,b)=>a-b);for(let q=0;q<bps.length-1;q++){const r0=gRing(i,bps[q]),r1=gRing(i,bps[q+1]),base=pos.length/3;pos.push(...r0,...r1);for(let j=0;j<K;j++){const A=base+j,B=A+1,C=base+K+1+j,D2=C+1;idx.push(A,C,B,B,C,D2)}}
