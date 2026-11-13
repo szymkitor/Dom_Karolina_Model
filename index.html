@@ -846,11 +846,11 @@ u('x',14.9,1,9.75,2.4,0,2.39,{n:2,cut:[8.55,11.3]});u('y',11.3,1,12.94,3.2,0,2.3
 const wb=(ax,c,s,a0,a1,z0,z1)=>{if(a1-a0<1e-3||z1-z0<1e-3)return;const l=a1-a0,h=z1-z0,ac=c-s*T_/2,al=(a0+a1)/2,zc=(z0+z1)/2,g=ax=='y'?new THREE.BoxGeometry(l,h,T_):new THREE.BoxGeometry(T_,h,l),X=ax=='y'?al:ac,Z=ax=='y'?-ac:-al;wuv(g,X,zc,Z);add(g,wallMat,X,zc,Z)};
 BD.forEach(([ax,c,s,a0,a1])=>{const ops=U.filter(o=>o.ax==ax&&o.c==c&&o.s==s&&o.ctr>=a0&&o.ctr<=a1).map(o=>({sill:o.sill,h:o.h,l:o.cut||[o.ctr-o.w/2,o.ctr+o.w/2]})).sort((p,q)=>p.l[0]-q.l[0]);
  let cur=a0;ops.forEach(o=>{wb(ax,c,s,cur,o.l[0],-.305,E);wb(ax,c,s,o.l[0],o.l[1],-.305,o.sill);wb(ax,c,s,o.l[0],o.l[1],o.sill+o.h,E);cur=o.l[1]});wb(ax,c,s,cur,a1,-.305,E)});
-[[14.57,12.97,2.35,-.34],[9.47,.33,2.63,-.1]].forEach(([x,y,Ht,bt])=>{const g=new THREE.BoxGeometry(.4,Ht-bt,.4),yy=(Ht+bt)/2;wuv(g,x,yy,-y);add(g,wallMat,x,yy,-y)});   // słup wejścia kończy się pod stropem podcienia (+2,63)
+[[14.57,12.97,2.39,-.34],[9.47,.33,2.63,-.1]].forEach(([x,y,Ht,bt])=>{const g=new THREE.BoxGeometry(.4,Ht-bt,.4),yy=(Ht+bt)/2;wuv(g,x,yy,-y);add(g,wallMat,x,yy,-y)});   // słup wejścia kończy się pod stropem podcienia (+2,63)
 // podcień wejścia wg elewacji frontowej i rzutu: strop podcienia (spód +2,63) i zamurowana część nad nim aż do okapu (+3,22); bez podbitki PCV nad wejściem; x 7,25–9,90, y -0,17–2,5
 {const x0=7.25,x1=9.9,y0=0,y1=2.5,h0=2.63,h1=E,g=new THREE.BoxGeometry(x1-x0,h1-h0,y1-y0),X=(x0+x1)/2,Yc=(h0+h1)/2,Z=-(y0+y1)/2;wuv(g,X,Yc,Z);add(g,wallMat,X,Yc,Z)}
 // zadaszony taras tylny (x 9,8–14,9: bok wschodni w licu ściany wschodniej, do okapu 15,65 zostaje przerwa; południowy w licu elewacji y=11,3; y 11,3–14,0): strop na +2,63 i zamurowana część nad nim do okapu (+3,22), bez podbitki PCV na pełnej wysokości
-{const x0=9.8,x1=14.9,y0=11.3,y1=13.3,h0=2.35,g=new THREE.BoxGeometry(x1-x0,E-h0,y1-y0),X=(x0+x1)/2,Yc=(h0+E)/2,Z=-(y0+y1)/2;wuv(g,X,Yc,Z);add(g,wallMat,X,Yc,Z)}   // słupy podcienia (ten sam tynk)
+{const x0=9.8,x1=14.9,y0=11.3,y1=13.3,h0=2.39,g=new THREE.BoxGeometry(x1-x0,E-h0,y1-y0),X=(x0+x1)/2,Yc=(h0+E)/2,Z=-(y0+y1)/2;wuv(g,X,Yc,Z);add(g,wallMat,X,Yc,Z)}   // słupy podcienia (ten sam tynk)
 // grill gazowy zamknięty (rodzinny, ok. 1,75×0,65×1,23 m z półkami), tyłem do elewacji x=9,8, środek między oknami y=15,42 i 19,14 → y=17,28; front na wschód
 {const gx=10.47,gz=-17.28,bk=M(0xaaaeb2,{roughness:.5,metalness:.2}),lidM=M(0xb4b8bc,{roughness:.45,metalness:.22}),ss=M(0xd2d5d8,{roughness:.4,metalness:.25}),dr=M(0xa2a6aa,{roughness:.55,metalness:.2}),gp=M(0x3a3b3d,{roughness:.8}),kn=M(0x0e0e0f,{roughness:.5});
  add(new THREE.BoxGeometry(.62,.66,1.04),bk,gx,.45,gz);
@@ -942,7 +942,7 @@ const ub=(o,al,zc,sa,sz,sd,m)=>{const ac=o.c-o.s*(D+.04);add(o.ax=='y'?new THREE
    let n=0;for(let y=yT-PIT;y>yT-h+.004;y-=PIT){lp.set([cx-wC/2,y,Z(.08)-.0075,cx+wC/2,y,Z(.08)-.0075],n*6);n++;if(n>=NM)break}lg.setDrawRange(0,n*2);lg.attributes.position.needsUpdate=true}};RL.apply();
  document.getElementById('rl0').onclick=()=>{RL.t=RL.t?0:1;document.getElementById('rl0').classList.toggle('on',!!RL.t)};document.getElementById('rl0').classList.add('on')}
 // lity słupek narożny przeszklenia salonu: 16,5 × 16,5 cm (pomiar z rzutu: czarny kwadrat ok. 16,4 × 16,8 cm), przylega do ram okien 3,2 m i 2,4 m, osie szyb przechodzą przez słupek
-add(new THREE.BoxGeometry(.165,2.35,.165),frM,14.6225,1.175,-11.0325,false);
+add(new THREE.BoxGeometry(.165,2.39,.165),frM,14.6225,1.195,-11.0325,false);
 const sillM=M(0x4e3623,{roughness:.45,metalness:.55});
 const SILL=[];
 U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.07;
@@ -1425,7 +1425,7 @@ function flood(id,x,y,z,yaw){const dk=M(0x2a2d31,{roughness:.5,metalness:.6}),g=
  addLight(id,lens,new THREE.SpotLight(0xfff0d6,2.4,16,.85,.55,1),p0,p0.clone().addScaledVector(f,6))}
 flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2.12,-34.5,0);   // halogen nad drzwiami szopy
 
-[['l7',.55,9.85],['l3',11.4,12.55,2.35],['l3',12.7,12.55,2.35],['l3',14.0,12.55,2.35]].forEach(([id,x,Y,H=E])=>{const tr=new THREE.Mesh(new THREE.CylinderGeometry(.095,.095,.008,24),M(0xdfe2e4,{roughness:.5,metalness:.4})),ln=new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.008,24),new THREE.MeshBasicMaterial({color:0xfff1cf}));
+[['l7',.55,9.85],['l3',11.4,12.55,2.39],['l3',12.7,12.55,2.39],['l3',14.0,12.55,2.39]].forEach(([id,x,Y,H=E])=>{const tr=new THREE.Mesh(new THREE.CylinderGeometry(.095,.095,.008,24),M(0xdfe2e4,{roughness:.5,metalness:.4})),ln=new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.008,24),new THREE.MeshBasicMaterial({color:0xfff1cf}));
  tr.position.set(x,H-.004,-Y);ln.position.set(x,H-.011,-Y);scene.add(tr,ln);
  addLight(id,ln,new THREE.SpotLight(0xffe2b4,1.8,7,1.15,.7,1),new THREE.Vector3(x,H-.06,-Y),new THREE.Vector3(x,H-3.4,-Y))});
 /* podcien wejscia: czarna natynkowa lampa sufitowa LED (plafon okragly o srednicy 28 cm, czarny aluminiowy korpus + dyfuzor opalowy), w miejscu dawnego punktu swietlnego */
