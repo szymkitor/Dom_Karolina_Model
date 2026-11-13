@@ -159,9 +159,9 @@ let mx=0,my=0,menu=false,cur=-1;const TP=subs.map(()=>[0,0]);
 function arcOf(cx,cy,R){const w=W(),h=H(),m=SS/2+8,x0=ins.l+m,x1=w-ins.r-m,y0=ins.t+m,y1=h-ins.b-m,N=72,st=Math.PI*2/N,ok=[];for(let i=0;i<N;i++){const a=i*st,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);ok.push(x>=x0&&x<=x1&&y>=y0&&y<=y1)}
  if(ok.every(v=>v))return{start:-Math.PI/2,len:st*(N-1)};let best={start:0,len:0};
  for(let s=0;s<N;s++){if(!ok[s]||ok[(s-1+N)%N])continue;let L=0;while(L<N&&ok[(s+L)%N])L++;if((L-1)*st>best.len)best={start:s*st,len:(L-1)*st}}return best}
-function fan(){const cx=mx+SM/2,cy=my+SM/2,n=ord.length;let k=0,ring=0;while(k<n&&ring<5){const R=SM/2+SS/2+22+ring*(SS+10),a=arcOf(cx,cy,R),sp=(SS+8)/R,cap=a.len>0?Math.floor(a.len/sp)+1:0,take=Math.min(n-k,cap);
+function fan(){const cx=mx+SM/2,cy=my+SM/2,n=ord.length;let k=0,ring=0;while(k<n&&ring<5){const R=SM/2+SS/2+9+ring*(SS+8),a=arcOf(cx,cy,R),sp=(SS+8)/R,cap=a.len>0?Math.floor(a.len/sp)+1:0,take=Math.min(n-k,cap);
   if(take>0){const step=take>1?Math.min(sp*1.4,a.len/(take-1)):0,span=(take-1)*step,st=a.start+(a.len-span)/2;for(let i=0;i<take;i++){const t=st+i*step;TP[ord[k++]]=[cx+R*Math.cos(t),cy+R*Math.sin(t)]}}ring++}
- while(k<n){TP[ord[k]]=[cx,cy-(SM/2+SS/2+14)-(k)*(SS+8)];k++}
+ while(k<n){TP[ord[k]]=[cx,cy-(SM/2+SS/2+8)-(k)*(SS+6)];k++}
  /* podikonka pola: dopiero w trybie pomiaru, tuz obok ikonki linijki (na zewnatrz lub z boku) */
  if(areaI>=0&&measI>=0){const q=TP[measI],dx=q[0]-cx,dy=q[1]-cy,L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,D=SS+6,w=W(),h=H(),m=SS/2+6,ok=p=>p[0]>=ins.l+m&&p[0]<=w-ins.r-m&&p[1]>=ins.t+m&&p[1]<=h-ins.b-m,cs=[[q[0]+ux*D,q[1]+uy*D],[q[0]-uy*D,q[1]+ux*D],[q[0]+uy*D,q[1]-ux*D],[q[0]+ux*D*.7-uy*D*.7,q[1]+uy*D*.7+ux*D*.7],[q[0]+ux*D*.7+uy*D*.7,q[1]+uy*D*.7-ux*D*.7]];TP[areaI]=cs.find(ok)||cs[0]}
  apply()}
