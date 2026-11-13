@@ -164,6 +164,9 @@ function fan(){const cx=mx+SM/2,cy=my+SM/2,n=ord.length;let k=0,ring=0;while(k<n
  while(k<n){TP[ord[k]]=[cx,cy-(SM/2+SS/2+8)-(k)*(SS+6)];k++}
  /* podikonka pola: dopiero w trybie pomiaru, tuz obok ikonki linijki (na zewnatrz lub z boku) */
  if(areaI>=0&&measI>=0){const q=TP[measI],dx=q[0]-cx,dy=q[1]-cy,L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,D=SS+4,w=W(),h=H(),m=SS/2+6,ok=p=>p[0]>=ins.l+m&&p[0]<=w-ins.r-m&&p[1]>=ins.t+m&&p[1]<=h-ins.b-m,cs=[[q[0]-uy*D,q[1]+ux*D],[q[0]+uy*D,q[1]-ux*D],[q[0]-ux*D*.5-uy*D*.87,q[1]-uy*D*.5+ux*D*.87],[q[0]-ux*D*.5+uy*D*.87,q[1]-uy*D*.5-ux*D*.87],[q[0]+ux*D,q[1]+uy*D]];TP[areaI]=cs.find(ok)||cs[0]}
+ /* otwarty podtryb: aktywny bąbelek (i podikonka pola przy pomiarze) leza w pierwszym rzedzie, tuz przy glownym */
+ if(cur>=0){const R0=SM/2+SS/2+4,a0=arcOf(cx,cy,R0),t0=a0.start+a0.len/2,sp0=(SS+4)/R0,pr=(cur===measI||cur===areaI)&&areaI>=0&&measI>=0;
+  if(pr){TP[measI]=[cx+R0*Math.cos(t0-sp0/2),cy+R0*Math.sin(t0-sp0/2)];TP[areaI]=[cx+R0*Math.cos(t0+sp0/2),cy+R0*Math.sin(t0+sp0/2)]}else TP[cur]=[cx+R0*Math.cos(t0),cy+R0*Math.sin(t0)]}
  apply()}
 function apply(){const cx=mx+SM/2,cy=my+SM/2;subs.forEach((b,i)=>{const pair=cur===measI||cur===areaI,show=i===areaI?(!menu&&pair):(menu||cur===i||(i===measI&&cur===areaI)),p=show?TP[i]:[cx,cy];b.style.left=(p[0]-SS/2)+'px';b.style.top=(p[1]-SS/2)+'px';b.style.transitionDelay=menu?(i*22)+'ms':((n-i)*14)+'ms';b.classList.toggle('show',show)})}
 function xy(){const w=W(),h=H(),x0=G+ins.l,x1=Math.max(x0,w-SM-G-ins.r),y0=G+ins.t,y1=Math.max(y0,h-SM-G-ins.b),t=clamp(pos.t,0,1);
@@ -184,7 +187,7 @@ function place(){if(cur<0)return;const p=panels[cur],b=subs[cur],bx=TP[cur][0]-S
  p.style.setProperty('--ox',ox+'px');p.style.setProperty('--oy',oy+'px');p.style.left=left+'px';p.style.top=top+'px'}
 function hook(i,on){try{if(window.__panelHook&&subs[i])window.__panelHook(subs[i].dataset.k,on)}catch(e){}}
 function tgl(i,o){const prev=cur;cur=o?i:-1;panels.forEach((p,j)=>{if(p)p.classList.toggle('hid',!(o&&j===i))});subs.forEach((b,j)=>{const on=o&&j===i;b.classList.toggle('open',on);b.setAttribute('aria-expanded',on)});
- if(prev>=0&&prev!==cur)hook(prev,false);if(cur>=0&&cur!==prev)hook(cur,true);menu=false;main.classList.remove('open');main.setAttribute('aria-expanded','false');apply();if(o)place()}
+ if(prev>=0&&prev!==cur)hook(prev,false);if(cur>=0&&cur!==prev)hook(cur,true);menu=false;main.classList.remove('open');main.setAttribute('aria-expanded','false');fan();if(o)place()}
 function setMenu(o){if(o&&cur>=0)tgl(-1,false);menu=o;main.classList.toggle('open',o);main.setAttribute('aria-expanded',o);apply()}
 subs.forEach((b,i)=>b.addEventListener('click',()=>{if(b.dataset.k==='reset'){b.querySelector('svg').style.transform='rotate(-360deg)';setTimeout(()=>location.reload(),280);return}tgl(i,cur!==i)}));   /* reset: przeladowanie przywraca swiatla, pore dnia, kamere, drzwi, tryby; polozenie banieczki zostaje (localStorage) */
 let d0=null,drag=false;
