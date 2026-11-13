@@ -449,7 +449,8 @@ function grTex(){const c=document.createElement('canvas');c.width=c.height=256;c
  for(let i=0;i<9000;i++){const px=Math.random()*256,py=Math.random()*256,a=-1.57+(Math.random()-.5)*1.2,l=3+Math.random()*6;x.strokeStyle=cl[i%6];x.lineWidth=.8+Math.random()*.6;x.beginPath();x.moveTo(px,py);x.lineTo(px+Math.cos(a)*l,py+Math.sin(a)*l);x.stroke()}
  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(.5,.5);t.anisotropy=4;return t}
 const pvM=M(0xffffff,{map:pvTex(),roughness:.95}),grT=grTex(),grM=M(0xffffff,{map:grT,roughness:1}),grB=M(0xdce8cc,{map:grT,roughness:1});
-const flat=(pts,y,c)=>{if(c==0x82ad63||c==0x9fb48a)return;   /* trawnik i tlo: jedna bryla gruntu (prostopadloscian na calej planszy), bez osobnych plaszczyzn */
+const GRVP=[],KOSP=[],BARR=[];   /* rejestry do wstegi pod zwirem: obrysy zwiru, kostki i przeszkod */
+const flat=(pts,y,c)=>{if(c==0x82ad63||c==0x9fb48a)return;if(c==0xbab5ab||c==0xb0aca2)KOSP.push(pts);else if(c==0x4b4f55)BARR.push(pts);   /* trawnik i tlo: jedna bryla gruntu (prostopadloscian na calej planszy), bez osobnych plaszczyzn */
  const g=new THREE.ShapeGeometry(new THREE.Shape(pts.map(p=>new THREE.Vector2(p[0],p[1]))));g.rotateX(-Math.PI/2);const me=add(g,c==0xbab5ab||c==0xb0aca2?pvM:c==0x82ad63?grM:c==0x4b4f55?asphM:c==0x9fb48a?grB:M(c),0,y,0);me.castShadow=false};
 const asphM=(()=>{const S=256,c=document.createElement('canvas');c.width=c.height=S;const a=c.getContext('2d');a.fillStyle='#3c3e42';a.fillRect(0,0,S,S);let sd=17;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;
  for(let i=0;i<5000;i++){const v=Math.round(40+rnd()*70);a.fillStyle='rgba('+v+','+v+','+(v+3)+','+(.25+rnd()*.4)+')';a.fillRect(rnd()*S,rnd()*S,1+(rnd()<.3),1+(rnd()<.3))}
@@ -703,7 +704,7 @@ function staf(x0,y0,x1,y1,sa,sb){const L=Math.hypot(x1-x0,y1-y0),ux=(x1-x0)/L,uy
   const gc=document.createElement('canvas');gc.width=gc.height=128;const g2=gc.getContext('2d');g2.fillStyle='#a39e92';g2.fillRect(0,0,128,128);let sg=23;const rg=()=>(sg=(sg*16807)%2147483647)/2147483647;
   for(let i=0;i<1100;i++){g2.fillStyle=['#bcb6aa','#8e887c','#a8a296','#827c70','#c4beb2'][i%5];g2.beginPath();g2.ellipse(rg()*128,rg()*128,1.2+rg()*1.8,1+rg()*1.4,rg()*3,0,6.3);g2.fill()}
   const gt2=new THREE.CanvasTexture(gc);gt2.wrapS=gt2.wrapT=THREE.RepeatWrapping;gt2.anisotropy=8;const gm2=M(0xffffff,{map:gt2,roughness:1});gm2.userData.lnTex='grv';
-  {const gg=new THREE.ShapeGeometry(new THREE.Shape([[15.44,-1.12],[16.72,-1.12],[16.72,8.05],[15.44,8.05]].map(p=>new THREE.Vector2(p[0],p[1]))));gg.rotateX(-Math.PI/2);add(gg,gm2,0,-.295,0,false)}
+  {const gg=new THREE.ShapeGeometry(new THREE.Shape([[15.44,-1.12],[16.72,-1.12],[16.72,8.05],[15.44,8.05]].map(p=>new THREE.Vector2(p[0],p[1]))));gg.rotateX(-Math.PI/2);add(gg,gm2,0,-.295,0,false);GRVP.push([[15.44,-1.12],[16.72,-1.12],[16.72,8.05],[15.44,8.05]])}
   const pc=document.createElement('canvas');pc.width=pc.height=256;const p2=pc.getContext('2d');p2.fillStyle='#6b6a67';p2.fillRect(0,0,256,256);
   for(let i=0;i<22;i++){const cx=rg()*256,cy=rg()*256,rr=30+rg()*80,gd=p2.createRadialGradient(cx,cy,0,cx,cy,rr);gd.addColorStop(0,rg()<.5?'rgba(130,129,125,.28)':'rgba(70,69,66,.3)');gd.addColorStop(1,'rgba(100,99,95,0)');p2.fillStyle=gd;p2.fillRect(cx-rr,cy-rr,2*rr,2*rr)}
   for(let i=0;i<9000;i++){p2.fillStyle=rg()<.5?'rgba(150,148,143,'+(.05+rg()*.08)+')':'rgba(30,30,28,'+(.07+rg()*.1)+')';const z=rg()<.15?2:1;p2.fillRect(rg()*256,rg()*256,z,z)}
@@ -716,11 +717,12 @@ function staf(x0,y0,x1,y1,sa,sb){const L=Math.hypot(x1-x0,y1-y0),ux=(x1-x0)/L,uy
  const cv=document.createElement('canvas');cv.width=cv.height=128;const cc=cv.getContext('2d');cc.fillStyle='#8a857b';cc.fillRect(0,0,128,128);
  for(let i=0;i<900;i++){cc.fillStyle=['#a8a398','#6a665e','#78746a','#b3ac9d'][i%4];cc.beginPath();cc.arc(Math.random()*128,Math.random()*128,1.2+Math.random()*1.8,0,6.3);cc.fill()}
  const gt=new THREE.CanvasTexture(cv);gt.wrapS=gt.wrapT=THREE.RepeatWrapping;const gm=M(0xffffff,{map:gt,roughness:1});gm.userData.lnTex='grv';
- [[-.5,-.5,.91,0],[6.41,-.5,7.25,0],[-.5,0,0,8.8],[-.5,8.8,1,9.3],[.5,9.3,1,21.35],[-.05,9.3,.5,10.85],[.5,21.35,10.3,21.85],[9.8,20.75,10.3,21.35],[14.9,2.5,15.4,8.05],[10.05,2.0,15.4,2.5],[-3.39,34,1.6,34.5],[-3.39,36.9,1.6,37.4],[-3.39,34.5,-2.9,36.9],[1.1,34.5,1.6,36.9]].forEach(([a,b,c,d])=>{const g=new THREE.ShapeGeometry(new THREE.Shape([[a,b],[c,b],[c,d],[a,d]].map(p=>new THREE.Vector2(p[0],p[1]))));g.rotateX(-Math.PI/2);add(g,gm,0,-.295,0,false)});
+ [[-.5,-.5,.91,0],[6.41,-.5,7.25,0],[-.5,0,0,8.8],[-.5,8.8,1,9.3],[.5,9.3,1,21.35],[-.05,9.3,.5,10.85],[.5,21.35,10.3,21.85],[9.8,20.75,10.3,21.35],[14.9,2.5,15.4,8.05],[10.05,2.0,15.4,2.5],[-3.39,34,1.6,34.5],[-3.39,36.9,1.6,37.4],[-3.39,34.5,-2.9,36.9],[1.1,34.5,1.6,36.9]].forEach(([a,b,c,d])=>{GRVP.push([[a,b],[c,b],[c,d],[a,d]]);const g=new THREE.ShapeGeometry(new THREE.Shape([[a,b],[c,b],[c,d],[a,d]].map(p=>new THREE.Vector2(p[0],p[1]))));g.rotateX(-Math.PI/2);add(g,gm,0,-.295,0,false)});
  /* opaska zwirowa przy murze frontowym i skosie (do ostatniego filaru): zastepuje pas trawnika miedzy murem a krawezznikami drogowymi, lezy na gruncie (trawnik tego pasa -0,40), przerwy na kostke/chodniki */
  [[[-3.6,-8],[1.38,-8],[1.38,-7.5],[-3.6,-7.5]],[[-3.6,-7.5],[-2.4,-7.5],[-2.4,-6.9],[-3.6,-6.9]],[[5.88,-8],[8.87,-8],[8.87,-7.5],[5.88,-7.5]],[[9.99,-7.5],[9.99,-8],[14.9927,-8],Q(2.55,-.5),Q(2.55,0),Q(0,0)],[Q(4.15,0),Q(4.15,-.5),Q(6.733,-.5),Q(6.733,0)],
   (()=>{const e=Q(0,-.5),uxx=Q(1,-.5)[0]-e[0],uyy=Q(1,-.5)[1]-e[1],t=(19.95-e[0])/uxx,E2=[19.95,e[1]+uyy*t];   /* przedluzenie opaski dalej wzdluz siatki: wschodnia granica dzialki (x 19,45), potem wzdluz ogrodzenia przy koncu ulicy (y 21,35) do osi symetrii slepej uliczki (x 21,9); pas 0,5 m lezy po stronie ogrodzenia od krawedzi jezdni (x 19,95 i y 20,85), nie wchodzi na asfalt */
-   return[[19.45,-2.65],Q(6.733,-.5),E2,[19.95,20.85],[21.9,20.85],[21.9,21.35],[19.45,21.35]]})()].forEach(pl=>{const g=new THREE.ShapeGeometry(new THREE.Shape(pl.map(p=>new THREE.Vector2(p[0],p[1]))));g.rotateX(-Math.PI/2);add(g,gm,0,-.295,0,false)});
+   return[[19.45,-2.65],Q(6.733,-.5),E2,[19.95,20.85],[21.9,20.85],[21.9,21.35],[19.45,21.35]]})()].forEach(pl=>{GRVP.push(pl);const g=new THREE.ShapeGeometry(new THREE.Shape(pl.map(p=>new THREE.Vector2(p[0],p[1]))));g.rotateX(-Math.PI/2);add(g,gm,0,-.295,0,false)});
+BARR.push([Q(TL,-.125),Q(TR,-.125),Q(TR,1.925),Q(TL,1.925)]);   /* obrys wiaty (fundamenty) */
  /* opaska zwirowa wokol wiaty usunieta */ flat([Q(TL+.125,0),Q(2.55,0),Q(2.55,-.35),Q(4.15,-.35),Q(4.15,0),Q(TR-.125,0),Q(TR-.125,1.8),Q(4.15,1.8),Q(4.15,1.95),Q(2.55,1.95),Q(2.55,1.8),Q(TL+.125,1.8)],-.30,0xb0aca2);   /* jedna ciagla plaszczyzna: podloga wiaty + progi + przejscie do chodnikow (ten sam poziom -0,295 co chodniki) */
  [0,1.8].forEach(s_=>{[[TL+.125,2.25],[4.45,TR-.125]].forEach(([a,b])=>sg(a,b,CH,.25,ftM,PGR,s_));[2.4,4.3].forEach(t=>{const p=Q(t,s_);add(new THREE.BoxGeometry(.3,CH,.25),ftM,p[0],PGR+CH/2,-p[1]).rotation.y=ph})});[TL,TR].forEach(t=>{const p=Q(t,-.125),q=Q(t,1.925);seg(p[0],p[1],q[0],q[1],CH,.25,ftM,PGR)});   /* fundamenty rowne z licem scian i slupow (nie wystaja) */
     /* pasy zachodza o kilka cm pod wstege chodnika (ta sama tekstura/poziom) - bez szczeliny przy skosnej krawedzi wstegi */   /* chodnik od ogrodu poszerzony do 1,6 m (swiatlo miedzy slupami) */   /* fundament pod sciany i przejscie podlogi do chodnika */   // wąski żwir wokół wiaty (bez przejścia chodnika); pod wiatą cała posadzka ze żwiru
@@ -1740,6 +1742,25 @@ return out}
  {const pt=plateTex();cm.plates.forEach(pl=>{const q=new THREE.Mesh(new THREE.PlaneGeometry(.52,.115),new THREE.MeshStandardMaterial({map:pt,roughness:.45}));q.position.set(0,pl.y,pl.z);if(pl.dir<0)q.rotation.y=Math.PI;car.add(q)})}
  car.position.set(4.95,-.174,2.935);car.rotation.x=.0599;car.userData.hl=1;scene.add(car)}
 /* nawierzchnie, zwir i krawezniki odbieraja cienie (dotad dodane bez receiveShadow - cien auta nie padal na pochylnie) */{const GM=new Set([pvD,pvM,asphM,grM,grB]);statics.forEach(me=>{const m=me.material;if(!me.receiveShadow&&!Array.isArray(m)&&(GM.has(m)||(m.userData&&m.userData.lnTex==='grv')))me.receiveShadow=true})}
+/* czarna, bardzo cienka wstega z tworzywa (geowloknina/siatka pod zwirem) na kazdej krawedzi zwiru, ktora styka sie z trawnikiem; lekko wystaje ponad grunt (gora -0,29), nie ma jej tam, gdzie zwir graniczy ze sciana, kostka (z krawieznikiem), inna opaska, taras, jezdnia, ogrodzenie */
+{const pin=(p,q)=>{let c=false;for(let i=0,j=q.length-1;i<q.length;j=i++){const a=q[i],b=q[j];if((a[1]>p[1])!==(b[1]>p[1])&&p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0])c=!c}return c},
+ dseg=(p,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],L2=dx*dx+dy*dy,t=L2?Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/L2)):0;return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy)},
+ near=(p,q,tol)=>{if(pin(p,q))return true;for(let i=0;i<q.length;i++)if(dseg(p,q[i],q[(i+1)%q.length])<=tol)return true;return false},
+ rc=(x0,y0,x1,y1)=>[[x0,y0],[x1,y0],[x1,y1],[x0,y1]];
+ const KO=KOSP.concat([rc(.91,-5,6.41,0),rc(1.38,-8,5.88,-7.5),rc(8.87,-8,9.99,-7.5)]),TE=[rc(7.25,-.8,10.05,2.5),rc(9.8,11.3,16.1,20.4),rc(14.9,8.4,16.1,11.3)];
+ const blocked=(p,own)=>{for(let i=0;i<GRVP.length;i++)if(i!==own&&near(p,GRVP[i],.05))return true;for(const q of KO)if(near(p,q,.09))return true;if(pin(p,WP))return true;for(const q of TE)if(near(p,q,.05))return true;for(const q of BARR)if(near(p,q,.2))return true;
+  for(let i=0;i<PL.length;i++)if(dseg(p,PL[i],PL[(i+1)%PL.length])<=.09)return true;return false};
+ const TOP=-.29,BOT=-.33,hw=.0025,pos=[],idx=[],V=(x,y,z)=>{pos.push(x,y,z);return pos.length/3-1},quad=(a,b,c,d)=>idx.push(a,b,c,a,c,d);
+ GRVP.forEach((poly,gi)=>{let ar=0;for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length];ar+=a[0]*b[1]-b[0]*a[1]}const sg=ar>0?1:-1;   /* sg: orientacja (CCW=1) -> normalna zewnetrzna = (dy,-dx)*sg */
+  for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length],dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy);if(L<1e-6)continue;const ux=dx/L,uy=dy/L,nx=uy*sg,ny=-ux*sg,N=Math.max(1,Math.ceil(L/.05));
+   let st=-1;const flush=(e)=>{if(st<0)return;const t0=Math.max(0,st*L/N-hw),t1=Math.min(L,e*L/N)+hw;st=-1;if(t1-t0<.03)return;
+    const A=[a[0]+ux*t0+nx*.0025,a[1]+uy*t0+ny*.0025],B=[a[0]+ux*t1+nx*.0025,a[1]+uy*t1+ny*.0025],o=hw,
+     a0=V(A[0]-nx*o,TOP,-(A[1]-ny*o)),a1=V(A[0]+nx*o,TOP,-(A[1]+ny*o)),b0=V(B[0]-nx*o,TOP,-(B[1]-ny*o)),b1=V(B[0]+nx*o,TOP,-(B[1]+ny*o)),
+     c0=V(A[0]-nx*o,BOT,-(A[1]-ny*o)),c1=V(A[0]+nx*o,BOT,-(A[1]+ny*o)),d0=V(B[0]-nx*o,BOT,-(B[1]-ny*o)),d1=V(B[0]+nx*o,BOT,-(B[1]+ny*o));
+    quad(a0,b0,b1,a1);quad(a0,c0,d0,b0);quad(a1,b1,d1,c1);quad(a0,a1,c1,c0);quad(b0,d0,d1,b1)};
+   for(let k=0;k<=N;k++){const t=Math.min(L,k*L/N),pr=[a[0]+ux*t+nx*.04,a[1]+uy*t+ny*.04],lawn=!blocked(pr,gi);if(lawn){if(st<0)st=k}else if(st>=0){flush(k-1)}}
+   if(st>=0)flush(N)}});
+ if(idx.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();add(g,M(0x0b0c0d,{roughness:.55,side:THREE.DoubleSide}),0,0,0,false)}}
 batchStatics();
 const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
 (function loop(t){requestAnimationFrame(loop);
