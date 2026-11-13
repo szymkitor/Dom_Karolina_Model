@@ -80,12 +80,12 @@ button.on{background:var(--line);font-weight:600}
 .fab.sub svg{width:22px;height:22px}
 .fab.fm.open{background:radial-gradient(circle at 30% 22%,#d9e2ea,#8a98a6 55%,#5d6b79);box-shadow:0 8px 22px rgba(30,45,60,.4),0 2px 6px rgba(0,0,0,.3),inset 0 1px 2px rgba(255,255,255,.7)}
 /* Liquid Glass: przezroczyste panele i przyciski, scena pozostaje widoczna */
-:root{--gl1:rgba(255,255,255,.30);--gl2:rgba(255,255,255,.10);--glb:rgba(255,255,255,.55);--glc:rgba(255,255,255,.12);--glk:rgba(255,255,255,.22);--tsh:0 1px 5px rgba(255,255,255,.6)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--gl1:rgba(52,64,80,.46);--gl2:rgba(24,30,40,.26);--glb:rgba(255,255,255,.22);--glc:rgba(255,255,255,.06);--glk:rgba(255,255,255,.10);--tsh:0 1px 5px rgba(0,0,0,.6)}}
-:root[data-theme="dark"]{--gl1:rgba(52,64,80,.46);--gl2:rgba(24,30,40,.26);--glb:rgba(255,255,255,.22);--glc:rgba(255,255,255,.06);--glk:rgba(255,255,255,.10);--tsh:0 1px 5px rgba(0,0,0,.6)}
-.ui{background:linear-gradient(145deg,var(--gl1),var(--gl2));backdrop-filter:blur(12px) saturate(1.9);-webkit-backdrop-filter:blur(12px) saturate(1.9);border:1px solid var(--glb);box-shadow:0 16px 44px rgba(10,20,40,.26),inset 0 1.5px 1px rgba(255,255,255,.8),inset 0 -1px 1px rgba(255,255,255,.2),inset 0 0 28px rgba(255,255,255,.1);text-shadow:var(--tsh)}
-.hd{background:linear-gradient(var(--gl1),transparent);border-bottom:1px solid var(--glb);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.ui section{background:var(--glc);border:1px solid var(--glb);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+:root{--gl1:rgba(255,255,255,.14);--gl2:rgba(255,255,255,.03);--glb:rgba(255,255,255,.5);--glc:rgba(255,255,255,.04);--glk:rgba(255,255,255,.12);--tsh:0 0 3px rgba(255,255,255,.95),0 1px 8px rgba(255,255,255,.8)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--gl1:rgba(52,64,80,.22);--gl2:rgba(24,30,40,.07);--glb:rgba(255,255,255,.22);--glc:rgba(255,255,255,.03);--glk:rgba(255,255,255,.07);--tsh:0 0 3px rgba(0,0,0,.9),0 1px 8px rgba(0,0,0,.7)}}
+:root[data-theme="dark"]{--gl1:rgba(52,64,80,.22);--gl2:rgba(24,30,40,.07);--glb:rgba(255,255,255,.22);--glc:rgba(255,255,255,.03);--glk:rgba(255,255,255,.07);--tsh:0 0 3px rgba(0,0,0,.9),0 1px 8px rgba(0,0,0,.7)}
+.ui{background:linear-gradient(145deg,var(--gl1),var(--gl2));backdrop-filter:blur(5px) saturate(1.6);-webkit-backdrop-filter:blur(5px) saturate(1.6);border:1px solid var(--glb);box-shadow:0 16px 44px rgba(10,20,40,.26),inset 0 1.5px 1px rgba(255,255,255,.8),inset 0 -1px 1px rgba(255,255,255,.2),inset 0 0 28px rgba(255,255,255,.1);text-shadow:var(--tsh)}
+.hd{background:linear-gradient(var(--gl1),transparent);border-bottom:1px solid var(--glb)}
+.ui section{background:var(--glc);border:1px solid var(--glb)}
 .ui button{background:var(--glk);border:1px solid var(--glb);box-shadow:inset 0 1px 0 rgba(255,255,255,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .ui button:hover{background:rgba(255,255,255,.34)}
 .ui select{background:var(--glk);border:1px solid var(--glb)}
