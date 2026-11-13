@@ -666,7 +666,8 @@ function staf(x0,y0,x1,y1,sa,sb){const L=Math.hypot(x1-x0,y1-y0),ux=(x1-x0)/L,uy
   const SS=[-.275,0,.9,1.8,2.075],TT=[TL-.275,TL,2.4,3.35,4.3,TR,TR+.275],RLn=TT[6]-TT[0]+.05;
   SS.forEach(s_=>fa(RLn,.05,3.35,s_));
   for(let k=0;k<SS.length-1;k++){const a0=SS[k]+.025,a1=SS[k+1]-.025;TT.forEach(t=>fa(.05,a1-a0,t,(a0+a1)/2))}
-  const rg=new THREE.BoxGeometry(RLn,.025,2.4),ru=rg.attributes.uv;for(let i=8;i<12;i++)ru.setXY(i,ru.getX(i)*RLn,ru.getY(i)*2.4);const sm=M(0x3a3d42),rf=add(rg,[sm,sm,roofMat,sm,sm,sm],rc[0],Y+.03+.0125,-rc[1]);rf.rotation.y=ph}
+  const rg=new THREE.BoxGeometry(RLn,.025,2.4),ru=rg.attributes.uv;for(let i=8;i<12;i++)ru.setXY(i,ru.getX(i)*RLn,ru.getY(i)*2.4);const sm=M(0x3a3d42),rW=roofMat.clone();sm.shadowSide=rW.shadowSide=THREE.FrontSide;   /* cienki dach: do mapy cienia (swiatlo w wiacie) zapisuje sie spod (strona zwrocona do zrodla), a nie gorna scianka - inaczej wnetrze swiecilo przez szczeliny blachodachowki */
+  const rf=add(rg,[sm,sm,rW,sm,sm,sm],rc[0],Y+.03+.0125,-rc[1]);rf.rotation.y=ph}
  {const rp=[Q(2.55,-.35),Q(4.15,-.35),Q(4.15,-.5),Q(2.55,-.5)],ys=[-.295,-.295,-.38,-.38],g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(rp.flatMap((p,i)=>[p[0],ys[i],-p[1]]),3));g.setAttribute('uv',new THREE.Float32BufferAttribute(rp.flatMap(p=>[p[0],p[1]]),2));g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();add(g,pvD,0,0,0,false)}   // przejście na gruncie z jezdni do wiaty
  {const P0=Q(3.35,1.95),P1=Q(3.35,2.95);pathRibbon([P0,P1,[16.08,-1.9],[16.08,8.05]],1.2,-.295);flat([[12.1,-1.2],[15.48,-1.2],[15.48,0],[12.1,0]],-.295,0xbab5ab)}   // chodnik: wiata -> wzdłuż domu -> taras
  // opaska żwirowa przy ścianach stykających się z trawnikiem
@@ -1283,7 +1284,7 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
  addLight('l9',ln,spw,new THREE.Vector3(wx,yy-.06,-wy),new THREE.Vector3(wx,G0,-wy));
  // żarówka (widoczna przez kraty) + światło rozproszone na boki: punktowe, z cieniem od ścian, oświetla pręty pod dachem od wewnątrz
  {const bm=new THREE.MeshBasicMaterial({color:0xfff1cf});bm.userData={cOn:0xfff6dc,cOff:0x7d868c};const bu=new THREE.Mesh(new THREE.SphereGeometry(.05,14,10),bm);bu.position.set(wx,yy-.16,-wy);scene.add(bu);lights.l9.lenses.push(bu);
-  const pt=new THREE.PointLight(0xffd9a0,2.2,3.6,1.5);pt.position.set(wx,yy-.2,-wy);pt.castShadow=true;pt.shadow.mapSize.set(256,256);pt.shadow.camera.near=.05;pt.shadow.camera.far=4;pt.shadow.bias=-.004;scene.add(pt);lights.l9.spots.push(pt)}}
+  const pt=new THREE.PointLight(0xffd9a0,2.2,3.6,1.5);pt.position.set(wx,yy-.2,-wy);pt.castShadow=true;pt.shadow.mapSize.set(256,256);pt.shadow.camera.near=.05;pt.shadow.camera.far=4;pt.shadow.bias=-.0015;scene.add(pt);lights.l9.spots.push(pt)}}
 {const sx=1.1,sz=-35.7,sy=G0+1.4,fm=M(0x2a2d31,{roughness:.6,metalness:.3}),fr=(w,h,d,py,pz)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),fm);q.position.set(sx+w/2,py,pz);q.castShadow=true;scene.add(q);statics.push(q)};
  fr(.03,.05,.78,sy+.265,sz);fr(.03,.05,.78,sy-.265,sz);fr(.03,.58,.05,sy,sz-.365);fr(.03,.58,.05,sy,sz+.365);fr(.02,.5,.025,sy,sz);fr(.06,.03,.84,sy-.30,sz);
  const gm=new THREE.Mesh(new THREE.BoxGeometry(.012,.5,.68),new THREE.MeshBasicMaterial({color:0x141a20}));gm.position.set(sx+.016,sy,sz);gm.userData.cOn=0xffdf9e;gm.userData.cOff=0x141a20;scene.add(gm);
