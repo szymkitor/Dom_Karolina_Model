@@ -167,6 +167,14 @@ function xy(){const w=W(),h=H(),x0=G+ins.l,x1=Math.max(x0,w-SM-G-ins.r),y0=G+ins
 function place(){if(cur<0)return;const p=panels[cur],b=subs[cur],bx=TP[cur][0]-SS/2,by=TP[cur][1]-SS/2,w=W(),h=H(),m=8;p.style.maxHeight='none';const nat=p.scrollHeight+2,pw=p.offsetWidth;let sp,ph,top,left,ox,oy;
  if(pos.e==='left'||pos.e==='right'){sp=h-ins.t-ins.b-2*m;p.style.maxHeight=sp+'px';ph=Math.min(nat,sp);top=clamp(by+SS/2-ph/2,ins.t+m,h-ins.b-m-ph);left=clamp(pos.e==='right'?bx-10-pw:bx+SS+10,m+ins.l,w-pw-m-ins.r);ox=pos.e==='right'?pw:0;oy=by+SS/2-top}
  else{const above=pos.e==='bottom',av=above?by-10-ins.t-m:h-(by+SS)-10-ins.b-m;sp=Math.min(av,Math.round(h*.8));p.style.maxHeight=sp+'px';ph=Math.min(nat,sp);top=above?by-10-ph:by+SS+10;left=clamp(bx+SS/2-pw/2,m+ins.l,w-pw-m-ins.r);ox=bx+SS/2-left;oy=above?ph:0}
+ /* okno nie moze lezec na babelkach (aktywna podrzedna z krzyzykiem i glowna) - inaczej krzyzyk zaslania przyciski: szukamy najblizszego wolnego miejsca obok nich */
+ {const ob=[[bx,by,SS,SS],[mx,my,SM,SM]],MG=8,ov=(l,t)=>ob.some(o=>l<o[0]+o[2]+MG&&l+pw>o[0]-MG&&t<o[1]+o[3]+MG&&t+ph>o[1]-MG),inb=(l,t)=>l>=m+ins.l-1&&l+pw<=w-m-ins.r+1&&t>=ins.t+m-1&&t+ph<=h-ins.b-m+1;
+  if(ov(left,top)){const c=[];ob.forEach(o=>{c.push([left,o[1]-MG-ph],[left,o[1]+o[3]+MG],[o[0]+o[2]+MG,top],[o[0]-MG-pw,top])});
+   const ok=c.filter(q=>inb(q[0],q[1])&&!ov(q[0],q[1])).sort((u,v)=>Math.hypot(u[0]-left,u[1]-top)-Math.hypot(v[0]-left,v[1]-top))[0];if(ok){left=ok[0];top=ok[1]}else{
+    /* waski ekran: okno zajmuje cala szerokosc - wciskamy je nad albo pod babelki (z przewijaniem wewnatrz) */
+    const hs=ob.filter(o=>left<o[0]+o[2]+MG&&left+pw>o[0]-MG),y0=Math.min(...hs.map(o=>o[1])),y1=Math.max(...hs.map(o=>o[1]+o[3])),up=y0-MG-(ins.t+m),dn=h-ins.b-m-(y1+MG);
+    if(Math.max(up,dn)>=120){if(up>=dn){p.style.maxHeight=up+'px';ph=Math.min(nat,up);top=y0-MG-ph}else{p.style.maxHeight=dn+'px';ph=Math.min(nat,dn);top=y1+MG}}}}
+  ox=bx+SS/2-left;oy=by+SS/2-top}
  p.style.setProperty('--ox',ox+'px');p.style.setProperty('--oy',oy+'px');p.style.left=left+'px';p.style.top=top+'px'}
 function hook(i,on){try{if(window.__panelHook&&subs[i])window.__panelHook(subs[i].dataset.k,on)}catch(e){}}
 function tgl(i,o){const prev=cur;cur=o?i:-1;panels.forEach((p,j)=>{if(p)p.classList.toggle('hid',!(o&&j===i))});subs.forEach((b,j)=>{const on=o&&j===i;b.classList.toggle('open',on);b.setAttribute('aria-expanded',on)});
