@@ -224,7 +224,7 @@ const gr=document.getElementById('gr');gr.addEventListener('click',()=>gr.classL
  <div class="hd"><div class="tt">Pole</div></div>
  <section><div class="seg2 mtic"><button id="mtp2" class="on" title="Powierzchnia" aria-label="Powierzchnia"><svg viewBox="0 0 24 24"><path d="M3 18 8 6h13l-5 12z" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button id="mto2" title="Obiekt" aria-label="Obiekt"><svg viewBox="0 0 24 24"><path d="M12 3 20 7.5v9L12 21 4 16.5v-9z M4 7.5 12 12l8-4.5M12 12v9" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button></div></section>
  <section><div id="mtr2" class="mtr"></div><div class="seg2 mtic"><button id="mtc2" title="Wyczyść" aria-label="Wyczyść"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="currentColor" fill-opacity=".18" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button></div></section></div>
-<div id="ptov"><div class="ptbar"><span id="ptmsg"></span><label style="display:flex;gap:6px;align-items:center;font-size:12px">Ekspozycja<input id="ptx" type="range" min=".3" max="4" step=".05" value="1"></label><button id="ptsave" disabled>Zapisz PNG</button><button id="ptclose">Zamknij</button></div><div class="ptprog"><i id="ptbar"></i></div><div id="ptwrap"><img id="ptimg" alt="Render"></div></div>
+<div id="ptov"><div class="ptbar"><span id="ptmsg"></span><button id="ptsave" disabled>Zapisz PNG</button><button id="ptclose">Zamknij</button></div><div class="ptprog"><i id="ptbar"></i></div><div id="ptwrap"><img id="ptimg" alt="Render"></div></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/","three/examples/jsm/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/","three-mesh-bvh":"https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.8.3/build/index.module.js","three-gpu-pathtracer":"https://cdn.jsdelivr.net/npm/three-gpu-pathtracer@0.0.23/build/index.module.js"}}</script>
 <script>(()=>{
 const $=id=>document.getElementById(id),msg=t=>{$('ptmsg').textContent=t};let st=null;
@@ -237,13 +237,15 @@ async function go(){
  const [T,PT]=await Promise.all([import('three'),import('three-gpu-pathtracer')]);if(st!==me)return;
  if(!document.createElement('canvas').getContext('webgl2')){msg('Ta przeglądarka nie obsługuje WebGL2.');st=null;return}
  const q=+$('ptq').value,scl=+$('ptr').value;let W=Math.round(innerWidth*scl),H=Math.round(innerHeight*scl);const mp=W*H;if(mp>8.4e6){const k=Math.sqrt(8.4e6/mp);W=Math.round(W*k);H=Math.round(H*k)}
- const r=new T.WebGLRenderer({antialias:false,preserveDrawingBuffer:true,powerPreference:'high-performance'});r.setPixelRatio(1);r.setSize(W,H,false);r.toneMapping=T.ACESFilmicToneMapping;r.toneMappingExposure=+$('ptx').value;$('ptwrap').prepend(r.domElement);me.r=r;
+ const r=new T.WebGLRenderer({antialias:false,preserveDrawingBuffer:true,powerPreference:'high-performance'});r.setPixelRatio(1);r.setSize(W,H,false);r.toneMapping=T.ACESFilmicToneMapping;r.toneMappingExposure=1;$('ptwrap').prepend(r.domElement);me.r=r;
  const O=A.THREE,sc=new T.Scene(),col=c=>new T.Color().setHex(c.getHex()),texC=new Map();
  const tx=(o,srgb)=>{if(!o||!o.image)return null;const im=o.image;if(!(im instanceof HTMLCanvasElement||im instanceof HTMLImageElement||(typeof ImageBitmap!=='undefined'&&im instanceof ImageBitmap)))return null;const k=o.uuid+srgb;if(texC.has(k))return texC.get(k);const t=new T.Texture(im);t.wrapS=t.wrapT=T.RepeatWrapping;t.repeat.set(o.repeat.x,o.repeat.y);t.offset.set(o.offset.x,o.offset.y);t.rotation=o.rotation;t.flipY=o.flipY;t.colorSpace=srgb?T.SRGBColorSpace:T.NoColorSpace;t.magFilter=T.LinearFilter;t.minFilter=T.LinearMipmapLinearFilter;t.needsUpdate=true;texC.set(k,t);return t};
  const mats=new Map(),mk=o=>{if(mats.has(o))return mats.get(o);let m=null;
-  if(o.blending===O.AdditiveBlending){m=false}
-  else if(o===A.glassM||o===A.roofGlass||(o.transparent&&o.opacity<.85&&!o.map&&!o.isMeshBasicMaterial)){const night=(o.emissiveIntensity||0)>.2,c=col(o.color);
-   m=night?new T.MeshStandardMaterial({color:c,roughness:.1,metalness:0,emissive:o.emissive?col(o.emissive):new T.Color(0),emissiveIntensity:1.6}):new T.MeshPhysicalMaterial({color:c.clone().lerp(new T.Color(0xdbe8f2),.8),roughness:.02,metalness:0,transmission:1,ior:1.5,thickness:.02,emissive:new T.Color(0x8fa3b5),emissiveIntensity:.5});m.side=o.side}
+  if(o.visible===false){m=false}   /* materialy niewidoczne (np. obrys dzialki do pomiaru, lezacy tuz nad trawnikiem) nie wchodza do renderu */
+  else if(o.blending===O.AdditiveBlending){m=false}
+  else if(o===A.glassM||o===A.roofGlass||(o.transparent&&o.opacity<.85&&!o.map&&!o.isMeshBasicMaterial)){const c=col(o.color);
+   /* szklo: bez wlasnej emisji; odbija otoczenie (Fresnel) i przepuszcza swiatlo do wnetrza, lekko przyciemnione */
+   m=new T.MeshPhysicalMaterial({color:c.clone().lerp(new T.Color(0xffffff),.35),roughness:.03,metalness:0,transmission:1,ior:1.5,thickness:.02,specularIntensity:1});m.side=o.side}
   else if(o.isMeshBasicMaterial){const c=col(o.color),br=o.color.r+o.color.g+o.color.b>2.3;m=new T.MeshStandardMaterial({color:br?new T.Color(0):c,roughness:.8,metalness:0,emissive:br?c:new T.Color(0),emissiveIntensity:br?5:0,map:tx(o.map,true)});if(o.transparent){m.transparent=true;m.opacity=o.opacity}m.side=o.side}
   else{m=new T.MeshStandardMaterial({color:o.color?col(o.color):new T.Color(0xffffff),map:tx(o.map,true),roughness:o.roughness!==undefined?o.roughness:.9,metalness:o.metalness||0});
    if(o.emissive&&(o.emissiveIntensity||0)>0&&(o.emissive.r+o.emissive.g+o.emissive.b)>0){m.emissive=col(o.emissive);m.emissiveIntensity=o.emissiveIntensity*2}
@@ -273,7 +275,7 @@ async function go(){
   else if(o.isPointLight){l=new T.PointLight(c,o.intensity*10,0,2);l.position.copy(wp(o))}
   if(l){sc.add(l);nl++}});
  const bg=A.scene.background&&A.scene.background.isColor?A.scene.background:new O.Color(.8,.88,.95),k=Math.min(1,(bg.r+bg.g+bg.b)/2.6);
- const env=new PT.GradientEquirectTexture(512);env.topColor.copy(new T.Color().setHex(0x4a86d4).multiplyScalar(k));env.bottomColor.copy(new T.Color().setHex(0x7a8a6a).multiplyScalar(k*.8));env.exponent=1.5;env.update();if(k<.35){r.toneMappingExposure=2.5;$('ptx').value=2.5}me.info='siatki: '+sc.children.filter(x=>x.isMesh).length+', światła: '+nl+', jasność nieba: '+k.toFixed(2);sc.environment=env;sc.background=env;sc.environmentIntensity=1;sc.backgroundIntensity=1;
+ const env=new PT.GradientEquirectTexture(512);env.topColor.copy(new T.Color().setHex(0x4a86d4).multiplyScalar(k));env.bottomColor.copy(new T.Color().setHex(0x7a8a6a).multiplyScalar(k*.8));env.exponent=1.5;env.update();me.info='siatki: '+sc.children.filter(x=>x.isMesh).length+', światła: '+nl+', jasność nieba: '+k.toFixed(2);sc.environment=env;sc.background=env;sc.environmentIntensity=1;sc.backgroundIntensity=1;
  A.cam.updateMatrixWorld(true);const hh=A.ortho,cam=hh?new T.OrthographicCamera(-hh*W/H,hh*W/H,hh,-hh,.1,3000):new T.PerspectiveCamera(A.cam.fov,W/H,.1,2000),pp=new O.Vector3(),qq=new O.Quaternion(),ss=new O.Vector3();A.cam.matrixWorld.decompose(pp,qq,ss);cam.position.set(pp.x,pp.y,pp.z);cam.quaternion.set(qq.x,qq.y,qq.z,qq.w);cam.updateMatrixWorld(true);
  msg('Budowanie struktury BVH (to chwilę potrwa)…');await new Promise(r=>setTimeout(r,60));if(st!==me)return;
  const pt=new PT.WebGLPathTracer(r);pt.bounces=6;pt.filterGlossyFactor=.4;pt.rasterizeScene=false;pt.minSamples=1;pt.setScene(sc,cam);me.pt=pt;
@@ -281,7 +283,6 @@ async function go(){
  $('ptsave').disabled=false;loop();
  }catch(e){console.error(e);if(st===me)msg('Błąd: '+(e&&e.message||e))}}
 $('ptgo').onclick=go;$('ptclose').onclick=close;
-$('ptx').oninput=()=>{if(st&&st.r){st.r.toneMappingExposure=+$('ptx').value;if(st.pt)st.pt.reset()}};
 $('ptsave').onclick=async()=>{if(!st||!st.r)return;const c=st.r.domElement,url=c.toDataURL('image/png'),im=$('ptimg');im.src=url;im.onclick=()=>{im.style.display='none'};
  let dl=null;try{dl=await claude.use('downloads')}catch(e){}
  if(dl){const blob=await new Promise(r=>c.toBlob(r,'image/png'));try{await dl.save({filename:'dom-render.png',data:blob});msg('Zapisano obraz.');return}catch(e){if(e&&e.code==='declined')return}}
