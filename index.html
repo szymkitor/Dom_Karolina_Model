@@ -1258,6 +1258,10 @@ function thujaM(){const S=128,c=document.createElement('canvas');c.width=c.heigh
  for(let i=0;i<1400;i++){const x=rnd()*S,y=rnd()*S,an=Math.PI/2+(rnd()-.5)*1.6,l=5+rnd()*10;a.strokeStyle=pal[i%6];a.globalAlpha=.55;a.lineWidth=1+rnd()*1.6;[0,-S,S].forEach(o=>{a.beginPath();a.moveTo(x+o,y);a.lineTo(x+o+Math.cos(an)*l,y+Math.sin(an)*l);a.stroke()})}
  a.globalAlpha=1;for(let i=0;i<260;i++){a.fillStyle='rgba(25,40,20,'+(.25+rnd()*.3)+')';a.beginPath();a.arc(rnd()*S,rnd()*S,1+rnd()*2.5,0,6.3);a.fill()}
  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(3,3);t.anisotropy=4;return M(0xffffff,{map:t,roughness:.95,side:THREE.DoubleSide})}
+/* kora nie wchodzi w mur skosu ani w kolumne koncowa: odciecie plaszczyzny kory (wielokata) polplaszczyznami - dla czesci za czolem kolumny (t > L) bez zmian, dla reszty tylko s >= 0,4 (wewnetrzne lico muru 40 cm i kolumny) */
+window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(19.45-bx)/L,uy=(-2.65-by)/L,T=p=>(p[0]-bx)*ux+(p[1]-by)*uy,S=p=>-(p[0]-bx)*uy+(p[1]-by)*ux,
+ hp=(pl,f)=>{const o=[];for(let k=0;k<pl.length;k++){const a=pl[k],b=pl[(k+1)%pl.length],fa=f(a),fb=f(b);if(fa>=0)o.push(a);if((fa>0&&fb<0)||(fa<0&&fb>0)){const q=fa/(fa-fb);o.push([a[0]+(b[0]-a[0])*q,a[1]+(b[1]-a[1])*q])}}return o};
+ return[hp(poly,p=>T(p)-L),hp(hp(poly,p=>L-T(p)),p=>S(p)-.4)].filter(x=>x.length>=3)};
 // tuje co 70 cm (koronami sie nie zachodza) przy ogrodzeniu panelowym, po wewnętrznej stronie działki
 {const S=[[-3.0045,-7,-3.4,37.4],[-3.4,37.4,21.8,37.4],[21.8,37.4,21.9,21.35],[21.9,21.35,19.45,21.35],[19.45,21.35,19.45,-2.65]],P=[],NS=[];
  S.forEach(([x0,y0,x1,y1])=>{const L=Math.hypot(x1-x0,y1-y0),n=Math.floor(L/.7);let nx=-(y1-y0)/L,ny=(x1-x0)/L;if(nx*(9-(x0+x1)/2)+ny*(15-(y0+y1)/2)<0){nx=-nx;ny=-ny}
@@ -1268,8 +1272,9 @@ function thujaM(){const S=128,c=document.createElement('canvas');c.width=c.heigh
   for(let i=1;i<k;i++){const a=ln[i-1],b=ln[i],den=a[2]*b[3]-a[3]*b[2],t=((b[0]-a[0])*b[3]-(b[1]-a[1])*b[2])/den;inn.push([a[0]+a[2]*t,a[1]+a[3]*t])}
   const l=ln[k-1];inn.push([l[0]+l[2],l[1]+l[3]]);const out=[[A[0][0],A[0][1]]].concat(A.map(a=>[a[2],a[3]]));
   const RX=[-3.6,34.15,1.45,37.5],subR=(poly,[x0,y0,x1,y1])=>{const res=[];let cur=poly;for(const h of[[1,0,-x0,-1],[-1,0,x1,-1],[0,1,-y0,-1],[0,-1,y1,-1]]){const o=clipH(cur,-h[0],-h[1],-h[2]);if(o.length>=3)res.push(o);cur=clipH(cur,h[0],h[1],h[2]);if(cur.length<3)break}return res};   /* kora nie wchodzi pod opaske zwirowa wokol szopy */
-  for(let i=0;i<k;i++)subR(clipH([out[i],out[i+1],inn[i+1],inn[i]],0,1,6.98),RX).forEach(pc=>{if(Math.abs(pc.reduce((t,p,j)=>{const q=pc[(j+1)%pc.length];return t+p[0]*q[1]-q[0]*p[1]},0))<1e-6)return;BARK.push(pc);const g=new THREE.ShapeGeometry(new THREE.Shape(pc.map(p=>new THREE.Vector2(p[0],p[1]))));g.rotateX(-Math.PI/2);add(g,barkM,0,-.295,0,false).receiveShadow=true})}
+  for(let i=0;i<k;i++)subR(clipH([out[i],out[i+1],inn[i+1],inn[i]],0,1,6.98),RX).forEach(pc=>{if(Math.abs(pc.reduce((t,p,j)=>{const q=pc[(j+1)%pc.length];return t+p[0]*q[1]-q[0]*p[1]},0))<1e-6)return;colCut(pc).forEach(pc=>{BARK.push(pc);const g=new THREE.ShapeGeometry(new THREE.Shape(pc.map(p=>new THREE.Vector2(p[0],p[1]))));g.rotateX(-Math.PI/2);add(g,barkM,0,-.295,0,false).receiveShadow=true})})}
  {const K2=[];P.forEach(p=>{if(K2.every(q=>Math.hypot(p[0]-q[0],p[1]-q[1])>=.66))K2.push(p)});P.length=0;P.push(...K2)}   /* naroza: bez nakladania koron */
+ {const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(19.45-bx)/L,uy=(-2.65-by)/L,K3=P.filter(p=>{const t=(p[0]-bx)*ux+(p[1]-by)*uy,s=-(p[0]-bx)*uy+(p[1]-by)*ux;return Math.hypot(Math.max(L-.4-t,0,t-L),Math.max(-s,0,s-.4))>=.42});P.length=0;P.push(...K3)}   /* tuja nie wchodzi w kolumne koncowa muru skosu (koronami do ok. 0,4 m) */
  window.THJ=P;
  const im=new THREE.InstancedMesh(thujaGeo(),thujaM(),P.length),d=new THREE.Object3D(),c=new THREE.Color();
  P.forEach((p,i)=>{const h=2.05+Math.random()*.3;d.position.set(p[0],-.34,-p[1]);d.scale.set(.9+Math.random()*.15,h,.9+Math.random()*.15);d.rotation.y=Math.random()*6;d.updateMatrix();im.setMatrixAt(i,d.matrix);im.setColorAt(i,c.setHSL(.27+Math.random()*.07,.45+Math.random()*.15,.30+Math.random()*.08))});
@@ -1278,7 +1283,7 @@ function thujaM(){const S=128,c=document.createElement('canvas');c.width=c.heigh
 /* tuje + opaska z kory za murowanym frontem: J4a/J4b, poczatek K4a (do kraweznika podjazdu), N4b, O4a, O4b - az do boku wiaty smietnikowej */
 {const bx=14.78,by=-7.5,Ls=Math.hypot(19.45-bx,-2.65-by),ux=(19.45-bx)/Ls,uy=(-2.65-by)/Ls,Qs=(t,s)=>[bx+ux*t-uy*s,by+uy*t+ux*s],
  beds=[[[-2.1001,-7.5],[.83,-7.5],[.83,-6.55],[-2.1085,-6.55],[-2.1046,-6.992]],[Qs(5.35,.125),Qs(5.35,.9),[18.55,-7.5+uy*((18.55-bx+uy*.9)/ux)+ux*.9],[18.55,-2.65],[19.25,-2.65],[19.25,-2.678]]],Pt=[];   /* ostatni pas: dolaczony do opaski przy plocie x=19,45 (wspolna krawedz y=-2,65), dochodzi do boku wiaty */
- beds.forEach(pl=>{BARK.push(pl);const g=new THREE.ShapeGeometry(new THREE.Shape(pl.map(p=>new THREE.Vector2(p[0],p[1]))));g.rotateX(-Math.PI/2);add(g,barkM,0,-.295,0,false).receiveShadow=true});
+ beds.forEach(pl0=>colCut(pl0).forEach(pl=>{BARK.push(pl);const g=new THREE.ShapeGeometry(new THREE.Shape(pl.map(p=>new THREE.Vector2(p[0],p[1]))));g.rotateX(-Math.PI/2);add(g,barkM,0,-.295,0,false).receiveShadow=true}));
  for(let x=-1.75;x<.7;x+=.7)Pt.push([x,-6.8]);/* bez tuj od N4b do wiaty: skrzydlo bramy przesuwnej (z ogonem) po otwarciu zajmuje x do ok. 13,3 m przy y=-7,2 */
  const im2=new THREE.InstancedMesh(thujaGeo(),thujaM(),Pt.length),d2=new THREE.Object3D(),c2=new THREE.Color();
  Pt.forEach((p,i)=>{const h=2.05+Math.random()*.3;d2.position.set(p[0],-.34,-p[1]);d2.scale.set(.9+Math.random()*.15,h,.9+Math.random()*.15);d2.rotation.y=Math.random()*6;d2.updateMatrix();im2.setMatrixAt(i,d2.matrix);im2.setColorAt(i,c2.setHSL(.27+Math.random()*.07,.45+Math.random()*.15,.30+Math.random()*.08))});
