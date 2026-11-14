@@ -1003,7 +1003,7 @@ const ub=(o,al,zc,sa,sz,sd,m)=>{const ac=o.c-o.s*(D+.04);add(o.ax=='y'?new THREE
   let te=-35,best=1e9;for(let a=-80;a<=20;a+=.05){const ex=cx+R*Math.cos(a*D),ey=cy+R*Math.sin(a*D),tx=Math.sin(a*D),ty=-Math.cos(a*D),cr=Math.abs((Pb[0]-ex)*ty-(Pb[1]-ey)*tx);if((Pb[0]-ex)*tx+(Pb[1]-ey)*ty>0&&cr<best){best=cr;te=a}}
   const tx=Math.sin(te*D),ty=-Math.cos(te*D),pt=(r)=>[cx+r*Math.cos(te*D),cy+r*Math.sin(te*D)],Oe=pt(ro),Ie=pt(ri),hit=(q)=>{const k=(B-q[1])/ty;return[q[0]+tx*k,q[1]+ty*k]},Q1=hit(Oe),Q2=hit(Ie),pol=[];
   for(let a=170;a>=te;a-=5)pol.push([cx+ro*Math.cos(a*D),cy+ro*Math.sin(a*D)]);
-  pol.push(Q1,[.14,B],[.14,0],[0,0],[0,B],Q2);
+  pol.push(Q1,[.14,B],[.14,0],[Q2[0],0],Q2);   /* lewy koniec podstawy = tam, gdzie lewa krawedz ukosu dochodzi do poziomu gory podstawy (bez wystajacej stopki) */
   for(let a=te;a<=170;a+=5)pol.push([cx+ri*Math.cos(a*D),cy+ri*Math.sin(a*D)]);
   ext(pol,.126)}
  grp.position.set(6.73-.133,2.068-.11,0);scene.add(grp);
