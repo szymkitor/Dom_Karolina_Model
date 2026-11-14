@@ -830,8 +830,11 @@ BARR.push([Q(TL-.075,0),Q(TR+.075,0),Q(TR+.075,1.925),Q(TL-.075,1.925)]);   /* o
 function leaf(g,cx,w,z){const b=(sx,sy,sz,x,y,m=gateM)=>{const me=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);me.position.set(x,y,z);me.castShadow=true;g.add(me)};
  /* rama spawana: slupki na pelna wysokosc, poprzeczki wstawione miedzy nimi (styk czolowy, bez przenikania i szczelin), szczeble dzielone przez poprzeczke srodkowa */
  b(.08,1.7,.07,cx-w/2+.04,G0+1.02);b(.08,1.7,.07,cx+w/2-.04,G0+1.02);b(w-.16,.1,.07,cx,G0+.22);b(w-.16,.1,.07,cx,G0+1.82);
- /* wypelnienie: 12 poziomych lameli 10 x 3 cm miedzy ramami (jak w przeslach ogrodzenia), odstep ok. 2,3 cm */
- {const n=12,gp=(1.5-n*.1)/(n+1);for(let k=0;k<n;k++)b(w-.16,.1,.03,cx,G0+.27+gp+k*(.1+gp)+.05)}}
+ /* slupki posrednie (pionowe, 12 cm, miedzy dolna i gorna poprzeczka): wzmocnienie ramy; brama szeroka (>3 m) ma ich 3, srednia 1, waska furtka ani jednego */
+ const np=w>3?3:(w>2?1:0),pw=.12,xs=[];for(let i=1;i<=np;i++)xs.push(cx-w/2+w*i/(np+1));xs.forEach(x=>b(pw,1.5,.07,x,G0+1.02));
+ const ed=[cx-w/2+.08];xs.forEach(x=>{ed.push(x-pw/2,x+pw/2)});ed.push(cx+w/2-.08);
+ /* wypelnienie: 12 poziomych lameli 10 x 3 cm w kazdym polu miedzy slupkami (konce lameli stykaja sie ze slupkami = spoiny), odstep ok. 2,3 cm */
+ {const n=12,gp=(1.5-n*.1)/(n+1);for(let q=0;q<ed.length;q+=2)for(let k=0;k<n;k++)b(ed[q+1]-ed[q],.1,.03,(ed[q]+ed[q+1])/2,G0+.27+gp+k*(.1+gp)+.05)}}
 const gate=new THREE.Group();scene.add(gate);leaf(gate,3.65,5.3,7.0);   /* część robocza 1,0–6,3; ogon-trójkąt 6,3–8,3 dodany niżej *//* furtka (skrzydlo 1,13 m, w swietle slupow 1,22 m - nastepny typowy wymiar po ok. 1,0 m): zawiasy po prawej (od strony wiaty smietnikowej), klamka z wkladka po lewej; otwiera sie do wewnatrz */
 {const fg=new THREE.Group(),hx=9.99,fb=(sx,sy,sz,x,y,z,m)=>{const me=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);me.position.set(x,y,z);me.castShadow=true;fg.add(me);return me},hm=hM,dk=M(0x1b1d20,{roughness:.45,metalness:.6});
  fg.position.set(hx,0,7.3);scene.add(fg);leaf(fg,-.582,1.136,0);
@@ -841,9 +844,10 @@ const gate=new THREE.Group();scene.add(gate);leaf(gate,3.65,5.3,7.0);   /* czę�
  window.FK={p:0,t:0,fg:fg};document.getElementById('fk0').onclick=()=>{if(!FK.t&&FK.p===0&&(gT!==0||gate.position.x!==0))return;FK.t=FK.t?0:-Math.PI/2;document.getElementById('fk0').classList.toggle('on',!!FK.t)}}
    // brama przesuwna (od strony działki) i furtka
 {const pr=(pts,d,x0,y0,m)=>{const g=new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(p=>new THREE.Vector2(p[0],p[1]))),{depth:d,bevelEnabled:false});g.translate(0,0,-d/2);const me=new THREE.Mesh(g,m);me.position.set(0,0,7.0);me.castShadow=true;gate.add(me)},sl=.75,T=x=>G0+1.87-sl*(x-6.3),bx=(sx,sy,sz,x,y,m=gateM)=>{const me=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);me.position.set(x,y,7.0);me.castShadow=true;gate.add(me)};
- /* ogon-trojkat: dolna poprzeczka 6,30-8,22, tylny slupek 8,22-8,30, ukosna gorna poprzeczka scieta pionowo na stykach ze slupkami, szczeble scinane po skosie */
+ /* ogon-trojkat: rama spawana - dolna poprzeczka 6,30-8,22, tylny slupek 8,22-8,30, ukosna gorna poprzeczka (gorna krawedz w linii z gorna poprzeczka bramy), slupek posredni 12 cm w polowie; lamele poziome w dwoch polach: jedna strona opiera sie na slupku, druga na slupku tylnym albo wchodzi w ukosna poprzeczke (koniec lameli pokrywa sie z jej przekrojem) - zadnych wiszacych konców */
  bx(1.92,.1,.07,7.26,G0+.22);bx(.08,.26,.07,8.26,G0+.30);pr([[6.3,T(6.3)],[8.22,T(8.22)],[8.22,T(8.22)-.1],[6.3,T(6.3)-.1]],.07,0,0,gateM);
- {const n=12,gp=(1.5-n*.1)/(n+1);for(let k=0;k<n;k++){const y0=G0+.27+gp+k*(.1+gp),xe=Math.min(8.22,6.3+(G0+1.77-(y0+.1))/sl);if(xe>6.4)bx(xe-6.3,.1,.03,(6.3+xe)/2,y0+.05)}}}
+ {const pm=7.26,n=12,gp=(1.5-n*.1)/(n+1);pr([[pm-.06,G0+.27],[pm+.06,G0+.27],[pm+.06,T(pm+.06)-.05],[pm-.06,T(pm-.06)-.05]],.07,0,0,gateM);
+  for(let k=0;k<n;k++){const y0=G0+.27+gp+k*(.1+gp),xe=6.3+(G0+1.87-(y0+.1))/sl;[[6.3,pm-.06],[pm+.06,8.22]].forEach(([a,c])=>{const e=Math.min(c,xe);if(e-a>.05)bx(e-a,.1,.03,(a+e)/2,y0+.05)})}}}
 /* brama samonośna (bez szyny w podłożu): belka nośna + zębatka jadą w stałych wózkach na płycie fundamentowej; napęd naziemny; lampa ostrzegawcza */
 {const gb=(sx,sy,sz,x,y,z,m)=>{const me=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);me.position.set(x,y,z);me.castShadow=true;gate.add(me);return me},zincM=M(0xa5aaae,{metalness:.8,roughness:.38}),rkM=M(0xa3a9af,{metalness:.7,roughness:.4}),plM=M(0x8d9094,{roughness:.95}),mtM=M(0x3f454c,{roughness:.55,metalness:.45}),lidM=M(0x6d747b,{roughness:.5,metalness:.5}),cgM=M(0x2a2e33,{roughness:.6,metalness:.5});
  gb(7.3,.11,.08,4.65,G0+.115,7.0,gateM);gb(7.0,.03,.03,4.65,G0+.235,6.95,rkM);
