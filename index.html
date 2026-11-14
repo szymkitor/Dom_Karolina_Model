@@ -1322,7 +1322,7 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
 }
 /* tuje + opaska z kory za murowanym frontem: J4a/J4b, poczatek K4a (do kraweznika podjazdu), N4b, O4a, O4b - az do boku wiaty smietnikowej */
 {const bx=14.78,by=-7.5,Ls=Math.hypot(19.45-bx,-2.65-by),ux=(19.45-bx)/Ls,uy=(-2.65-by)/Ls,Qs=(t,s)=>[bx+ux*t-uy*s,by+uy*t+ux*s],
- beds=[[[-2.1001,-7.5],[.83,-7.5],[.83,-6.55],[-2.1085,-6.55],[-2.1046,-6.992]],[Qs(5.35,.125),Qs(5.35,.9),[18.55,-7.5+uy*((18.55-bx+uy*.9)/ux)+ux*.9],[18.55,-2.65],[19.25,-2.65],[19.25,-2.678]]],Pt=[];   /* ostatni pas: dolaczony do opaski przy plocie x=19,45 (wspolna krawedz y=-2,65), dochodzi do boku wiaty */
+ beds=[[[-2.1001,-7.5],[.83,-7.5],[.83,-6.55],[-2.1085,-6.55],[-2.1046,-6.992]],[Qs(5.3,.125),Qs(5.3,.9),[18.55,-7.5+uy*((18.55-bx+uy*.9)/ux)+ux*.9],[18.55,-2.65],[19.25,-2.65],[19.25,-2.678]]],Pt=[];   /* ostatni pas: dolaczony do opaski przy plocie x=19,45 (wspolna krawedz y=-2,65), dochodzi do boku wiaty */
  beds.forEach(pl0=>colCut(pl0).forEach(pl=>{BARK.push(pl);const g=new THREE.ShapeGeometry(new THREE.Shape(pl.map(p=>new THREE.Vector2(p[0],p[1]))));g.rotateX(-Math.PI/2);add(g,barkM,0,-.295,0,false).receiveShadow=true}));
  for(let x=-1.75;x<.7;x+=.7)Pt.push([x,-6.8]);/* bez tuj od N4b do wiaty: skrzydlo bramy przesuwnej (z ogonem) po otwarciu zajmuje x do ok. 13,3 m przy y=-7,2 */
  const im2=new THREE.InstancedMesh(thujaGeo(),thujaM(),Pt.length),d2=new THREE.Object3D(),c2=new THREE.Color();
