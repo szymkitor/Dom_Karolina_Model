@@ -384,24 +384,32 @@ function lnBuild(){if(LN.built)return;LN.built=true;LN.occ=new THREE.MeshBasicMa
  {const c=document.createElement('canvas');c.width=512;c.height=512;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,512,512);x.strokeStyle='#2c3238';x.lineWidth=2.2;   // blacha trapezowa na drzwiach wiaty: 10 zeber na szerokosc skrzydla, kazde ograniczone dwiema liniami
   for(let k=0;k<10;k++)[.28,.72].forEach(f=>{const u=Math.round((k+f)*51.2);x.beginPath();x.moveTo(u,0);x.lineTo(u,512);x.stroke()});
   LN.sheet=mkT(new THREE.CanvasTexture(c))}
+ {const mk2=(W,H,rep,draw)=>{const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,W,H);x.strokeStyle='#3a4046';x.lineWidth=3;draw(x);return mkT(new THREE.CanvasTexture(c),rep)};   // spoiny pustakow (kafelek 0,8 x 0,4 m, wiazanie polowkowe), kolumn (1 pustak na warstwe) i obrysy daszkow - te same UV co tekstury kolorowe
+  LN.blk=mk2(800,400,[1.25,2.5],x=>{[[0,0],[400,0],[-200,200],[200,200],[600,200]].forEach(([bx,by])=>[0,800].forEach(o=>x.strokeRect(bx+o+1.5,by+1.5,397,197)))});
+  LN.col=mk2(400,200,[2.5,5],x=>x.strokeRect(1.5,1.5,397,197));
+  LN.ds=mk2(200,50,[1,1],x=>x.strokeRect(1.5,1.5,197,47));LN.de=mk2(400,50,[1,1],x=>x.strokeRect(1.5,1.5,397,47));LN.dt=mk2(200,400,[1,1],x=>x.strokeRect(1.5,1.5,197,397))}
+ /* przerywane szare linie tego, co jest pod dachem: dachy zapisuja stencil=1 tam, gdzie sa widoczne; linie scian/slupow (materialy z lnHid) rysowane drugi raz z GreaterDepth (tylko za zaslonieta czescia) i stencil==1 */
+ LN.hs=[];LN.hm=new THREE.LineDashedMaterial({color:0x8a9096,dashSize:.14,gapSize:.09,depthFunc:THREE.GreaterDepth,depthWrite:false,stencilWrite:true,stencilFunc:THREE.EqualStencilFunc,stencilRef:1,stencilFail:THREE.KeepStencilOp,stencilZFail:THREE.KeepStencilOp,stencilZPass:THREE.KeepStencilOp});
+ LN.roofO=LN.occ.clone();[LN.roof,LN.roofO].forEach(m=>{m.stencilWrite=true;m.stencilFunc=THREE.AlwaysStencilFunc;m.stencilRef=1;m.stencilZPass=THREE.ReplaceStencilOp});
+ const hid=(ls,o,parent)=>{if(!o||!o.material||!o.material.userData||!o.material.userData.lnHid)return;const hs=new THREE.LineSegments(ls.geometry,LN.hm);hs.computeLineDistances();hs.visible=false;hs.userData.ln=1;hs.renderOrder=5;hs.frustumCulled=false;if(parent)parent.add(hs);else scene.add(hs);LN.hs.push(hs)};
  const cache=new Map(),ms=[];scene.traverse(o=>{if(o.isMesh&&o.geometry&&o.parent!==gridMesh&&!o.userData.mt)ms.push(o)});
  const hlA=o=>{for(let p=o;p;p=p.parent)if(p.userData&&p.userData.hl)return true;return false};const grp=new Map();
  ms.forEach(o=>{const m=o.material;if(!o.userData.stat||Array.isArray(m)||o.userData.plant||(m&&m.userData&&m.userData.plant)||hlA(o)||(m&&m.blending===THREE.AdditiveBlending)||!o.geometry.attributes.position)return;if(!o.geometry.boundingSphere)o.geometry.computeBoundingSphere();if(o.geometry.boundingSphere.radius>150)return;
   const k=(m.color?m.color.getHex():0)+'|'+(m.map?m.map.uuid:'')+'|'+!!m.transparent;let g=grp.get(k);if(!g){g=[];grp.set(k,g)}g.push(o);o.userData.lnG=1});
  grp.forEach(list=>{let nv=0;list.forEach(o=>nv+=o.geometry.attributes.position.count);const P=new Float32Array(nv*3);let off=0;list.forEach(o=>{const a=o.geometry.attributes.position.array;P.set(a,off);off+=a.length});
   const bg=new THREE.BufferGeometry();bg.setAttribute('position',new THREE.BufferAttribute(P,3));let e=lnEdges(bg,12);const gs=lnSlice(P,G0);if(e)e=lnDrop(e);if(gs.length){const pe=e?Array.from(e.attributes.position.array):[];e=new THREE.BufferGeometry();e.setAttribute('position',new THREE.Float32BufferAttribute(pe.concat(gs),3))}if(!e)return;
-  const ls=new THREE.LineSegments(e,LN.lm);ls.visible=false;ls.userData.ln=1;ls.frustumCulled=false;scene.add(ls);LN.ls.push(ls)});
+  const ls=new THREE.LineSegments(e,LN.lm);ls.visible=false;ls.userData.ln=1;ls.frustumCulled=false;scene.add(ls);LN.ls.push(ls);hid(ls,list[0],null)});
  ms.forEach(o=>{if(o.isInstancedMesh||hlA(o)||o.userData.lnG)return;const m=o.material,g=o.geometry;if(!g.attributes.position||(m&&!Array.isArray(m)&&m.blending===THREE.AdditiveBlending))return;
   if(!g.boundingSphere)g.computeBoundingSphere();if(g.boundingSphere.radius>150)return;
   if(o.userData.plant||(m&&m.userData&&m.userData.plant))return;let e=cache.get(g.uuid);if(e===undefined){e=lnEdges(g,12);cache.set(g.uuid,e)}if(!e)return;
-  const ls=new THREE.LineSegments(e,LN.lm);ls.visible=false;ls.userData.ln=1;o.add(ls);LN.ls.push(ls)})}
-function lnMat(m){if(Array.isArray(m))return m.map(lnMat);return m===fenM?LN.ghost:(m===pvM||m===pvD)?LN.pav:(m&&m.userData&&m.userData.lnTex&&LN[m.userData.lnTex])||LN.occ}
+  const ls=new THREE.LineSegments(e,LN.lm);ls.visible=false;ls.userData.ln=1;o.add(ls);LN.ls.push(ls);hid(ls,o,o)})}
+function lnMat(m){if(Array.isArray(m))return m.map(lnMat);return m===fenM?LN.ghost:(m===pvM||m===pvD)?LN.pav:(m&&m.userData&&m.userData.lnTex&&LN[m.userData.lnTex])||(m&&m.userData&&m.userData.lnRoof?LN.roofO:LN.occ)}
 function lnSet(on){if(on===LN.on)return;if(on){lnBuild();LN.sw=[];LN.hid=[];if(window.CCTV&&CCTV.grp&&CCTV.grp.visible){CCTV.grp.visible=false;const cb=document.getElementById('camv');if(cb)cb.classList.remove('on')}   /* tryb liniowy zawsze wylacza bryly pola widzenia kamer */
  scene.traverse(o=>{if(o.userData.ln||o.userData.mt||o.userData.cctv||o===gridMesh||o.parent===gridMesh)return;   /* siatka pomocnicza zostaje bez zmian */
   if(o.userData.hl){if(o.visible){o.visible=false;LN.hid.push(o)}return}
    if(o.isMesh){const m=o.material;if(o.isInstancedMesh||o.userData.plant||(m&&m.userData&&m.userData.plant)||(m&&!Array.isArray(m)&&m.blending===THREE.AdditiveBlending)){if(o.visible){o.visible=false;LN.hid.push(o)}}else{LN.sw.push([o,m]);o.material=lnMat(m)}}
-   else if((o.isPoints||o.isSprite||o===gridMesh)&&o.visible){o.visible=false;LN.hid.push(o)}});LN.ls.forEach(l=>l.visible=true);LNX.forEach(l=>l.visible=true)}
- else{LN.ls.forEach(l=>l.visible=false);LNX.forEach(l=>l.visible=false);LN.sw.forEach(([o,m])=>o.material=m);LN.hid.forEach(o=>o.visible=true);LN.sw=[];LN.hid=[];ren.shadowMap.needsUpdate=true;shReq=true}
+   else if((o.isPoints||o.isSprite||o===gridMesh)&&o.visible){o.visible=false;LN.hid.push(o)}});LN.ls.forEach(l=>l.visible=true);LN.hs.forEach(l=>l.visible=true);LNX.forEach(l=>l.visible=true)}
+ else{LN.ls.forEach(l=>l.visible=false);LN.hs.forEach(l=>l.visible=false);LNX.forEach(l=>l.visible=false);LN.sw.forEach(([o,m])=>o.material=m);LN.hid.forEach(o=>o.visible=true);LN.sw=[];LN.hid=[];ren.shadowMap.needsUpdate=true;shReq=true}
  LN.on=on;['lm','l1','l2','l3','l4','l5f','l5s','l5t','l6','l7','l8','l9','tm','dy','pl','ptgo','camv'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=on});if(on){playing=false;document.getElementById('pl').textContent='▶'}dirty=true}
 function drawFrame(){applyProj();if(window.__mtUpd)window.__mtUpd();if(!LN.on){ren.render(scene,cam);return}
  ren.shadowMap.needsUpdate=false;const bg=scene.background,sv=bg&&bg.clone?bg.clone():null;if(sv)bg.set(0xffffff);ren.render(scene,cam);if(sv)bg.copy(sv)}
@@ -418,7 +426,7 @@ Object.assign(sun.shadow.camera,{left:-46,right:46,top:46,bottom:-46,near:1,far:
 function setSun(a){a*=Math.PI/180;sun.position.set(7+Math.cos(a)*55,38,-10+Math.sin(a)*55)}setSun(60);
 
 const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.9},o));
-const roofMat=M(0x383e42,{roughness:.8,side:THREE.DoubleSide,map:loaraTex2(),bumpMap:loaraBump(),bumpScale:2});roofMat.userData.lnTex='roof';
+const roofMat=M(0x383e42,{roughness:.8,side:THREE.DoubleSide,map:loaraTex2(),bumpMap:loaraBump(),bumpScale:2});roofMat.userData.lnTex='roof';roofMat.userData.lnRoof=1;
 // faktura (mapa wysokosci) blachodachowki LOARA: przetloczenie fali (ten sam ukad co tekstura koloru: modul 350 mm, 4 fale), wzniesiona czesc modulu, uskok zakladki z cieniem i nizsza czesc
 function loaraBump(){const c=document.createElement('canvas');c.width=512;c.height=160;const x=c.getContext('2d'),W=128,rb=u=>{const d=Math.abs(u-100);return d>16?0:.5+.5*Math.cos(d/16*Math.PI)};
  for(let i=0;i<512;i++){const r=rb(i%W),ye=Math.round(146-16*r),k=.8+.2*r;
@@ -665,7 +673,7 @@ const blkM=gnTex(800,400,1.25,2.5,a=>{[[0,0,0],[400,0,1],[-200,200,2],[200,200,3
 /* kolumna / slupek 40 cm: jeden pustak (40 x 20 cm) na kazda warstwe, bez wiazania */
 const colM=gnTex(400,200,2.5,5,a=>gnBlock(a,0,0,400,200,PAL[1],9000,4),.5);
 /* daszek 40 x 20 x 5 cm (szerokosc 40 w poprzek muru, dlugosc 20 wzdluz muru, grubosc 5): kazdy daszek to osobna bryla z trzema teksturami przypisanymi do scian w ich prawdziwych wymiarach: gora 20 x 40 cm, boki dlugie 20 x 5 cm, czola 40 x 5 cm (1000 px/m) */
-const dsM=gnTex(200,50,1,1,a=>gnBlock(a,0,0,200,50,'#ddd7ca',900,2,0),.3),deM=gnTex(400,50,1,1,a=>gnBlock(a,0,0,400,50,'#ddd7ca',1800,2,0),.3),dtM=gnTex(200,400,1,1,a=>gnBlock(a,0,0,200,400,'#e0dacd',4500,2,0),.3),dasMat=[deM,deM,dtM,dtM,dsM,dsM];
+const dsM=gnTex(200,50,1,1,a=>gnBlock(a,0,0,200,50,'#ddd7ca',900,2,0),.3),deM=gnTex(400,50,1,1,a=>gnBlock(a,0,0,400,50,'#ddd7ca',1800,2,0),.3),dtM=gnTex(200,400,1,1,a=>gnBlock(a,0,0,200,400,'#e0dacd',4500,2,0),.3),dasMat=[deM,deM,dtM,dtM,dsM,dsM];blkM.userData.lnTex='blk';blkM.userData.lnHid=1;colM.userData.lnTex='col';colM.userData.lnHid=1;dsM.userData.lnTex='ds';deM.userData.lnTex='de';dtM.userData.lnTex='dt';dsM.userData.lnHid=deM.userData.lnHid=dtM.userData.lnHid=1;   /* tryb liniowy: tekstura spoin pustakow i daszkow + przerywane linie spod dachu */
 function das(cx,cy,ph,y,len=.2){add(new THREE.BoxGeometry(len,DT,.4),dasMat,cx,y,-cy).rotation.y=ph}   /* srodek (cx,cy) w rzucie, os dlugosci wzdluz kierunku ph */
 function dasRun(x0,y0,x1,y1){const L=Math.hypot(x1-x0,y1-y0);if(L<.02)return;const ux=(x1-x0)/L,uy=(y1-y0)/L,ph=Math.atan2(y1-y0,x1-x0),n=Math.ceil(L/.2-1e-6);for(let i=0;i<n;i++){const a=i*.2,b=Math.min(L,(i+1)*.2),c=(a+b)/2;das(x0+ux*c,y0+uy*c,ph,G0+4*CB+DT/2,b-a)}}
 /* kolumna 40 x 40 obrocona o ph (narozna i koncowa przy skosie): 10 warstw pustakow + 2 daszki 20 x 40 */
@@ -896,7 +904,7 @@ function wtx(){const c=document.createElement('canvas');c.width=512;c.height=64;
 
 // UV w metrach świata (rzut wg normalnej ściany), żeby ziarno miało jednakową skalę na wszystkich fragmentach ścian
 function wuv(g,ox,oy,oz){const p=g.attributes.position,n=g.attributes.normal,u=g.attributes.uv;for(let i=0;i<p.count;i++){const x=p.getX(i)+ox,y=p.getY(i)+oy,z=p.getZ(i)+oz,ax=Math.abs(n.getX(i)),ay=Math.abs(n.getY(i));if(ax>.5)u.setXY(i,z,y);else if(ay>.5)u.setXY(i,x,z);else u.setXY(i,x,y)}u.needsUpdate=true}
-const T_=.45,D=.2,wallMat=M(0xf1eee7,{roughness:.95}),frM=M(0xffffff,{map:wtx(),roughness:.5}),glM=glassM,doorM=M(0x5a4332,{roughness:.5}),gdM=M(0xffffff,{map:wtx(),roughness:.55});
+const T_=.45,D=.2,wallMat=M(0xf1eee7,{roughness:.95,userData:{lnHid:1}}),frM=M(0xffffff,{map:wtx(),roughness:.5}),glM=glassM,doorM=M(0x5a4332,{roughness:.5}),gdM=M(0xffffff,{map:wtx(),roughness:.55});
 const BD=[['y',0,-1,0,7.25],['x',7.25,1,0,2.5],['y',2.5,-1,6.8,14.9],['x',14.9,1,2.5,11.3],['y',11.3,1,9.35,14.9],['x',9.8,1,11.3,21.35],['y',21.35,1,1,9.8],['x',1,-1,8.8,21.35],['y',8.8,1,0,1.45],['x',0,-1,0,8.8]];
 const U=[],u=(ax,c,s,ctr,w,sill,h,o={})=>U.push(Object.assign({ax,c,s,ctr,w,sill,h,n:1},o));
 u('y',2.5,-1,12.3,3.1,.6,1.75,{n:3});u('y',2.5,-1,8.35,2,0,2.1,{kind:'door'});
@@ -1242,7 +1250,7 @@ function pineTex(){const c=document.createElement('canvas');c.width=c.height=128
 // szopa na narzedzia i rowery (lewy gorny rog dzialki): sciany drewniane, dach jednospadowy blaszany, drzwi dwuskrzydlowe od strony ogrodu
 {const t=pineTex();const shM=M(0xffffff,{map:t,roughness:.75});shM.userData.lnTex='wood';const bu=g=>{const u=g.attributes.uv;for(let i=0;i<u.count;i++){const f=Math.floor(i/4);if(f<2||f>3)u.setY(i,u.getY(i)*g.parameters.height)}return g},drM=M(0xa88556,{roughness:.8});drM.userData.lnTex='wood';const V=(x,y)=>new THREE.Vector2(x,y),g=new THREE.ExtrudeGeometry(new THREE.Shape([V(0,0),V(2.4,0),V(2.4,2.35),V(0,2.05)]),{depth:4,bevelEnabled:false});
  g.translate(-1.2,0,-2);g.rotateY(-Math.PI/2);g.translate(-.9,G0,-35.7);{const Pp=g.attributes.position,Nn=g.attributes.normal,uv=new Float32Array(Pp.count*2);for(let i=0;i<Pp.count;i++){const x=Pp.getX(i),y=Pp.getY(i),z=Pp.getZ(i);let a,b;if(Math.abs(Nn.getX(i))>.5){a=z;b=y}else if(Math.abs(Nn.getY(i))>.5){a=x;b=z}else{a=x;b=y}uv[2*i]=a;uv[2*i+1]=b}g.setAttribute('uv',new THREE.BufferAttribute(uv,2))}add(g,shM);
- const SR=(x,z)=>[-.9-(z+35.25),-35.7+(x+2)],rf=add(new THREE.BoxGeometry(3,.05,4.6),M(0x3c3f45,{roughness:.6,metalness:.4}),-.9,G0+2.23,-35.7);rf.rotation.z=.1244;rf.rotation.y=-Math.PI/2;
+ const SR=(x,z)=>[-.9-(z+35.25),-35.7+(x+2)],rf=add(new THREE.BoxGeometry(3,.05,4.6),M(0x3c3f45,{roughness:.6,metalness:.4,userData:{lnRoof:1}}),-.9,G0+2.23,-35.7);rf.rotation.z=.1244;rf.rotation.y=-Math.PI/2;
  const fx=-.8;{const q=SR(fx+.015,-35.25);add(bu(new THREE.BoxGeometry(.03,2.05,1.7)),drM,q[0],G0+1.075,q[1],false).rotation.y=-Math.PI/2}
  [-35.65,-34.85].forEach(z=>{const q=SR(fx+.045,z);add(bu(new THREE.BoxGeometry(.04,1.95,.8)),shM,q[0],G0+1.025,q[1],false).rotation.y=-Math.PI/2});
  [-35.29,-35.21].forEach(z=>{const q=SR(fx+.07,z);add(new THREE.BoxGeometry(.05,.14,.03),M(0x2a2d31,{metalness:.6}),q[0],G0+1,q[1],false).rotation.y=-Math.PI/2});
