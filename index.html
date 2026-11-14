@@ -495,7 +495,15 @@ const PL=[[-3,-7.5],[14.78,-7.5],[19.45,-2.65],[19.45,21.35],[21.9,21.35],[21.8,
  q.fillStyle='rgba(140,136,128,.65)';[0,256].forEach(x=>q.fillRect(x-1,0,2,128));[128,384].forEach(x=>q.fillRect(x-1,128,2,128));q.fillRect(0,127,W,2);q.fillRect(0,0,W,1);q.fillRect(0,H-1,W,1);
  const tx=new THREE.CanvasTexture(sl);tx.wrapS=tx.wrapT=THREE.RepeatWrapping;tx.repeat.set(1/1.8,1/.9);tx.anisotropy=8;
  const st=M(0xffffff,{map:tx,roughness:.9}),mk=(w,h,d,x,y,z)=>{const g=new THREE.BoxGeometry(w,h,d),u=g.attributes.uv,S=[[d,h,z,y],[d,h,z,y],[w,d,x,z],[w,d,x,z],[w,h,x,y],[w,h,x,y]];S.forEach(([a,b,oa,ob],f)=>{for(let k=0;k<4;k++){const i=f*4+k;u.setXY(i,u.getX(i)*a+oa,u.getY(i)*b+ob)}});add(g,st,x,y,-z)};
- mk(2.8,.46,2.9,8.65,-.23,1.05);mk(2.8,.19,.4,8.65,-.245,-.6)}   // taras 0,00; stopień +/-.15 nad terenem (-0,30) i 0,15 pod tarasem
+ {/* taras 0,00 + stopien (+/-.15) + wypelnienie 5 cm podciecia przy elewacji = JEDNA bryla (jeden profil boczny wyciagniety wzdluz x 7,25-10,05, wspolna tekstura plyt): plan y -0,8..-0,4 stopien (gora -0,15), -0,4..2,55 plyta (gora 0, dol -0,46) */
+  const X0=7.25,X1=10.05,pr=[[-.8,-.34],[-.8,-.15],[-.4,-.15],[-.4,0],[2.55,0],[2.55,-.46],[-.4,-.46],[-.4,-.34]],n=pr.length,pos=[],uv=[],W3=(x,p)=>[x,p[1],-p[0]];
+  const T=(A,B,C,ua,ub,uc,o)=>{const a=[B[0]-A[0],B[1]-A[1],B[2]-A[2]],b=[C[0]-A[0],C[1]-A[1],C[2]-A[2]],nx=a[1]*b[2]-a[2]*b[1],ny=a[2]*b[0]-a[0]*b[2],nz=a[0]*b[1]-a[1]*b[0];if(nx*o[0]+ny*o[1]+nz*o[2]<0){[B,C]=[C,B];[ub,uc]=[uc,ub]}pos.push(...A,...B,...C);uv.push(...ua,...ub,...uc)};
+  let ar=0;for(let i=0;i<n;i++){const p=pr[i],q=pr[(i+1)%n];ar+=p[0]*q[1]-q[0]*p[1]}const sg=ar>0?1:-1;
+  for(let i=0;i<n;i++){const p=pr[i],q=pr[(i+1)%n],dp=q[0]-p[0],dh=q[1]-p[1],o=[0,sg*(-dp),-sg*dh],hor=Math.abs(dh)<1e-9,A=W3(X0,p),B=W3(X1,p),C=W3(X1,q),D=W3(X0,q),U=P=>hor?[P[0],P[2]]:[P[0],P[1]];
+   T(A,B,C,U(A),U(B),U(C),o);T(A,C,D,U(A),U(C),U(D),o)}
+  const tr=THREE.ShapeUtils.triangulateShape(pr.map(p=>new THREE.Vector2(p[0],p[1])),[]);
+  [[X0,-1],[X1,1]].forEach(([x,k])=>tr.forEach(([i,j,l])=>{const A=W3(x,pr[i]),B=W3(x,pr[j]),C=W3(x,pr[l]);T(A,B,C,[A[2],A[1]],[B[2],B[1]],[C[2],C[1]],[k,0,0])}));
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.computeVertexNormals();add(g,st,0,0,0)}}   // taras: jedna bryla
 // wycieraczka przed drzwiami glownymi: brazowa mata kokosowa 120 x 70 cm (typowy rozmiar do domu) z czarnym napisem WELCOME, na plycie wejscia (poziom 0,00), przy progu drzwi (os drzwi x = 8,37, lico y = 2,4)
 {const c=document.createElement('canvas');c.width=720;c.height=420;const q=c.getContext('2d');q.fillStyle='#6a4a2e';q.fillRect(0,0,720,420);
  for(let i=0;i<6500;i++){const l=Math.random();q.strokeStyle=l<.5?'rgba(120,86,52,'+(.25+Math.random()*.3)+')':'rgba(60,40,24,'+(.2+Math.random()*.3)+')';q.lineWidth=1+Math.random()*1.4;const x=Math.random()*720,y=Math.random()*420,a=Math.random()*6.28,L=4+Math.random()*10;q.beginPath();q.moveTo(x,y);q.lineTo(x+Math.cos(a)*L,y+Math.sin(a)*L);q.stroke()}
@@ -857,7 +865,7 @@ const wb=(ax,c,s,a0,a1,z0,z1)=>{z0=Math.max(z0,-.1);if(a1-a0<1e-3||z1-z0<1e-3)re
 BD.forEach(([ax,c,s,a0,a1])=>{const ops=U.filter(o=>o.ax==ax&&o.c==c&&o.s==s&&o.ctr>=a0&&o.ctr<=a1).map(o=>({sill:o.sill,h:o.h,l:o.cut||[o.ctr-o.w/2,o.ctr+o.w/2]})).sort((p,q)=>p.l[0]-q.l[0]);
  let cur=a0;ops.forEach(o=>{wb(ax,c,s,cur,o.l[0],-.305,E);wb(ax,c,s,o.l[0],o.l[1],-.305,o.sill);wb(ax,c,s,o.l[0],o.l[1],o.sill+o.h,E);cur=o.l[1]});wb(ax,c,s,cur,a1,-.305,E)});
 /* wypelnienie 5 cm podciecia pod elewacja z drzwiami wejsciowymi, na szerokosci tarasu (x 7,25-10,05), od -0,305 do spodu tynku (-0,10) */
-{const g=new THREE.BoxGeometry(2.8,.205,.05);add(g,M(0xc6c8ca,{roughness:.92}),8.65,-.2025,-2.525)}
+
 /* cokol: wg elewacji (str. 3) tynk konczy sie na -0,10 m, ponizej wciety o ok. 5 cm pas cokolu (jasnoszary) do gruntu; brak w otworze bramy garazowej (x 1,16-6,16) */
 {const ar=WP.reduce((t,p,i)=>{const q=WP[(i+1)%WP.length];return t+p[0]*q[1]-q[0]*p[1]},0),sg=ar>0?1:-1,n=WP.length,
  ins=d=>{const L=WP.map((p,i)=>{const q=WP[(i+1)%n],dx=q[0]-p[0],dy=q[1]-p[1],l=Math.hypot(dx,dy);return[p[0]-dy/l*sg*d,p[1]+dx/l*sg*d,dx,dy]});return WP.map((p,i)=>{const A=L[(i+n-1)%n],B=L[i],den=A[2]*B[3]-A[3]*B[2],t=((B[0]-A[0])*B[3]-(B[1]-A[1])*B[2])/den;return[A[0]+A[2]*t,A[1]+A[3]*t]})},
