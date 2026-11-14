@@ -1254,8 +1254,8 @@ function thujaM(){const S=128,c=document.createElement('canvas');c.width=c.heigh
  const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.Float32BufferAttribute([0,0,0,.1,.45,.012,0,1,0,-.1,.45,.012,0,.45,.045],3));lg.setIndex([0,1,4,1,2,4,2,3,4,3,0,4]);lg.computeVertexNormals();
  const bkM=M(0x6f6556,{roughness:1,side:THREE.DoubleSide});bkM.userData.plant=1;
  for(let n=0;n<3;n++){const cy=.545+gp+W/2+n*(W+gp),ys=Hh-.07;
-  add(new THREE.LatheGeometry([[0,0],[.08,0],[.0775,.05],[.072,.105],[.092,.113],[.115,.133],[.1265,.17],[.13,.22],[.13,.40],[.1235,.40],[.1235,.32]].map(q=>new THREE.Vector2(q[0],q[1])),40),pm,px,0,-cy);   /* doniczka Solvi: stopa, nozka, czara */
-  add(new THREE.CircleGeometry(.1235,32).rotateX(-Math.PI/2),sm,px,Hh-.07,-cy,false);   /* ziemia ok. 7 cm pod brzegiem */
+  add(new THREE.LatheGeometry([[0,0],[.08,0],[.0775,.05],[.072,.105],[.092,.113],[.115,.133],[.1265,.17],[.13,.22],[.13,.395],[.1285,.40],[.1175,.40],[.115,.395],[.115,.32]].map(q=>new THREE.Vector2(q[0],q[1])),40),pm,px,0,-cy);   /* doniczka Solvi: stopa, nozka, czara */
+  add(new THREE.CircleGeometry(.115,32).rotateX(-Math.PI/2),sm,px,Hh-.07,-cy,false);   /* ziemia ok. 7 cm pod brzegiem */
   const rnd=(()=>{let s=131+n*47;return()=>(s=(s*16807)%2147483647)/2147483647})(),gs=()=>rnd()+rnd()+rnd()-1.5,BP=[],BI=[],LV=[],RG=6;
   const tube=(pts,rad)=>{const m=pts.length,base=BP.length/3,ax=vs(pts[m-1],pts[0]),al=ax.map(Math.abs),ref=al[1]<=al[0]&&al[1]<=al[2]?[0,1,0]:al[0]<=al[2]?[1,0,0]:[0,0,1];
    for(let k=0;k<m;k++){const t=vn(vs(pts[Math.min(m-1,k+1)],pts[Math.max(0,k-1)])),u=vn(vc(t,ref)),v=vc(t,u),r=rad(k/(m-1)),p=pts[k];
