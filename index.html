@@ -693,7 +693,7 @@ function rcol(cx,cy,ph,lift){add(bUV(new THREE.BoxGeometry(.4,10*CB,.4),.2,.2),c
 function bUV(g,ou=0,ow=0){const p=g.attributes.position,n=g.attributes.normal,u=g.attributes.uv;let y0=1e9;for(let i=0;i<p.count;i++)y0=Math.min(y0,p.getY(i));for(let i=0;i<p.count;i++){const ax=Math.abs(n.getX(i)),ay=Math.abs(n.getY(i)),v=1-(p.getY(i)-y0);if(ax>.5)u.setXY(i,p.getZ(i)+ow,v);else if(ay>.5)u.setXY(i,p.getX(i)+ou,p.getZ(i)+ow);else u.setXY(i,p.getX(i)+ou,v)}u.needsUpdate=true;return g}
 const G0=-.3,FY=-7.3,wallM=blkM,pilM=M(0x8b8e93),capM=M(0x4a4d52),gateM=M(0x30353b,{roughness:.5,metalness:.4}),fenM=M(0x2d3b2f,{transparent:true,opacity:.55});
 const PGR=-.34,CT=G0+.05,CH=CT-PGR,CB=.2,DT=.05,HW=.1999;   /* pustaki od poziomu gruntu (G0), warstwa 20 cm; daszek DT = 5 cm */   /* os muru frontowego FY: zewnetrzne lico (40 cm) na granicy dzialki y=-7,5; CB: warstwa bloczka 20 cm; PT: plyta 10 cm; HW: polowa grubosci muru (2 bloczki = 40 cm) */   /* jeden cokol: wysokosc CH, spod na gruncie (PGR), gora CT */
-function seg(x0,y0,x1,y1,h,t,m,y=G0){const L=Math.hypot(x1-x0,y1-y0),bg_=new THREE.BoxGeometry(L,h,t),ph_=Math.atan2(y1-y0,x1-x0),cx_=(x0+x1)/2,cy_=(y0+y1)/2,me=add((m===wallM||m===colM)?bUV(bg_,cx_*Math.cos(ph_)+cy_*Math.sin(ph_),cx_*Math.sin(ph_)-cy_*Math.cos(ph_)):bg_,m,(x0+x1)/2,y+h/2,-(y0+y1)/2);me.rotation.y=Math.atan2(y1-y0,x1-x0)}
+function seg(x0,y0,x1,y1,h,t,m,y=G0,al=false){const L=Math.hypot(x1-x0,y1-y0),bg_=new THREE.BoxGeometry(L,h,t),ph_=Math.atan2(y1-y0,x1-x0),cx_=(x0+x1)/2,cy_=(y0+y1)/2,me=add((m===wallM||m===colM)?bUV(bg_,al?L/2:cx_*Math.cos(ph_)+cy_*Math.sin(ph_),cx_*Math.sin(ph_)-cy_*Math.cos(ph_)):bg_,m,(x0+x1)/2,y+h/2,-(y0+y1)/2);me.rotation.y=Math.atan2(y1-y0,x1-x0)}
 function pillar(x,y){add(bUV(new THREE.BoxGeometry(.4,10*CB,.4),.2,.2),colM,x,G0+5*CB,-y);das(x-.1,y,0,G0+10*CB+DT/2);das(x+.1,y,0,G0+10*CB+DT/2)}   /* kolumna 40 x 40: 10 warstw pustakow (2,0 m) od gruntu + 2 daszki 20 x 40 x 5 cm */
 const stM=M(0x3d444c,{roughness:.6,metalness:.3}),hM=M(0xc2c6cc,{metalness:.8,roughness:.3}),sdoorM=(()=>{const S=256,c=document.createElement('canvas');c.width=c.height=S;const a=c.getContext('2d');let sd=9;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;
  for(let i=0;i<8;i++){const v=56+Math.round(rnd()*7);a.fillStyle='rgb('+v+','+(v+4)+','+(v+9)+')';a.fillRect(i*32,0,32,S);for(let k=0;k<7;k++){a.strokeStyle='rgba('+(rnd()<.5?'255,255,255,.035':'0,0,0,.07')+')';a.beginPath();const x=i*32+3+rnd()*26;a.moveTo(x,0);a.lineTo(x+(rnd()-.5)*3,S);a.stroke()}a.fillStyle='rgba(10,12,14,.8)';a.fillRect(i*32,0,2,S)}
@@ -707,7 +707,8 @@ function wallFoot(P0,P1,hw,sa,sb){const L=Math.hypot(P1[0]-P0[0],P1[1]-P0[1]),ux
  pts=[];let tA=0,tB=L,vA=[],vB=[];if(sa){const q=ivl(hw,sa),r=ivl(-hw,sa);tA=[q[1],r[1]];vA=vin(sa).sort((a,b)=>b.n-a.n)}if(sb){const q=ivl(hw,sb),r=ivl(-hw,sb);tB=[q[0],r[0]];vB=vin(sb).sort((a,b)=>a.n-b.n)}
  const tl=Array.isArray(tA)?tA:[tA,tA],tr=Array.isArray(tB)?tB:[tB,tB];
  pts.push(W(tl[1],-hw),W(tr[1],-hw));vB.forEach(v=>pts.push(W(v.t,v.n)));pts.push(W(tr[0],hw),W(tl[0],hw));vA.forEach(v=>pts.push(W(v.t,v.n)));return pts}
-function wallPrism(P0,P1,hw,sa,sb,h,y,m){const pts=wallFoot(P0,P1,hw,sa,sb),g=new THREE.ExtrudeGeometry(new THREE.Shape(pts),{depth:h,bevelEnabled:false});g.rotateX(-Math.PI/2);add(g,m,0,y,0)}
+function wallPrism(P0,P1,hw,sa,sb,h,y,m,uo){const pts=wallFoot(P0,P1,hw,sa,sb),g=new THREE.ExtrudeGeometry(new THREE.Shape(pts),{depth:h,bevelEnabled:false});if(uo){const u=g.attributes.uv;for(let i=0;i<u.count;i++)u.setX(i,u.getX(i)-uo);u.needsUpdate=true}   /* uo: poczatek tekstury pustakow = lico kolumny, od ktorego zaczyna sie czesc pod przeslem */
+ g.rotateX(-Math.PI/2);add(g,m,0,y,0)}
 /* sztacheta: gorne naroza zaokraglone (r 2,5 cm) */
 const stG=()=>{const w=.10,h=1.42,r=.025,sh=new THREE.Shape();sh.moveTo(-w/2,-h/2);sh.lineTo(w/2,-h/2);sh.lineTo(w/2,h/2-r);sh.quadraticCurveTo(w/2,h/2,w/2-r,h/2);sh.lineTo(-w/2+r,h/2);sh.quadraticCurveTo(-w/2,h/2,-w/2,h/2-r);sh.lineTo(-w/2,-h/2);const g=new THREE.ExtrudeGeometry(sh,{depth:.025,bevelEnabled:false,curveSegments:5});g.translate(0,0,-.0125);return g};
 /* przeslo stalowe: poziome profile 10 x 3 cm (odstep ok. 2,4 cm) miedzy slupkami 5 x 5 cm na koncach i co ok. 2,5 m */
@@ -716,14 +717,14 @@ function slats(x0,y0,x1,y1,yb,yt){const L=Math.hypot(x1-x0,y1-y0);if(L<.05)retur
  for(let k=0;k<=np;k++){const t=Math.min(L-.025,Math.max(.025,k*L/np)),px=x0+ux*t,py=y0+uy*t;seg(px-ux*.025,py-uy*.025,px+ux*.025,py+uy*.025,H,.05,gateM,yb)}}
 /* prosty odcinek muru frontowego: cokol, 3 warstwy bloczkow (2 x 20 cm = 40 cm grubosci), 2 warstwy plyt (parapet), nad nim przeslo stalowe do wys. 1,5 m n.p.t.; konce przy kolumnach (sa/sb) lub wolne */
 function fwall(x0,y0,x1,y1,sa,sb){const P0=[x0,y0],P1=[x1,y1],SQ=(x,y)=>({c:[x,y],h:.2}),pa=sa?SQ(x0,y0):null,pb=sb?SQ(x1,y1):null,L=Math.hypot(x1-x0,y1-y0),ux=(x1-x0)/L,uy=(y1-y0)/L,e0=sa?.2:0,e1=sb?.2:0;
- wallPrism(P0,P1,HW,pa,pb,4*CB,G0,wallM);dasRun(x0+ux*e0,y0+uy*e0,x1-ux*e1,y1-uy*e1);
+ wallPrism(P0,P1,HW,pa,pb,4*CB,G0,wallM,x0+ux*e0);dasRun(x0+ux*e0,y0+uy*e0,x1-ux*e1,y1-uy*e1);
  slats(x0+ux*e0,y0+uy*e0,x1-ux*e1,y1-uy*e1,G0+4*CB+DT,G0+1.87)}
 [[-2.2,1.13,true,true],[6.13,8.53,true,true]].forEach(([a,b,sa,sb])=>fwall(a,FY,b,FY,sa,sb));fwall(10.15,FY,14.38,FY,true,false);   /* mur frontowy zaczyna sie od zlacza pomiarowego; ostatni odcinek konczy sie na kolumnie narozna (14,38) */
 {const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(19.45-bx)/L,uy=(-2.65-by)/L,nx=-uy,ny=ux,ph=Math.atan2(uy,ux),TL=1.425,TR=5.275;   /* osie scian bocznych wiaty */
  const Q=(t,s=0)=>[bx+ux*t+nx*s,by+uy*t+ny*s],sg=(a,b,h,th,m,y,s=0)=>{const p=Q(a,s),q=Q(b,s);seg(p[0],p[1],q[0],q[1],h,th,m,y)};
  /* mur skosu: zewnetrzne lico (s=0) na granicy dzialki, os muru w s=0,2; kolumna narozna (mitra przy zalamaniu granicy w x 14,78) i kolumna koncowa obrocona wzdluz skosu */
  const pp=(pts,h,y,m)=>{const g=new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(q=>new THREE.Vector2(q[0],q[1]))),{depth:h,bevelEnabled:false});g.rotateX(-Math.PI/2);add(g,m,0,y,0)},
- fs=(t0,t1)=>{const p=Q(t0,.2),q=Q(t1,.2);seg(p[0],p[1],q[0],q[1],4*CB,.4,wallM,G0);dasRun(p[0],p[1],q[0],q[1]);slats(p[0],p[1],q[0],q[1],G0+4*CB+DT,G0+1.87)};
+ fs=(t0,t1,r)=>{const p=Q(t0,.2),q=Q(t1,.2);if(r)seg(q[0],q[1],p[0],p[1],4*CB,.4,wallM,G0,true);else seg(p[0],p[1],q[0],q[1],4*CB,.4,wallM,G0,true);dasRun(p[0],p[1],q[0],q[1]);slats(p[0],p[1],q[0],q[1],G0+4*CB+DT,G0+1.87)};
  {const SH=(cx,cy,ph)=>add(bUV(new THREE.BoxGeometry(.4,10*CB,.4),.2,.2),colM,cx,G0+5*CB,-cy).rotation.y=ph;SH(bx-.2,by+.2,0);SH(bx+ux*.2+nx*.2,by+uy*.2+ny*.2,ph);
   /* kolumna narozna: trzon = dwie kolumny 40 x 40 (osiowa + obrocona wzdluz skosu); daszki = obrys sumy obu kwadratow ciety po mitrze (dwusieczna zalamania) na dwie plyty, kazda z teksturami wyrownanymi do swojego muru (20 x 40 cm), bez nakladania sie i migotania */
   const V=[bx,by],P=(a,b)=>[bx+ux*a+nx*b,by+uy*a+ny*b],B1=P(.4,0),B2=P(.4,.4),B3=P(0,.4),yA=by+.4,tt=(B2[1]-yA)/(B2[1]-B3[1]),X=[B2[0]+(B3[0]-B2[0])*tt,yA],
@@ -738,7 +739,7 @@ function fwall(x0,y0,x1,y1,sa,sb){const P0=[x0,y0],P1=[x1,y1],SQ=(x,y)=>({c:[x,y
   cap(clip(1),q=>[(q[0]-bx)/.2,(q[1]-by)/.4]);   /* plyta od strony muru frontowego: os wzdluz x */
   cap(clip(-1),q=>[((q[0]-bx)*ux+(q[1]-by)*uy)/.2,((q[0]-bx)*nx+(q[1]-by)*ny)/.4])}   /* plyta od strony skosu: os wzdluz skosu */
  {const c=Q(L-.2,.2);rcol(c[0],c[1],ph,0)}
- fs(.4,TL-.075);fs(TR+.075,L-.4);
+ fs(.4,TL-.075);fs(TR+.075,L-.4,true);
  const BY0=G0+9*CB+DT,BY1=G0+2.2,bpp=(p,q,y0=BY0,y1=BY1)=>{const L=Math.hypot(q[0]-p[0],q[1]-p[1]),n=Math.max(1,Math.round(L/.1));seg(p[0],p[1],q[0],q[1],.04,.06,stM,y0);seg(p[0],p[1],q[0],q[1],.04,.06,stM,y1-.04);for(let i=0;i<=n;i++){const t=i/n;add(new THREE.BoxGeometry(.02,y1-y0-.08,.02),stM,p[0]+(q[0]-p[0])*t,y0+.04+(y1-y0-.08)/2,-(p[1]+(q[1]-p[1])*t))}},bp=(a,b,s=0,y0,y1)=>bpp(Q(a,s),Q(b,s),y0,y1),
  bpp2=(p,q,y0=BY0,y1=BY1)=>{const L=Math.hypot(q[0]-p[0],q[1]-p[1]),n=Math.max(2,Math.round(L/.1));seg(p[0],p[1],q[0],q[1],.04,.06,stM,y0);seg(p[0],p[1],q[0],q[1],.04,.06,stM,y1-.04);for(let i=1;i<n;i++){const t=i/n;add(new THREE.BoxGeometry(.02,y1-y0-.08,.02),stM,p[0]+(q[0]-p[0])*t,y0+.04+(y1-y0-.08)/2,-(p[1]+(q[1]-p[1])*t))}},bp2=(a,b,s=0,y0,y1)=>bpp2(Q(a,s),Q(b,s),y0,y1),
  cpost=(t,s_)=>{const q=Q(t,s_);add(new THREE.BoxGeometry(.06,BY1-BY0,.06),stM,q[0],(BY0+BY1)/2,-q[1]).rotation.y=ph};   /* kraty: ramy po osiach scian, slupki narozne, szczeble miedzy nimi */
