@@ -966,15 +966,21 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
  if(o.kind=='door'){[a-.5,a+.5].forEach(x=>ub(o,x,z+(h-fw)/2,.05,h-fw,.08,frM));[x0+.25,x1-.25].forEach(x=>ub(o,x,zc,.47,h-.12,.03,glM));0;{const ac=o.c-o.s*(D+.04),hx=a+.36,hy=zc-.05,fz=e=>-(ac+o.s*(.097+e)),ix=M(0xcfd3d8,{metalness:.9,roughness:.26}),bk=M(0x16181b,{metalness:.5,roughness:.45}),
    cy=(r,l,x,y,e,rx,rz,m)=>{const q=add(new THREE.CylinderGeometry(r,r,l,24),m,x,y,fz(e),false);q.rotation.x=rx;q.rotation.z=rz;return q};
   const bxp=(w2,h2,t,x,y,e,m)=>add(new THREE.BoxGeometry(w2,h2,t),m,x,y,fz(e),false),R=Math.PI/2,dy=hy-.02;
-  /* klamka nowoczesna (minimalizm): matowa czern, ultracienka kwadratowa rozeta (6 mm) licujaca z skrzydlem, uchwyt jako plaska, dluga prostokatna sztaba 170 x 14 x 20 mm odsunieta od drzwi na krotkiej nodze, lekko zwezajaca sie ku koncowi; maly kwadratowy zamek z wkladka bez szyldu */
-  const mb=M(0x17181a,{metalness:.55,roughness:.42}),mg=M(0x2a2c2f,{metalness:.5,roughness:.5}),lv=M(0x1b1c1e,{metalness:.7,roughness:.3});
-  bxp(.058,.058,.006,hx,hy,.003,mb);   /* rozeta ultracienka */
-  bxp(.044,.044,.002,hx,hy,.007,mg);   /* wglebienie rozety */
-  bxp(.02,.02,.034,hx,hy,.024,lv);   /* noga uchwytu */
-  bxp(.17,.016,.022,hx-.073,hy,.047,lv);   /* sztaba uchwytu (plaska, pozioma) */
-  bxp(.012,.012,.022,hx-.158,hy,.047,lv);   /* skos zakonczenia */
-  bxp(.17,.002,.004,hx-.073,hy+.0085,.0585,M(0x3a3d41,{metalness:.8,roughness:.25}));   /* akcent - jasna krawedz gorna */
-  bxp(.034,.034,.005,hx,dy-.115,.0025,mb);bxp(.024,.024,.002,hx,dy-.115,.006,mg);bxp(.004,.012,.002,hx,dy-.115,.008,M(0x0a0a0b));   /* mala kwadratowa rozeta zamka ze szczelina na klucz */}
+  /* klamka nowoczesna kwadratowa (stal nierdzewna szczotkowana + czarne wstawki): dlugi prostokatny szyld ze sfazowanymi krawedziami i czarnym wglebieniem, kwadratowa rozeta, masywna klamka o przekroju kwadratowym z lekkim skosem na koncu, kwadratowa rozeta wkladki z okraglym otworem na klucz */
+  const st=M(0xc9cdd2,{metalness:.9,roughness:.3}),stl=M(0xe4e7ea,{metalness:.9,roughness:.2}),stb=M(0x8e9399,{metalness:.9,roughness:.38}),bl=M(0x101113,{metalness:.4,roughness:.5});
+  bxp(.064,.34,.004,hx,dy,.002,stb);   /* podstawa szyldu */
+  bxp(.058,.334,.009,hx,dy,.0085,st);   /* szyld */
+  bxp(.058,.334,.001,hx,dy,.0132,stl);   /* faza gorna (jasna) */
+  bxp(.044,.318,.002,hx,dy,.0098,bl);   /* czarne wglebienie */
+  bxp(.036,.31,.002,hx,dy,.0112,st);   /* srodkowa listwa stalowa */
+  [-1,1].forEach(k=>bxp(.007,.007,.003,hx,dy+k*.15,.0128,bl));   /* sruby */
+  bxp(.054,.054,.012,hx,hy,.019,st);bxp(.054,.054,.001,hx,hy,.0255,stl);bxp(.042,.042,.003,hx,hy,.0262,bl);bxp(.032,.032,.003,hx,hy,.0278,st);   /* rozeta: stal + czarny pierscien + stal */
+  bxp(.028,.028,.046,hx,hy,.045,st);   /* szyjka */
+  bxp(.036,.036,.032,hx,hy,.071,st);   /* kolano (kostka) */
+  bxp(.165,.03,.03,hx-.0825+.018,hy,.071,st);   /* sztaba klamki: przekroj kwadratowy 3 x 3 cm */
+  bxp(.165,.002,.03,hx-.0825+.018,hy+.0155,.071,stl);   /* faza gorna */
+  bxp(.012,.03,.03,hx-.171,hy,.071,stl);   /* czolo klamki */
+  bxp(.046,.046,.007,hx,dy-.125,.0105,st);bxp(.032,.032,.003,hx,dy-.125,.0138,bl);cy(.0075,.003,hx,dy-.125,.0155,Math.PI/2,0,stb);bxp(.0035,.012,.002,hx,dy-.125,.0165,bl);   /* rozeta zamka z kluczykiem */}
  {/* drzwi: skrzydlo grubosci 7 cm wysuniete przed lico ramy (rama .08 glebokosci, skrzydlo licem 4,5 cm przed nia), plyta srodkowa wypukla, ciemna uszczelka w szczelinach, zawiasy ukryte */
   const ac=o.c-o.s*(D+.04),pl=(xc,zc2,w2,h2,t,off,m)=>add(new THREE.BoxGeometry(w2,h2,t),m,xc,zc2,-(ac+o.s*off),false),
    Lz0=z+.02,Lz1=z+h-fw,Lh=Lz1-Lz0,Lc=(Lz0+Lz1)/2,gkM=M(0x131415,{roughness:.8}),pnM=M(0x674f3c,{roughness:.42});
