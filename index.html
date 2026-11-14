@@ -994,10 +994,14 @@ BD.forEach(([ax,c,s,a0,a1])=>{const ops=U.filter(o=>o.ax==ax&&o.c==c&&o.s==s&&o.
  for(let i=0;i<7;i++){const o=(i-3)*.0657;[-1,1].forEach(sg=>add(new THREE.BoxGeometry(.05,H,.03),wm[(i+(sg>0))%3],cx+o,.005+H/2,-(cy+sg*.215)))}}
 const ub=(o,al,zc,sa,sz,sd,m)=>{const ac=o.c-o.s*(D+.04);add(o.ax=='y'?new THREE.BoxGeometry(sa,sz,sd):new THREE.BoxGeometry(sd,sz,sa),m,o.ax=='y'?al:ac,zc,o.ax=='y'?-ac:-al,false)};
 /* numer domu 12: szare cyfry na elewacji frontowej nad kinkietem na prawo od bramy garazowej (x 6,73, srodek 2,07 m; kinkiety zamienione miejscami z numerem), cyfry ok. 22 cm; w trybie liniowym ukryty */
-{const c=document.createElement('canvas');c.width=512;c.height=256;const q=c.getContext('2d');q.textAlign='center';q.textBaseline='middle';q.font='bold 200px Arial, Helvetica, sans-serif';
- q.fillStyle='rgba(20,22,25,.55)';q.fillText('12',262,138);q.fillStyle='#8d9298';q.fillText('12',256,132);
- const t=new THREE.CanvasTexture(c);t.anisotropy=8;const nm=new THREE.Mesh(new THREE.PlaneGeometry(.8,.4),(window.NUMM=new THREE.MeshStandardMaterial({map:t,transparent:true,alphaTest:.35,roughness:.45,metalness:.15})));
- nm.position.set(6.73,2.068,.004);nm.userData.hl=1;scene.add(nm);
+{/* cyfry bryly (solid): wytloczone z wielokatow, wys. 22 cm, grubosc kreski 3,6 cm, wysokosc (glebokosc) 1,5 cm - stoja na licu elewacji (z = 0), nie sa plaska nakladka; "1" = wielokat z flaga, "2" = luk + ukos + podstawa z odcinkow (kazdy odcinek wydluzony o pol kreski, aby naroza sie zakrywaly) */
+ const DP=.015,HT=.018,nM=(window.NUMM=new THREE.MeshStandardMaterial({color:0x8d9298,roughness:.45,metalness:.15})),V=(x,y)=>new THREE.Vector2(x,y),grp=new THREE.Group();
+ const ext=(pts,ox)=>{const g=new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(a=>V(a[0]+ox,a[1]))),{depth:DP,bevelEnabled:false}),m=new THREE.Mesh(g,nM);m.castShadow=true;m.userData.hl=1;grp.add(m)};
+ const stroke=(P,ox)=>{for(let k=0;k<P.length-1;k++){const a=P[k],b=P[k+1],L=Math.hypot(b[0]-a[0],b[1]-a[1]),dx=(b[0]-a[0])/L,dy=(b[1]-a[1])/L,nx=-dy*HT,ny=dx*HT,a2=[a[0]-dx*HT,a[1]-dy*HT],b2=[b[0]+dx*HT,b[1]+dy*HT];ext([[a2[0]+nx,a2[1]+ny],[b2[0]+nx,b2[1]+ny],[b2[0]-nx,b2[1]-ny],[a2[0]-nx,a2[1]-ny]],ox)}};
+ ext([[.055,0],[.091,0],[.091,.22],[.068,.22],[0,.17],[0,.136],[.055,.172]],0);   /* "1" */
+ const arc=[];for(let a=170;a>=-35;a-=15)arc.push([.07+.052*Math.cos(a*Math.PI/180),.15+.052*Math.sin(a*Math.PI/180)]);
+ stroke(arc.concat([[.018,.018],[.122,.018]]),.126);   /* "2" */
+ grp.position.set(6.73-.133,2.068-.11,0);scene.add(grp);
  /* swiatlo kinkietu na numer: zasieg 1 m (konczy sie ok. 1,3 m pod podbitka - nie oswietla podbitki ani dachu, bo reflektor nie ma cieni): oswietla numer (kinkiet swieci tylko aureola, bez zrodla swiatla) */
  const nl=new THREE.SpotLight(0xffe2b4,0,1.0,.5,1,1.2);nl.position.set(6.73,1.62,.16);nl.target.position.set(6.73,2.0,.0);scene.add(nl,nl.target);window.NUML=nl}
 /* roleta zewnetrzna (czarna) osadzona we wneku okiennym sypialni w tylnej scianie (x=5,4; sciana y=21,35; wneka glebokosci 24 cm, okno w plaszczyznie y=21,11): kaseta pod nadprozem w licu wneki (2 cm za lico elewacji), prowadnice na ościeżach, pancerz z listew (skok 3,7 cm) z listwa koncowa opierajaca sie o parapet; jeden przycisk zwija / rozwija; w trybie liniowym linie poziome = zawiasy listew */
