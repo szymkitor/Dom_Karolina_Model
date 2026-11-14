@@ -504,11 +504,11 @@ const PL=[[-3,-7.5],[14.78,-7.5],[19.45,-2.65],[19.45,21.35],[21.9,21.35],[21.8,
   const tr=THREE.ShapeUtils.triangulateShape(pr.map(p=>new THREE.Vector2(p[0],p[1])),[]);
   [[X0,-1],[X1,1]].forEach(([x,k])=>tr.forEach(([i,j,l])=>{const A=W3(x,pr[i]),B=W3(x,pr[j]),C=W3(x,pr[l]);T(A,B,C,[A[2],A[1]],[B[2],B[1]],[C[2],C[1]],[k,0,0])}));
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.computeVertexNormals();add(g,st,0,0,0)}}   // taras: jedna bryla
-// wycieraczka przed drzwiami glownymi: brazowa mata kokosowa 120 x 70 cm (typowy rozmiar do domu) z czarnym napisem WELCOME, na plycie wejscia (poziom 0,00), przy progu drzwi (os drzwi x = 8,37, lico y = 2,4)
+// wycieraczka przed drzwiami glownymi: brazowa mata kokosowa 120 x 70 cm (typowy rozmiar do domu) z czarnym napisem MĄCZKAS / WELCOME / YOU, na plycie wejscia (poziom 0,00), przy progu drzwi (os drzwi x = 8,37, lico y = 2,4)
 {const c=document.createElement('canvas');c.width=720;c.height=420;const q=c.getContext('2d');q.fillStyle='#6a4a2e';q.fillRect(0,0,720,420);
  for(let i=0;i<6500;i++){const l=Math.random();q.strokeStyle=l<.5?'rgba(120,86,52,'+(.25+Math.random()*.3)+')':'rgba(60,40,24,'+(.2+Math.random()*.3)+')';q.lineWidth=1+Math.random()*1.4;const x=Math.random()*720,y=Math.random()*420,a=Math.random()*6.28,L=4+Math.random()*10;q.beginPath();q.moveTo(x,y);q.lineTo(x+Math.cos(a)*L,y+Math.sin(a)*L);q.stroke()}
  q.strokeStyle='#2a1b10';q.lineWidth=10;q.strokeRect(18,18,684,384);q.strokeStyle='rgba(20,12,6,.55)';q.lineWidth=3;q.strokeRect(36,36,648,348);
- q.fillStyle='#0b0b0c';q.textAlign='center';q.textBaseline='middle';let fs=120;q.font='900 '+fs+'px Arial Black,Arial,sans-serif';while(q.measureText('WELCOME').width>580&&fs>30){fs-=4;q.font='900 '+fs+'px Arial Black,Arial,sans-serif'}q.fillText('WELCOME',360,215);
+ q.fillStyle='#0b0b0c';q.textAlign='center';q.textBaseline='middle';const TL=['MĄCZKAS','WELCOME','YOU'];let fs=100;const ff=()=>'900 '+fs+'px Arial Black,Arial,sans-serif';q.font=ff();while((Math.max(...TL.map(t=>q.measureText(t).width))>580||fs*1.08*3>300)&&fs>24){fs-=4;q.font=ff()}TL.forEach((t,i)=>q.fillText(t,360,215+(i-1)*fs*1.08));   /* napis na trzy linie: MĄCZKAS / WELCOME / YOU */
  const tx=new THREE.CanvasTexture(c);tx.anisotropy=8;const top=M(0xffffff,{map:tx,roughness:1}),sd=M(0x4a3320,{roughness:1});
  add(new THREE.BoxGeometry(1.2,.018,.7),[sd,sd,top,sd,sd,sd],8.37,.009,-2.0)}
 const TERR=[[6.3,.34,9.1,12.95,-.17,-15.85],[1.2,.34,2.9,15.5,-.17,-9.85]];                         // taras pod dachem (okładzina boków dodawana niżej)
