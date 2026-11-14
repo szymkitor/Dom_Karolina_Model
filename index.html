@@ -869,11 +869,12 @@ const gate=new THREE.Group();scene.add(gate);leaf(gate,3.65,5.3,7.0);   /* czę�
  add(new THREE.BoxGeometry(.002,.036,.06),lblM,mx+.1515,G0+.13,mz);
  add(new THREE.CylinderGeometry(.012,.012,.12,10),blk,7.04,G0+.12,mz).rotation.z=Math.PI/2;add(new THREE.CylinderGeometry(.012,.012,.12,10),blk,6.98,G0+.06,mz);
  [6.92,7.08].forEach(z=>add(new THREE.CylinderGeometry(.028,.028,.12,12),cgM,6.13,G0+1.84,z));add(new THREE.BoxGeometry(.1,.03,.26),zincM,6.13,G0+1.92,7.0);add(new THREE.BoxGeometry(.1,.02,.05),zincM,6.13,G0+1.92,7.3);
- /* lampa ostrzegawcza na słupie przy bramie: pulsuje na pomarańczowo, gdy brama jedzie */
- add(new THREE.BoxGeometry(.16,.03,.16),cgM,6.13,G0+2.095,FY*-1);add(new THREE.CylinderGeometry(.045,.05,.03,16),cgM,6.13,G0+2.125,-FY);
- const lm=new THREE.MeshStandardMaterial({color:0x6a3a14,roughness:.25,metalness:0,emissive:new THREE.Color(0xff7a00),emissiveIntensity:0}),ln=new THREE.Mesh(new THREE.CylinderGeometry(.05,.06,.13,20),lm);ln.position.set(6.13,G0+2.205,-FY);scene.add(ln);
- const lc=new THREE.Mesh(new THREE.SphereGeometry(.05,16,8,0,Math.PI*2,0,Math.PI/2),lm);lc.position.set(6.13,G0+2.27,-FY);scene.add(lc);
- const pl=new THREE.PointLight(0xff8a1f,0,7,2);pl.position.set(6.13,G0+2.3,-FY+.15);scene.add(pl);window.GL={m:lm,pl:pl,on:false}}
+ /* lampa ostrzegawcza (kogut) typu LED 230 V, jak w sklepach (Nice/FAAC): plytka montazowa 12 x 12 cm przykrecona do daszka slupa (gora G0+2,05), cylindryczna podstawa ABS fi 11 x 4 cm i pomaranczowy klosz fi 10 x 13 cm z kopulka; pulsuje na pomarańczowo, gdy brama jedzie */
+ {const bx_=6.13,bz_=-FY,yb=G0+2.05,pm=new THREE.MeshStandardMaterial({color:0x2b2e33,roughness:.6,metalness:.3});
+ add(new THREE.BoxGeometry(.12,.015,.12),pm,bx_,yb+.0075,bz_);add(new THREE.CylinderGeometry(.055,.055,.04,24),pm,bx_,yb+.035,bz_);
+ const lm=new THREE.MeshStandardMaterial({color:0x6a3a14,roughness:.25,metalness:0,emissive:new THREE.Color(0xff7a00),emissiveIntensity:0}),
+ ln=new THREE.Mesh(new THREE.LatheGeometry([[0,0],[.048,0],[.05,.008],[.05,.08],[.044,.108],[.03,.126],[.012,.134],[0,.136]].map(a=>new THREE.Vector2(a[0],a[1])),24),lm);ln.position.set(bx_,yb+.055,bz_);scene.add(ln);
+ const pl=new THREE.PointLight(0xff8a1f,0,7,2);pl.position.set(bx_,yb+.15,bz_+.15);scene.add(pl);window.GL={m:lm,pl:pl,on:false}}}
 let gT=0;document.getElementById('gt').onclick=()=>{if(!gT&&gate.position.x===0&&window.FK&&(FK.t!==0||FK.p!==0))return;gT=gT?0:5};   /* blokada: brama nie otworzy sie przy otwartej furtce */
 function wtx(){const c=document.createElement('canvas');c.width=512;c.height=64;const x=c.getContext('2d');x.fillStyle='#5b3a22';x.fillRect(0,0,512,64);
  const cl=['#6e4627','#4a2e1a','#7a5230','#3f2715','#8a5d36'];for(let i=0;i<140;i++){x.fillStyle=cl[i%5];x.globalAlpha=.55;x.fillRect(Math.random()*512,Math.random()*64,60+Math.random()*300,1+Math.random()*1.6)}
