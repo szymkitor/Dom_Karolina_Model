@@ -999,13 +999,13 @@ const ub=(o,al,zc,sa,sz,sd,m)=>{const ac=o.c-o.s*(D+.04);add(o.ax=='y'?new THREE
  const ext=(pts,ox)=>{const g=new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(a=>V(a[0]+ox,a[1]))),{depth:DP,bevelEnabled:false}),m=new THREE.Mesh(g,nM);m.castShadow=true;m.userData.hl=1;grp.add(m)};
  const stroke=(P,ox)=>{for(let k=0;k<P.length-1;k++){const a=P[k],b=P[k+1],L=Math.hypot(b[0]-a[0],b[1]-a[1]),dx=(b[0]-a[0])/L,dy=(b[1]-a[1])/L,nx=-dy*HT,ny=dx*HT,a2=[a[0]-dx*HT,a[1]-dy*HT],b2=[b[0]+dx*HT,b[1]+dy*HT];ext([[a2[0]+nx,a2[1]+ny],[b2[0]+nx,b2[1]+ny],[b2[0]-nx,b2[1]-ny],[a2[0]-nx,a2[1]-ny]],ox)}};
  ext([[.055,0],[.091,0],[.091,.22],[.068,.22],[0,.17],[0,.136],[.055,.172]],0);   /* "1" */
- {const R=.052,ro=R+HT,ri=R-HT,cx=.07,cy=.15,D=Math.PI/180,pol=[];   /* "2": gorny luk = jeden gladki wycinek pierscienia (170 -> -35 st.), potem ukos i podstawa jako osobne, czyste prostokaty */
-  for(let a=170;a>=-35;a-=5)pol.push([cx+ro*Math.cos(a*D),cy+ro*Math.sin(a*D)]);
-  for(let a=-35;a<=170;a+=5)pol.push([cx+ri*Math.cos(a*D),cy+ri*Math.sin(a*D)]);
-  ext(pol,.126);
-  const E=[cx+R*Math.cos(-35*D),cy+R*Math.sin(-35*D)],Pb=[.018,.018],dl=Math.hypot(Pb[0]-E[0],Pb[1]-E[1]),dx=(Pb[0]-E[0])/dl,dy=(Pb[1]-E[1])/dl,nx=-dy*HT,ny=dx*HT,E2=[E[0]-dx*.02,E[1]-dy*.02];
-  ext([[E2[0]+nx,E2[1]+ny],[Pb[0]+nx,Pb[1]+ny],[Pb[0]-nx,Pb[1]-ny],[E2[0]-nx,E2[1]-ny]],.126);   /* ukos */
-  ext([[0,0],[.14,0],[.14,2*HT],[0,2*HT]],.126)}   /* podstawa */
+ {const R=.052,ro=R+HT,ri=R-HT,cx=.07,cy=.15,D=Math.PI/180,Pb=[.018,.018],B=2*HT;   /* "2" = jeden zamkniety kontur: luk (okregi ro/ri) przechodzi stycznie w ukos (proste styczne do okregow, wiec bez uskoku), potem podstawa; kat konca luku dobrany tak, aby styczna przechodzila przez punkt Pb */
+  let te=-35,best=1e9;for(let a=-80;a<=20;a+=.05){const ex=cx+R*Math.cos(a*D),ey=cy+R*Math.sin(a*D),tx=Math.sin(a*D),ty=-Math.cos(a*D),cr=Math.abs((Pb[0]-ex)*ty-(Pb[1]-ey)*tx);if((Pb[0]-ex)*tx+(Pb[1]-ey)*ty>0&&cr<best){best=cr;te=a}}
+  const tx=Math.sin(te*D),ty=-Math.cos(te*D),pt=(r)=>[cx+r*Math.cos(te*D),cy+r*Math.sin(te*D)],Oe=pt(ro),Ie=pt(ri),hit=(q)=>{const k=(B-q[1])/ty;return[q[0]+tx*k,q[1]+ty*k]},Q1=hit(Oe),Q2=hit(Ie),pol=[];
+  for(let a=170;a>=te;a-=5)pol.push([cx+ro*Math.cos(a*D),cy+ro*Math.sin(a*D)]);
+  pol.push(Q1,[.14,B],[.14,0],[0,0],[0,B],Q2);
+  for(let a=te;a<=170;a+=5)pol.push([cx+ri*Math.cos(a*D),cy+ri*Math.sin(a*D)]);
+  ext(pol,.126)}
  grp.position.set(6.73-.133,2.068-.11,0);scene.add(grp);
  /* swiatlo kinkietu na numer: zasieg 1 m (konczy sie ok. 1,3 m pod podbitka - nie oswietla podbitki ani dachu, bo reflektor nie ma cieni): oswietla numer (kinkiet swieci tylko aureola, bez zrodla swiatla) */
  const nl=new THREE.SpotLight(0xffe2b4,0,1.0,.5,1,1.2);nl.position.set(6.73,1.62,.16);nl.target.position.set(6.73,2.0,.0);scene.add(nl,nl.target);window.NUML=nl}
