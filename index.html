@@ -1448,8 +1448,10 @@ function kerbRun(P,rs,re,o){o=o||{};const n=P.length,hw=o.hw||.075,H=o.H||.14,BT
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.computeVertexNormals();add(g,o.m||kerbM,0,0,0,false).receiveShadow=true}
 {const cm=M(0xb9b6ae,{roughness:.9}),RS=off(RD,-.075),cb=(a,b)=>seg(a[0],a[1],b[0],b[1],.14,.15,cm,-.30);   // krawężniki (14 cm nad jezdnią) z przerwami na wjazd i furtkę
   const KR=[[[RS[0],RS[1]],0,0]];
-  {const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(19.45-bx)/L,uy=(-2.65-by)/L,A=RS[8],B=RS[7],tA=(A[0]-bx)*ux+(A[1]-by)*uy,tB=(B[0]-bx)*ux+(B[1]-by)*uy,pt=t=>{const k=(t-tA)/(tB-tA);return[A[0]+(B[0]-A[0])*k,A[1]+(B[1]-A[1])*k]};KR.push([[RS[2],RS[3],RS[4],RS[5],RS[6],RS[7],pt(4.15)],0,0]);KR.push([[[9.99,RS[8][1]],RS[8],pt(2.55)],0,0])}   // przerwa w krawężniku: wejście do wiaty
-  const fy=RS[8][1];KR.push([[[RS[9][0],fy],[1.38,fy]],0,0]);KR.push([[[5.88,fy],[8.87,fy]],0,0]);   /* krawezniki drogowe: konce proste, prowadzone az do styku z kostka (naroza kostki 1,38 / 5,88 / 8,87 / 9,99) */KR.forEach(([P,a,b])=>kerbRun(P,a,b));{const kg=new THREE.BufferGeometry();kg.setAttribute('position',new THREE.Float32BufferAttribute(KLP,3));const kl=new THREE.LineSegments(kg,new THREE.LineBasicMaterial({color:0x10151a}));kl.visible=false;kl.userData.ln=1;kl.frustumCulled=false;scene.add(kl);LNX.push(kl)}}}   // ślepa uliczka: jezdnia 0,5 m od granic działek, pas trawnika pomiędzy   // ślepa uliczka: od drogi głównej do końca (R13), ze skosami przy obu działkach
+  {const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(19.45-bx)/L,uy=(-2.65-by)/L,A=RS[8],B=RS[7],tA=(A[0]-bx)*ux+(A[1]-by)*uy,tB=(B[0]-bx)*ux+(B[1]-by)*uy,pt=t=>{const k=(t-tA)/(tB-tA);return[A[0]+(B[0]-A[0])*k,A[1]+(B[1]-A[1])*k]};KR.push([[RS[2],RS[3],RS[4],RS[5],RS[6],RS[7],pt(4.15)],0,0]);KR.push([[[10.04,RS[8][1]],RS[8],pt(2.55)],0,0]);
+   /* krawezniki poprzeczne (grube, jak drogowe: 15 cm, gora -0,16): od zewnetrznego lica muru/slupow (y -7,5 / s 0) doczolowo do boku krawezników drogowych (y -8,0 / s -0,5); zewnetrzny bok (od swiatla) lezy na linii swiatla bramy (x 1,33 / 5,93), furtki (x 8,82 / 10,04) i wyjscia z wiaty (t 2,55 / 4,15), korpus z drugiej strony linii (pod slupem / filarem) */
+   [1.33-.075,5.93+.075,8.82-.075,10.04+.075].forEach(x=>KR.push([[[x,-7.5],[x,-8.0]],0,0]));[2.55-.075,4.15+.075].forEach(t=>KR.push([[[bx+ux*t,by+uy*t],[bx+ux*t+uy*.5,by+uy*t-ux*.5]],0,0]))}   // przerwa w krawężniku: wejście do wiaty
+  const fy=RS[8][1];KR.push([[[RS[9][0],fy],[1.33,fy]],0,0]);KR.push([[[5.93,fy],[8.82,fy]],0,0]);   /* krawezniki drogowe: konce proste, prowadzone az do styku z kostka (naroza kostki 1,38 / 5,88 / 8,87 / 9,99) */KR.forEach(([P,a,b])=>kerbRun(P,a,b));{const kg=new THREE.BufferGeometry();kg.setAttribute('position',new THREE.Float32BufferAttribute(KLP,3));const kl=new THREE.LineSegments(kg,new THREE.LineBasicMaterial({color:0x10151a}));kl.visible=false;kl.userData.ln=1;kl.frustumCulled=false;scene.add(kl);LNX.push(kl)}}}   // ślepa uliczka: jezdnia 0,5 m od granic działek, pas trawnika pomiędzy   // ślepa uliczka: od drogi głównej do końca (R13), ze skosami przy obu działkach
 /* kostka pod automatem bramy (jak podjazd i sciezka, poziom -0,30) laczaca podjazd ze sciezka do furtki; wszystkie granice kostki/chodnika z trawnikiem i zwirem: obrzeza betonowe 8x30x100 cm (2 cm nad kostka), po bokach pochylni ta sama listwa o zmiennej wysokosci (nad kostka 2 cm, nad terenem do 36 cm); naroza ciete na ucios */
 {flat([[6.33,-7.1],[8.62,-7.1],[8.62,-5.8],[6.41,-5.8],[6.41,-7.1]],-.30,0xbab5ab);
  const OL=[],K=(P,o)=>kerbRun(P,false,false,Object.assign({hw:.04,H:.02,BT:-.18,C:.006,RD0:-.30,LY:-.334,lp:OL},o||{}));
@@ -1457,13 +1459,13 @@ function kerbRun(P,rs,re,o){o=o||{};const n=P.length,hw=o.hw||.075,H=o.H||.14,BT
  RBn=[Q(3.35,1.95),Q(3.35,2.95),[16.08,-1.9],[16.08,8.05]],
  offP=(P,d)=>{const n=P.length,nl=[];for(let i=0;i<n-1;i++){const dx=P[i+1][0]-P[i][0],dy=P[i+1][1]-P[i][1],l=Math.hypot(dx,dy);nl.push([-dy/l,dx/l])}return P.map((p,i)=>{const a=nl[Math.max(0,i-1)],b=nl[Math.min(n-2,i)],k=1/(1+a[0]*b[0]+a[1]*b[1]);return[p[0]+(a[0]+b[0])*k*d,p[1]+(a[1]+b[1])*k*d]})},
  WL=offP(RBn,.64),ER=offP(RBn,-.64);WL[0]=Q(2.51,1.95);ER[0]=Q(4.19,1.95);WL[1]=[WL[1][0]-ux*.2,WL[1][1]-uy*.2];ER[1]=[ER[1][0]+ux*.2,ER[1][1]+uy*.2];   /* krawezniki chodnika od ogrodu: czolem do slupow wiaty */
- [2.51,4.19].forEach(t=>{K([Q(t,0),Q(t,-.5)],{RD0:-.26,RD1:-.26,bot:-.48})});   /* krawezniki chodnika od ulicy: czolem do slupow */
+    /* krawezniki chodnika od ulicy: czolem do slupow */
  {const lA=Q(4.19,1.95),lB=Q(4.19,3.118),lC=Q(2.51,1.95),lD=Q(2.51,3.449);
  K([[10.05,.04],[15.44,.04],[15.44,lB[1]],lA]);   /* wschodnia krawedz nowej kostki (od tarasu w dol) i skos do wiaty (pas 1,6 m) - zarazem zachodni krawieznik zwirowego przejscia */
  K([lC,lD,[10.28,-3.3],[10.28,-7.2]]);}   /* poludniowa krawedz kostki: od wiaty, wzdluz y -3,3, dalej sciezka do furtki (strona wschodnia) */
  
  
- /* waskie krawezniki po bokach wjazdu i furtki: od lica cokolu slupow (y -7,75) prosto do boku krawezników drogi (y -8,0); czola proste */[1.34,5.92,8.83,10.03].forEach(x=>K([[x,-7.5],[x,-8.0]],{RD0:-.26,RD1:-.26,bot:-.48}));
+ /* waskie krawezniki po bokach wjazdu i furtki: od lica cokolu slupow (y -7,75) prosto do boku krawezników drogi (y -8,0); czola proste */
  K([[.87,-7.1],[.87,-5.0]]);K([[.87,-5.0],[.87,0]],{RD1:-.25,bot:-.48});   /* podjazd: lewa strona (plaska + pochylnia) */
  K([[6.45,0],[6.45,-5.0]],{RD0:-.25,RD1:-.30,bot:-.48});                    /* podjazd: prawa strona (pochylnia) */
  K([[6.45,-5.0],[6.45,-5.84],[7.21,-5.84],[7.21,-.5]]);   /* waski pas trawnika miedzy podjazdem a poszerzonym chodnikiem */
@@ -1922,7 +1924,7 @@ return out}
  dseg=(p,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],L2=dx*dx+dy*dy,t=L2?Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/L2)):0;return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy)},
  near=(p,q,tol)=>{if(pin(p,q))return true;for(let i=0;i<q.length;i++)if(dseg(p,q[i],q[(i+1)%q.length])<=tol)return true;return false},
  rc=(x0,y0,x1,y1)=>[[x0,y0],[x1,y0],[x1,y1],[x0,y1]];
- const KO=KOSP.concat([rc(.91,-5,6.41,0),rc(1.38,-8,5.88,-7.5),rc(8.87,-8,9.99,-7.5)]),TE=[rc(-2.9,34.5,1.1,36.9),rc(7.25,-.8,10.05,2.5),rc(9.8,11.3,16.1,20.4),rc(14.9,8.4,16.1,11.3)];
+ const KO=KOSP.concat([rc(.91,-5,6.41,0),rc(1.33,-8,5.93,-7.5),rc(8.82,-8,10.04,-7.5)]),TE=[rc(-2.9,34.5,1.1,36.9),rc(7.25,-.8,10.05,2.5),rc(9.8,11.3,16.1,20.4),rc(14.9,8.4,16.1,11.3)];
  const AP=GRVP.concat(BARK),NG=GRVP.length,blocked=(p,own)=>{if(pin(p,AP[own]))return true;for(let i=0;i<NG;i++)if(i!==own&&near(p,GRVP[i],.02))return true;if(own>=NG)for(let i=0;i<BARK.length;i++)if(i+NG!==own&&near(p,BARK[i],.02))return true;for(const q of KO)if(near(p,q,.09))return true;if(pin(p,WP))return true;for(const q of TE)if(near(p,q,.05))return true;for(const f of[[-3.75,-7,-2.2,-7],[-2.2,-7,-2.2,-7.26],[-3.75,-7,-3.75,-7.5134]])if(dseg(p,[f[0],f[1]],[f[2],f[3]])<=.09)return true;   /* ogrodzenie przy zlaczu */for(const q of BARR)if(near(p,q,.2))return true;  for(let i=0;i<PL.length;i++)if(dseg(p,PL[i],PL[(i+1)%PL.length])<=.09)return true;return false};
  const TOP=-.29,BOT=-.33,W=.006,pos=[],idx=[],V=(x,y,z)=>{pos.push(x,y,z);return pos.length/3-1},quad=(a,b,c,d)=>idx.push(a,b,c,a,c,d);
  const ST=.01,SNAP=.045,MRG=.035;
