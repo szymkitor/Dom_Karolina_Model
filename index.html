@@ -1154,17 +1154,20 @@ PIPES.forEach(([px,py,wx,wy,rd=.045],k)=>{
  dk=M(0x2f3338,{roughness:.5,metalness:.4}),fr=M(0xe6e9ec,{roughness:.35,metalness:.05,transparent:true,opacity:.96}),led=M(0xff3b30,{emissive:0xc01208,emissiveIntensity:.9,roughness:.4}),
  g=new THREE.Group();g.position.set(5.85,2.55,.002);g.rotation.y=-.52;scene.add(g);   /* obrot ok. 30 st. w strone podjazdu (zachod), tylem do sciezki furtka-drzwi */
  const put=(p,geo,m,x,y,z)=>{const me=new THREE.Mesh(geo,m);me.position.set(x,y,z);me.castShadow=true;p.add(me);statics.push(me);return me};
- /* czujnik ruchu zewnetrzny (typ scienny, np. Steinel/Theben): okragla podstawa na scianie + przegub kulowy + jajowata, owalna glowica z duza fasetowana kopulka soczewki Fresnela wystajaca z frontu, daszek-kaptur nad soczewka, pod spodem dwa pokretla (zasieg/czas) */
- const wh=M(0xf4f5f6,{roughness:.4,metalness:.03}),gr=M(0x4b5056,{roughness:.5}),dm=M(0xf0f3f4,{roughness:.25,metalness:.05,transparent:true,opacity:.9,flatShading:true});
- put(g,new THREE.CylinderGeometry(.034,.036,.012,28).rotateX(Math.PI/2),wh,0,0,.006);                                          /* okragla podstawa montazowa przy scianie */
- put(g,new THREE.SphereGeometry(.017,18,12),wh,0,0,.018);                                                                      /* przegub kulowy */
- const sb=new THREE.Group();sb.position.set(0,0,.03);sb.rotation.x=.16;g.add(sb);                                                /* glowica pochylona w dol */
- {const hd=put(sb,new THREE.SphereGeometry(1,32,20),wh,0,0,.02);hd.scale.set(.041,.054,.036)}                                    /* jajowata glowica 8,2 x 10,8 cm, glebokosc ok. 7 cm */
- put(sb,new THREE.IcosahedronGeometry(.031,1),dm,0,-.008,.043);                                                                  /* duza fasetowana kopulka soczewki (wystaje z frontu) */
- put(sb,new THREE.TorusGeometry(.033,.0016,6,36),wh,0,-.008,.0405);                                                              /* oprawa soczewki */
- {const br=put(sb,new THREE.SphereGeometry(1,28,12,0,Math.PI*2,0,Math.PI/2),wh,0,.034,.04);br.scale.set(.047,.02,.042);br.rotation.x=.25}   /* daszek-kaptur nad soczewka (splaszczona czasza wystajaca do przodu) */
- [-.015,.015].forEach(x=>put(sb,new THREE.CylinderGeometry(.0052,.0052,.012,14),gr,x,-.052,.022));                              /* pokretla pod spodem glowicy */
- put(sb,new THREE.CylinderGeometry(.004,.004,.003,12).rotateX(Math.PI/2),M(0x1b1e21,{roughness:.3}),.0,.02,.0545);            /* czujnik zmierzchu na kaptur */}
+ /* czujnik ruchu wg wzoru z oferty (bialy, bezprzewodowy PIR do podjazdu): z przodu owalna kopula-luk u gory, prostokatne okno soczewki Fresnela (szare, fasetowane, pochylone) w bialej ramce, ponizej czerwona dioda i nizsza czesc korpusu; z boku: plaska tylna plyta, na niej korpus z zaokraglona gora; ok. 7,2 x 10,7 x 4,5 cm */
+ const wh=M(0xf4f5f6,{roughness:.38,metalness:.02}),sb=new THREE.Group();sb.position.set(0,0,0);sb.rotation.x=.1;g.add(sb);
+ const arch=(w,h,r,rb)=>{const sh=new THREE.Shape(),x=w/2;sh.moveTo(-x+rb,-h/2);sh.lineTo(x-rb,-h/2);sh.quadraticCurveTo(x,-h/2,x,-h/2+rb);sh.lineTo(x,h/2-r);sh.absarc(0,h/2-r,r,0,Math.PI,false);sh.lineTo(-x,-h/2+rb);sh.quadraticCurveTo(-x,-h/2,-x+rb,-h/2);return sh},
+  ex=(sh,d,bs,bt)=>new THREE.ExtrudeGeometry(sh,{depth:d,bevelEnabled:bs>0,bevelSize:bs,bevelThickness:bt,bevelSegments:3,curveSegments:14});
+ put(sb,ex(arch(.072,.107,.036,.008),.012,0,0),wh,0,0,0);                                                                            /* tylna plyta (luk u gory), przy scianie */
+ {const sh=new THREE.Shape(),x=.031,y0=.0175,R=.031;sh.moveTo(-x,y0);sh.lineTo(x,y0);sh.lineTo(x,.0525-R);sh.absarc(0,.0525-R,R,0,Math.PI,false);sh.lineTo(-x,y0);put(sb,ex(sh,.02,.004,.006),wh,0,0,.018)}   /* gorna kopula (zaokraglona, wystajaca do przodu) */
+ put(sb,ex(arch(.064,.036,.005,.005).constructor===THREE.Shape?(()=>{const q=new THREE.Shape(),x=.032,y=-.018,r=.006;q.moveTo(-x+r,y);q.lineTo(x-r,y);q.quadraticCurveTo(x,y,x,y+r);q.lineTo(x,-y-r);q.quadraticCurveTo(x,-y,x-r,-y);q.lineTo(-x+r,-y);q.quadraticCurveTo(-x,-y,-x,-y-r);q.lineTo(-x,y+r);q.quadraticCurveTo(-x,y,-x+r,y);return q})():null,.02,.004,.006),wh,0,-.0345,.018);   /* dolna czesc korpusu (pod soczewka) */
+ [-1,1].forEach(d=>put(sb,new THREE.BoxGeometry(.008,.031,.034),wh,d*.0305,.003,.029));                                              /* boczne scianki okna */
+ put(sb,new THREE.BoxGeometry(.056,.031,.016),wh,0,.003,.02);                                                                         /* tlo okna */
+ put(sb,new THREE.BoxGeometry(.058,.004,.011),wh,0,.0185,.04);put(sb,new THREE.BoxGeometry(.058,.004,.012),wh,0,-.0105,.04);          /* rama okna: brew u gory i listwa u dolu */
+ {const c=document.createElement('canvas');c.width=c.height=128;const q=c.getContext('2d');q.fillStyle='#a9b1b8';q.fillRect(0,0,128,128);let sd=7;const r=()=>(sd=(sd*16807)%2147483647)/2147483647;
+  [[0,30],[30,44],[74,54]].forEach(([y,h],i)=>{let x=0;while(x<128){const w=14+r()*30;q.fillStyle='rgba('+(r()<.5?'255,255,255':'60,70,85')+','+(.1+r()*.22)+')';q.fillRect(x,y,w,h);q.strokeStyle='rgba(60,70,85,.35)';q.lineWidth=1;q.strokeRect(x,y,w,h);x+=w}});
+  const tx=new THREE.CanvasTexture(c);put(sb,new THREE.PlaneGeometry(.05,.03),M(0xffffff,{map:tx,roughness:.35,transparent:true,opacity:.93}),0,.003,.0345).rotation.x=-.1}   /* soczewka Fresnela (szare, fasetowane pola) */
+ {const l=put(sb,new THREE.SphereGeometry(.0032,12,8),led,0,-.0225,.0462);l.scale.z=.5}}
 function pineTex(){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d'),cl=['#e0c496','#d7b886','#e6cca0','#d2b180','#dcbd8d'];
  for(let i=0;i<8;i++){x.fillStyle=cl[i%5];x.fillRect(0,i*16,128,16);x.fillStyle='#a98a5c';x.fillRect(0,i*16+14.5,128,1.5);
   for(let j=0;j<14;j++){x.fillStyle='rgba(150,110,60,.35)';x.fillRect(Math.random()*128,i*16+1+Math.random()*12,20+Math.random()*60,.8)}
