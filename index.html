@@ -670,8 +670,8 @@ add(new THREE.CylinderGeometry(.1,.1,1.3,16),M(0x9aa0a6),7,zAt(7,18)+.5,-18);
 // ogrodzenie: front murowany (słupy, brama przesuwna 5 m, furtka 1,5 m, skos), reszta panelowa
 /* pustak betonowy 40 x 20 x 20 (szary, gruboziarnisty, jak na zdjeciu producenta) i daszek 40 x 20 x 5 cm: tekstury proceduralne w skali 1000 px/m; UV w metrach swiata (bUV), wiec 1 pustak = 40 x 20 cm */
 const gnR=(()=>{let sd=7;return()=>(sd=(sd*16807)%2147483647)/2147483647})();
-function gnBlock(a,x,y,w,h,base,n,jt,el=14){a.save();a.beginPath();a.rect(x,y,w,h);a.clip();a.fillStyle=base;a.fillRect(x,y,w,h);n=Math.round(n*.35);   /* gladsza, matowa powierzchnia: mniej, drobniejsze i delikatniejsze ziarna */
- for(let i=0;i<n;i++){const r=gnR(),sz=.9+gnR()*1.3,px=x+gnR()*w,py=y+gnR()*h;a.fillStyle=r<.4?'rgba(246,242,232,'+(.06+gnR()*.1)+')':r<.8?'rgba(128,120,106,'+(.06+gnR()*.1)+')':'rgba(206,199,184,'+(.1+gnR()*.1)+')';a.fillRect(px,py,sz,sz*(.6+gnR()*.8))}
+function gnBlock(a,x,y,w,h,base,n,jt,el=0){a.save();a.beginPath();a.rect(x,y,w,h);a.clip();a.fillStyle=base;a.fillRect(x,y,w,h);n=Math.round(n*.5);   /* gladsza, matowa powierzchnia: mniej, drobniejsze i delikatniejsze ziarna */
+ for(let i=0;i<n;i++){const r=gnR(),sz=.7+gnR()*.6,px=x+gnR()*w,py=y+gnR()*h;a.fillStyle=r<.4?'rgba(246,242,232,'+(.04+gnR()*.05)+')':r<.8?'rgba(128,120,106,'+(.04+gnR()*.05)+')':'rgba(206,199,184,'+(.05+gnR()*.05)+')';a.fillRect(px,py,sz,sz)}
  for(let i=0;i<el;i++){a.fillStyle='rgba(120,112,98,'+(.03+gnR()*.04)+')';a.beginPath();a.ellipse(x+gnR()*w,y+gnR()*h,10+gnR()*34,6+gnR()*18,gnR()*3,0,6.3);a.fill()}
  a.fillStyle='rgba(88,82,72,.55)';a.fillRect(x,y+h-jt,w,jt);a.fillRect(x+w-jt,y,jt,h);a.fillStyle='rgba(246,240,226,.22)';a.fillRect(x,y,w,2);a.fillRect(x,y,2,h);a.restore()}
 function gnTex(W,Hh,rx,ry,draw,bump){const c=document.createElement('canvas');c.width=W;c.height=Hh;draw(c.getContext('2d'));const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=8;t.repeat.set(rx,ry);return M(0xffffff,{map:t,bumpMap:t,bumpScale:bump,roughness:1})}
