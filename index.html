@@ -253,14 +253,14 @@ async function go(){
   mats.set(o,m);return m};
  const vis=o=>{for(let p=o;p;p=p.parent)if(!p.visible)return false;return true};
  const buckets=new Map();let budget=3e6;
- const addMesh=(mesh,mw)=>{const g=mesh.geometry,pa=g&&g.attributes.position;if(!pa||pa.isInterleavedBufferAttribute)return;
+ const addMesh=(mesh,mw)=>{const g=mesh.geometry,pa=g&&g.attributes.position;if(!pa||pa.isInterleavedBufferAttribute)return;const fs=mesh.userData&&mesh.userData.lensDown?-1:1;   /* dolna soczewka kinkietu: normalna w dol (w modelu rastrowym obie leza w gore) */
   const arr=Array.isArray(mesh.material),mm=arr?mesh.material:[mesh.material],groups=arr&&g.groups.length?g.groups:[{start:0,count:Infinity,materialIndex:0}],na=g.attributes.normal,ua=g.attributes.uv,idx=g.index,cnt=idx?idx.count:pa.count,e=mw.elements,det=mw.determinant(),n=new O.Matrix3().getNormalMatrix(mw).elements,done=new Map();
   groups.forEach(gr=>{const om=mm[gr.materialIndex];if(!om)return;const m=mk(om);if(!m)return;let b=buckets.get(m);if(!b){b={p:[],n:[],u:[],i:[],o:0};buckets.set(m,b)}
    let base=done.get(b);if(base===undefined){base=b.o;done.set(b,base);
     for(let k=0;k<pa.count;k++){const x=pa.getX(k),y=pa.getY(k),z=pa.getZ(k);b.p.push(e[0]*x+e[4]*y+e[8]*z+e[12],e[1]*x+e[5]*y+e[9]*z+e[13],e[2]*x+e[6]*y+e[10]*z+e[14]);
-     if(na){const a=na.getX(k),c=na.getY(k),d=na.getZ(k),X=n[0]*a+n[3]*c+n[6]*d,Y=n[1]*a+n[4]*c+n[7]*d,Z=n[2]*a+n[5]*c+n[8]*d,L=Math.hypot(X,Y,Z)||1;b.n.push(X/L,Y/L,Z/L)}else b.n.push(0,1,0);
+     if(na){const a=na.getX(k),c=na.getY(k),d=na.getZ(k),X=n[0]*a+n[3]*c+n[6]*d,Y=n[1]*a+n[4]*c+n[7]*d,Z=n[2]*a+n[5]*c+n[8]*d,L=Math.hypot(X,Y,Z)||1;b.n.push(fs*X/L,fs*Y/L,fs*Z/L)}else b.n.push(0,1,0);
      if(ua)b.u.push(ua.getX(k),ua.getY(k));else b.u.push(0,0)}b.o+=pa.count}
-   const s=gr.start,c=Math.min(gr.count,cnt-s);for(let k=0;k+2<c;k+=3){let a=idx?idx.getX(s+k):s+k,bb=idx?idx.getX(s+k+1):s+k+1,cc=idx?idx.getX(s+k+2):s+k+2;if(det<0){const t=bb;bb=cc;cc=t}b.i.push(base+a,base+bb,base+cc)}})};
+   const s=gr.start,c=Math.min(gr.count,cnt-s);for(let k=0;k+2<c;k+=3){let a=idx?idx.getX(s+k):s+k,bb=idx?idx.getX(s+k+1):s+k+1,cc=idx?idx.getX(s+k+2):s+k+2;if((det<0)!==(fs<0)){const t=bb;bb=cc;cc=t}b.i.push(base+a,base+bb,base+cc)}})};
  msg('Przygotowywanie sceny…');await new Promise(r=>setTimeout(r,30));
  A.scene.updateMatrixWorld(true);const mt=new O.Matrix4(),im=new O.Matrix4();
  A.scene.traverse(o=>{if(!o.isMesh||o.isSkinnedMesh||!o.geometry||!vis(o))return;
@@ -274,6 +274,10 @@ async function go(){
   else if(o.isSpotLight){l=new T.SpotLight(c,o.intensity*10,0,o.angle,o.penumbra,2);l.position.copy(wp(o));l.target.position.copy(wp(o.target));sc.add(l.target)}
   else if(o.isPointLight){l=new T.PointLight(c,o.intensity*10,0,2);l.position.copy(wp(o))}
   if(l){sc.add(l);nl++}});
+ /* kinkiety dekoracyjne: realne zrodla swiatla w gore i w dol z soczewek (poswiata na scianie w rastrze to tylko nakladka, ktorej render nie uzywa) */
+ A.scene.traverse(o=>{const k=o.userData&&o.userData.sconce;if(!k||!vis(o))return;const on=o.children.some(c=>c.isMesh&&c.material&&c.material.isMeshBasicMaterial&&c.material.color.r>.5&&!c.material.transparent);if(!on)return;o.updateMatrixWorld(true);
+  const out=new O.Vector3(0,0,1).transformDirection(o.matrixWorld);
+  [1,-1].forEach(sgn=>{const p=new O.Vector3(0,sgn*.1008,.014).applyMatrix4(o.matrixWorld),l=new T.SpotLight(new T.Color(0xffe2b4),2.5,0,.8,1,2);l.position.set(p.x,p.y,p.z);l.target.position.set(p.x+out.x*.25,p.y+sgn,p.z+out.z*.25);sc.add(l,l.target);nl++})});
  const bg=A.scene.background&&A.scene.background.isColor?A.scene.background:new O.Color(.8,.88,.95),k=Math.min(1,(bg.r+bg.g+bg.b)/2.6);
  const env=new PT.GradientEquirectTexture(512);env.topColor.copy(new T.Color().setHex(0x4a86d4).multiplyScalar(k));env.bottomColor.copy(new T.Color().setHex(0x7a8a6a).multiplyScalar(k*.8));env.exponent=1.5;env.update();me.info='siatki: '+sc.children.filter(x=>x.isMesh).length+', światła: '+nl+', jasność nieba: '+k.toFixed(2);sc.environment=env;sc.background=env;sc.environmentIntensity=1;sc.backgroundIntensity=1;
  A.cam.updateMatrixWorld(true);const hh=A.ortho,cam=hh?new T.OrthographicCamera(-hh*W/H,hh*W/H,hh,-hh,.1,3000):new T.PerspectiveCamera(A.cam.fov,W/H,.1,2000),pp=new O.Vector3(),qq=new O.Quaternion(),ss=new O.Vector3();A.cam.matrixWorld.decompose(pp,qq,ss);cam.position.set(pp.x,pp.y,pp.z);cam.quaternion.set(qq.x,qq.y,qq.z,qq.w);cam.updateMatrixWorld(true);
@@ -1673,8 +1677,8 @@ tap(9.8,.55,-21.0,Math.PI/2);tap(1,.55,-21.1,-Math.PI/2);tap(0,.55,-.6,-Math.PI/
  SG={};SCK.forEach(k=>{SG[k]={glow:glow.clone(),lens:lensM.clone(),on:false}});
  const sgLM=new THREE.LineBasicMaterial({color:0x10151a}),sgL=(()=>{const q=[];[-1,-.5,0,.5,1].forEach(a=>{const th=a*Math.PI/2*.92,x=.0402*Math.sin(th),z=.0402*Math.cos(th);q.push(x,-.1,z,x,.1,z)});const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.Float32BufferAttribute(q,3));return gg})(),cap=new THREE.CircleGeometry(.04,16,Math.PI,Math.PI).rotateX(-Math.PI/2),lg=new THREE.CircleGeometry(.032,16,Math.PI,Math.PI).rotateX(-Math.PI/2),body=new THREE.CylinderGeometry(.04,.04,.2,16,1,true,-Math.PI/2,Math.PI),plate=new THREE.BoxGeometry(.075,.26,.014),wash=new THREE.PlaneGeometry(.8,1.62);   /* poswiata konczy sie ok. 15 cm pod podbitka (2,89): gora = 1,568 + 0,81*1,4 = 2,70 */
  const sc=(x,y,z,yaw,k)=>{const g=new THREE.Group(),m=(geo,mat,px,py,pz)=>{const q=new THREE.Mesh(geo,mat);q.position.set(px,py,pz);g.add(q);return q};
-  m(plate,blk,0,0,.007);m(body,blk,0,0,.014);{const ll=new THREE.LineSegments(sgL,sgLM);ll.position.set(0,0,.014);ll.visible=false;ll.userData.ln=1;g.add(ll);LNX.push(ll)}m(cap,blk,0,.1,.014);m(cap,blk,0,-.1,.014);m(lg,SG[k].lens,0,.1008,.014);m(lg,SG[k].lens,0,-.1008,.014);m(wash,SG[k].glow,0,0,.004).renderOrder=4;
-  g.position.set(x,y,z);g.rotation.y=yaw;g.scale.setScalar(1.4);scene.add(g);g.traverse(o=>{if(o.isMesh&&o.material!==SG[k].glow)statics.push(o)})};
+  m(plate,blk,0,0,.007);m(body,blk,0,0,.014);{const ll=new THREE.LineSegments(sgL,sgLM);ll.position.set(0,0,.014);ll.visible=false;ll.userData.ln=1;g.add(ll);LNX.push(ll)}m(cap,blk,0,.1,.014);m(cap,blk,0,-.1,.014);m(lg,SG[k].lens,0,.1008,.014);m(lg,SG[k].lens,0,-.1008,.014).userData.lensDown=1;m(wash,SG[k].glow,0,0,.004).renderOrder=4;
+  g.position.set(x,y,z);g.rotation.y=yaw;g.scale.setScalar(1.4);g.userData.sconce=k;scene.add(g);g.traverse(o=>{if(o.isMesh&&o.material!==SG[k].glow)statics.push(o)})};
  sc(.58,1.568,0,0,'f');sc(6.73,1.568,0,0,'f');sc(10.06,1.568,-2.5,0,'f');sc(14.9,1.568,-3.6,Math.PI/2,'s');sc(14.9,1.568,-6.6,Math.PI/2,'s');sc(9.8,1.568,-13.665,Math.PI/2,'t');sc(9.8,1.568,-17.28,Math.PI/2,'t')}
 const LL=['l1','l2','l3','l4','l6','l7','l8','l9'];
 function syncM(){const any=LL.some(id=>lights[id]&&lights[id].on)||(SG&&SCK.some(k=>SG[k].on));$("lm").classList.toggle('on',any);if(window.__fabSync)__fabSync(any)}
