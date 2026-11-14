@@ -1129,6 +1129,20 @@ PIPES.forEach(([px,py,wx,wy,rd=.045],k)=>{
   for(let k=-3;k<=3;k++){const yy=k*r*.27,ch=2*Math.sqrt(Math.max(0,r*r*.94-yy*yy));put(new THREE.BoxGeometry(.034,.007,ch),vm,L-.002,yy,0,-.55)}};   /* zaluzja przeciwdeszczowa, lamele skosem w dol */
  vent(0,1.8,2.55,.08,.13);                   /* czerpnia: srodek wolnego odcinka sciany przed oknem garazu (y 0–3,6) */
  vent(0,7.0,2.55,.08,.13)}                   /* wyrzutnia: srodek wolnego odcinka za oknem (y 5,2–8,8); 5,2 m od czerpni */
+// wyrzutnia okapu kuchennego Ø150: kratka scienna z okapnikiem (grafit) wg zdjec uzytkownika (kwadratowa rama, daszek-okapnik skosnie w dol, szczeliny wylotu od dolu); plyta w kuchni przy polnocnej scianie (x ok. 7,9; y ok. 13,2), najkrotsza droga kanalu = prosto na wschod ok. 1,7 m do sciany x 9,8 (strona tarasu tylnego), miedzy oknem kuchni (do y 12,8) a kinkietem (y 13,665), na wys. 2,05 m (pod stropem tarasu 2,39)
+{const gm=M(0x35383b,{roughness:.55,metalness:.1,side:THREE.DoubleSide}),gl=M(0x4a4e52,{roughness:.4,metalness:.15,side:THREE.DoubleSide}),bk=M(0x070708,{roughness:.9,side:THREE.DoubleSide});
+ const g=new THREE.Group();g.position.set(9.8,2.05,-13.2);scene.add(g);   /* lokalnie: +X = na zewnatrz, prostopadle do sciany */
+ const put=(geo,m,x,y,z,rz)=>{const me=new THREE.Mesh(geo,m);me.position.set(x,y,z);if(rz)me.rotation.z=rz;me.castShadow=me.receiveShadow=true;g.add(me);statics.push(me);return me};
+ const F=.205,fd=.018,hw=.085,d=.115;   /* rama 20,5 cm, glebokosc ramy, polowa wysokosci/szerokosci daszka, wysuniecie daszka */
+ put(new THREE.BoxGeometry(fd,.018,F),gm,fd/2,F/2-.009,0);put(new THREE.BoxGeometry(fd,.018,F),gm,fd/2,-F/2+.009,0);   /* rama: gora, dol */
+ put(new THREE.BoxGeometry(fd,F-.036,.018),gm,fd/2,0,F/2-.009);put(new THREE.BoxGeometry(fd,F-.036,.018),gm,fd/2,0,-F/2+.009);   /* rama: boki */
+ put(new THREE.BoxGeometry(.004,F-.036,F-.036),bk,.002,0,0);   /* ciemny otwor kanalu */
+ const tri=new THREE.Shape([new THREE.Vector2(0,hw),new THREE.Vector2(0,-hw),new THREE.Vector2(d,-hw)]);
+ [-1,1].forEach(s=>{const t=new THREE.ExtrudeGeometry(tri,{depth:.005,bevelEnabled:false});put(t,gm,fd,0,s*hw-(s>0?.005:0))});   /* trojkatne boki daszka */
+ const L=Math.hypot(d,2*hw),th=Math.asin(d/L);
+ put(new THREE.BoxGeometry(.006,L,2*hw+.004),gl,fd+d/2,0,0,th);   /* skosna plyta daszka */
+ for(let k=-5;k<=5;k++)put(new THREE.BoxGeometry(d*.8,.011,.0035),bk,fd+d*.5,-hw+.004,k*.0145);   /* zebra/szczeliny wylotu od dolu */
+ put(new THREE.BoxGeometry(d*.85,.003,2*hw-.012),bk,fd+d*.5,-hw+.0015,0)}
 // syrena alarmowa (sygnalizator zewnetrzny) wg zdjecia od uzytkownika: pionowa, biala, blyszczaca obudowa ABS 15 x 25,5 cm z mocno zaokraglonymi krawedziami na cienkiej podkladce, w dolnej czesci czerwona przezroczysta soczewka lampy blyskowej (ok. 1/3 wysokosci), srubka pod soczewka; elewacja frontowa, na osi kinkietu i numeru domu (x 6,73), srodek na wys. 2,59 m
 {const rr=(w,h,r)=>{const q=new THREE.Shape(),x=-w/2,y=-h/2;q.moveTo(x+r,y);q.lineTo(x+w-r,y);q.quadraticCurveTo(x+w,y,x+w,y+r);q.lineTo(x+w,y+h-r);q.quadraticCurveTo(x+w,y+h,x+w-r,y+h);q.lineTo(x+r,y+h);q.quadraticCurveTo(x,y+h,x,y+h-r);q.lineTo(x,y+r);q.quadraticCurveTo(x,y,x+r,y);return q},
  wm=M(0xf4f4f2,{roughness:.22,metalness:.02}),pl=M(0xd9d6d0,{roughness:.6}),rm=M(0x7a0d14,{roughness:.3,metalness:0,transparent:true,opacity:.88}),ri=M(0x3a0609,{roughness:.7}),sc=M(0xb8bcc0,{roughness:.3,metalness:.8}),
