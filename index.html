@@ -965,10 +965,18 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
  [x0+fw/2,x1-fw/2].forEach((x,i)=>{if(!(o.nofr&&i)){if(dr)ub(o,x,z+(h-fw)/2,fw,h-fw,.08,frM);else ub(o,x,zc,fw,h-2*fw,.08,frM)}});
  if(o.kind=='door'){[a-.5,a+.5].forEach(x=>ub(o,x,z+(h-fw)/2,.05,h-fw,.08,frM));[x0+.25,x1-.25].forEach(x=>ub(o,x,zc,.47,h-.12,.03,glM));0;{const ac=o.c-o.s*(D+.04),hx=a+.36,hy=zc-.05,fz=e=>-(ac+o.s*(.097+e)),ix=M(0xcfd3d8,{metalness:.9,roughness:.26}),bk=M(0x16181b,{metalness:.5,roughness:.45}),
    cy=(r,l,x,y,e,rx,rz,m)=>{const q=add(new THREE.CylinderGeometry(r,r,l,24),m,x,y,fz(e),false);q.rotation.x=rx;q.rotation.z=rz;return q};
-  cy(.034,.012,hx,hy,.006,Math.PI/2,0,bk);cy(.026,.004,hx,hy,.014,Math.PI/2,0,ix);   /* rozeta */
-  cy(.0095,.05,hx,hy,.039,Math.PI/2,0,ix);add(new THREE.SphereGeometry(.0125,18,12),ix,hx,hy,fz(.055),false);   /* szyjka i przegub */
-  cy(.0095,.152,hx-.064,hy,.055,0,Math.PI/2,ix);add(new THREE.SphereGeometry(.0095,16,10),ix,hx-.14,hy,fz(.055),false);   /* dzwignia pozioma w strone srodka skrzydla */
-  cy(.019,.01,hx,hy-.1,.005,Math.PI/2,0,bk);cy(.011,.012,hx,hy-.1,.011,Math.PI/2,0,ix)}   /* wkladka zamka */
+  const bxp=(w2,h2,t,x,y,e,m)=>add(new THREE.BoxGeometry(w2,h2,t),m,x,y,fz(e),false),R=Math.PI/2,dy=hy-.02;
+  /* szyld dlugi (stal szczotkowana) na ciemnej podkladce, zaokraglone konce, 2 sruby */
+  bxp(.058,.35,.004,hx,dy,.002,bk);[-1,1].forEach(k=>cy(.029,.004,hx,dy+k*.175,.002,R,0,bk));
+  bxp(.048,.35,.007,hx,dy,.0075,ix);[-1,1].forEach(k=>cy(.024,.007,hx,dy+k*.175,.0075,R,0,ix));
+  bxp(.036,.30,.002,hx,dy,.0115,M(0xb7bcc2,{metalness:.9,roughness:.4}));   /* wglebienie / szczotkowanie */
+  [-1,1].forEach(k=>cy(.0048,.004,hx,dy+k*.15,.0125,R,0,bk));
+  /* rozeta klamki i sam uchwyt: szyjka, kolano, dzwignia lekko opadajaca w strone srodka skrzydla, zakonczona kulka */
+  cy(.031,.004,hx,hy,.0125,R,0,bk);cy(.026,.014,hx,hy,.017,R,0,ix);cy(.0105,.05,hx,hy,.047,R,0,ix);
+  add(new THREE.SphereGeometry(.0135,20,14),ix,hx,hy,fz(.072),false);
+  {const L=.15,q=cy(.0098,L,hx-L/2*Math.cos(.06),hy-L/2*Math.sin(.06),.072,0,R+.06,ix);add(new THREE.SphereGeometry(.0098,16,12),ix,hx-L*Math.cos(.06),hy-L*Math.sin(.06),fz(.072),false)}
+  /* wkladka zamka: rozeta z pierscieniem i szczelina na klucz */
+  cy(.0215,.006,hx,dy-.115,.0145,R,0,ix);cy(.0145,.003,hx,dy-.115,.0175,R,0,bk);bxp(.0035,.013,.002,hx,dy-.115,.0195,ix);cy(.0055,.002,hx,dy-.1245,.0195,R,0,ix);   /* rozeta zamka, ciemne tlo, szczelina i kluczyk */}
  {/* drzwi: skrzydlo grubosci 7 cm wysuniete przed lico ramy (rama .08 glebokosci, skrzydlo licem 4,5 cm przed nia), plyta srodkowa wypukla, ciemna uszczelka w szczelinach, zawiasy ukryte */
   const ac=o.c-o.s*(D+.04),pl=(xc,zc2,w2,h2,t,off,m)=>add(new THREE.BoxGeometry(w2,h2,t),m,xc,zc2,-(ac+o.s*off),false),
    Lz0=z+.02,Lz1=z+h-fw,Lh=Lz1-Lz0,Lc=(Lz0+Lz1)/2,gkM=M(0x131415,{roughness:.8}),pnM=M(0x674f3c,{roughness:.42});
