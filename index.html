@@ -269,7 +269,8 @@ async function go(){
  buckets.forEach((b,m)=>{if(!b.i.length)return;const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(new Float32Array(b.p),3));g.setAttribute('normal',new T.BufferAttribute(new Float32Array(b.n),3));g.setAttribute('uv',new T.BufferAttribute(new Float32Array(b.u),2));g.setIndex(new T.BufferAttribute(new Uint32Array(b.i),1));sc.add(new T.Mesh(g,m))});
  buckets.clear();
  let nl=0;const wp=o=>new T.Vector3().setFromMatrixPosition(new T.Matrix4().fromArray(o.matrixWorld.elements));
- A.scene.traverse(o=>{if(!o.isLight||!vis(o)||!(o.intensity>.001))return;const c=col(o.color);let l=null;
+ A.scene.traverse(o=>{if(!o.isLight||!vis(o)||!(o.intensity>.001)||o===window.NUML)return;   /* reflektor numeru domu pomijamy: numer oswietla gorna soczewka kinkietu */
+ const c=col(o.color);let l=null;
   if(o.isDirectionalLight){l=new T.DirectionalLight(c,o.intensity*3.2);l.position.copy(wp(o));l.target.position.copy(wp(o.target));sc.add(l.target)}
   else if(o.isSpotLight){l=new T.SpotLight(c,o.intensity*10,0,o.angle,o.penumbra,2);l.position.copy(wp(o));l.target.position.copy(wp(o.target));sc.add(l.target)}
   else if(o.isPointLight){l=new T.PointLight(c,o.intensity*10,0,2);l.position.copy(wp(o))}
@@ -277,7 +278,7 @@ async function go(){
  /* kinkiety dekoracyjne: realne zrodla swiatla w gore i w dol z soczewek (poswiata na scianie w rastrze to tylko nakladka, ktorej render nie uzywa) */
  A.scene.traverse(o=>{const k=o.userData&&o.userData.sconce;if(!k||!vis(o))return;const on=o.children.some(c=>c.isMesh&&c.material&&c.material.isMeshBasicMaterial&&c.material.color.r>.5&&!c.material.transparent);if(!on)return;o.updateMatrixWorld(true);
   const out=new O.Vector3(0,0,1).transformDirection(o.matrixWorld);
-  [1,-1].forEach(sgn=>{const p=new O.Vector3(0,sgn*.1008,.014).applyMatrix4(o.matrixWorld),l=new T.SpotLight(new T.Color(0xffe2b4),2.5,0,.8,1,2);l.position.set(p.x,p.y,p.z);l.target.position.set(p.x+out.x*.25,p.y+sgn,p.z+out.z*.25);sc.add(l,l.target);nl++})});
+  [1,-1].forEach(sgn=>{const p=new O.Vector3(0,sgn*.1008,.014).applyMatrix4(o.matrixWorld),l=new T.SpotLight(new T.Color(0xffe2b4),22,0,.7,1,2);l.position.set(p.x,p.y,p.z);l.target.position.set(p.x+out.x*.12,p.y+sgn,p.z+out.z*.12);sc.add(l,l.target);nl++})});
  const bg=A.scene.background&&A.scene.background.isColor?A.scene.background:new O.Color(.8,.88,.95),k=Math.min(1,(bg.r+bg.g+bg.b)/2.6);
  const env=new PT.GradientEquirectTexture(512);env.topColor.copy(new T.Color().setHex(0x4a86d4).multiplyScalar(k));env.bottomColor.copy(new T.Color().setHex(0x7a8a6a).multiplyScalar(k*.8));env.exponent=1.5;env.update();me.info='siatki: '+sc.children.filter(x=>x.isMesh).length+', światła: '+nl+', jasność nieba: '+k.toFixed(2);sc.environment=env;sc.background=env;sc.environmentIntensity=1;sc.backgroundIntensity=1;
  A.cam.updateMatrixWorld(true);const hh=A.ortho,cam=hh?new T.OrthographicCamera(-hh*W/H,hh*W/H,hh,-hh,.1,3000):new T.PerspectiveCamera(A.cam.fov,W/H,.1,2000),pp=new O.Vector3(),qq=new O.Quaternion(),ss=new O.Vector3();A.cam.matrixWorld.decompose(pp,qq,ss);cam.position.set(pp.x,pp.y,pp.z);cam.quaternion.set(qq.x,qq.y,qq.z,qq.w);cam.updateMatrixWorld(true);
