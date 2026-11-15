@@ -750,18 +750,18 @@ function fwall(x0,y0,x1,y1,sa,sb){const P0=[x0,y0],P1=[x1,y1],SQ=(x,y)=>({c:[x,y
  [[0,.2],[1.8,2.0]].forEach(([s0,s1])=>{wb(TL+.125,2.15,s0,s1,9,false,.2);wb(4.55,TR-.125,s0,s1,9,true,.2);wb(2.15,2.55,s0,s1,11);wb(4.15,4.55,s0,s1,11)});
  wb(TL-.075,TL+.125,0,2.0,9);wb(TR-.125,TR+.075,0,2.0,9);
  [.1,1.9].forEach(s_=>{bp2(TL+.025,2.15,s_);bp2(4.55,TR-.025,s_);bp2(2.55,4.15,s_,G0+1.95,BY1)});[TL+.025,TR-.025].forEach(t=>{bpp2(Q(t,.13),Q(t,1.87));[.1,1.9].forEach(s_=>cpost(t,s_))});
- /* drzwi blaszane wiaty smietnikowej: jednoskrzydlowe (1,56 m), otwierane na zewnatrz; blacha z krawedziami zagietymi i przetloczeniami, 4 zawiasy na skrzydlo (plytki przy slupach), uchwyty pionowe, zamek */
+ /* drzwi blaszane wiaty smietnikowej: dwuskrzydlowe (2 x 0,77 m w swietle 1,6 m, zawiasy przy slupach, zamek posrodku), otwierane na zewnatrz; blacha z krawedziami zagietymi i przetloczeniami, 4 zawiasy na skrzydlo (plytki przy slupach), uchwyty pionowe, zamek */
  [2.4,4.3].forEach(()=>{});
- {const bkk=M(0x050505,{roughness:.9}),dM=sdoorM,dP=sdoorM.clone(),hm=hM,dk=M(0x1b1d20,{roughness:.45,metalness:.6}),SD=window.SD={},w=1.54,ap0=dP.userData.lnTex='sheet',ap=(sx,sy,sz,t,s_,y,m)=>{const q=Q(t,s_),me=add(new THREE.BoxGeometry(sx,sy,sz),m,q[0],y,-q[1]);me.rotation.y=ph};
-  const mkd=(s0,o,key)=>{const L=[];[[2.55,1]].forEach(([t0,d])=>{const sp=s0-o*.02,pn=Q(t0+d*.016,sp),g=new THREE.Group(),fb=(sx,sy,sz,x,y,z,m)=>{const me=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);me.position.set(x,y,z);me.castShadow=true;g.add(me);return me},cx=d*(.02+w/2),cy=(sx,sy,x,y,z,rx)=>{const me=new THREE.Mesh(new THREE.CylinderGeometry(sx,sx,sy,12),hm);me.position.set(x,y,z);if(rx)me.rotation.x=Math.PI/2;me.castShadow=true;g.add(me);return me};
+ {const bkk=M(0x050505,{roughness:.9}),dM=sdoorM,dP=sdoorM.clone(),hm=hM,dk=M(0x1b1d20,{roughness:.45,metalness:.6}),SD=window.SD={},w=.77,ap0=dP.userData.lnTex='sheet',ap=(sx,sy,sz,t,s_,y,m)=>{const q=Q(t,s_),me=add(new THREE.BoxGeometry(sx,sy,sz),m,q[0],y,-q[1]);me.rotation.y=ph};
+  const mkd=(s0,o,key)=>{const L=[];[[2.55,1],[4.15,-1]].forEach(([t0,d])=>{const sp=s0-o*.02,pn=Q(t0+d*.016,sp),g=new THREE.Group(),fb=(sx,sy,sz,x,y,z,m)=>{const me=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);me.position.set(x,y,z);me.castShadow=true;g.add(me);return me},cx=d*(.02+w/2),cy=(sx,sy,x,y,z,rx)=>{const me=new THREE.Mesh(new THREE.CylinderGeometry(sx,sx,sy,12),hm);me.position.set(x,y,z);if(rx)me.rotation.x=Math.PI/2;me.castShadow=true;g.add(me);return me};
    g.position.set(pn[0],0,-pn[1]);g.rotation.y=ph;scene.add(g);
    fb(w,1.9,.028,cx,G0+1.0,-o*.02,dP);fb(.03,1.9,.04,d*(.02+.015),G0+1.0,-o*.02,dM);fb(.03,1.9,.04,d*(.02+w-.015),G0+1.0,-o*.02,dM);fb(w-.06,.03,.04,cx,G0+.065,-o*.02,dM);fb(w-.06,.03,.04,cx,G0+1.935,-o*.02,dM);
    
    [G0+.2,G0+.7,G0+1.3,G0+1.75].forEach(y=>{const b=new THREE.Mesh(new THREE.CylinderGeometry(.013,.013,.1,14),dk);b.position.set(0,y,0);g.add(b);fb(.07,.07,.01,d*.045,y,o*.005,dk);ap(.006,.09,.05,t0+d*.003,sp,y,dk);ap(.016,.03,.025,t0+d*.008,sp,y,dk)});
    const hx=d*(.02+w-.07);[G0+.88,G0+1.12].forEach(y=>cy(.006,.035,hx,y,o*.0175,true));cy(.009,.3,hx,G0+1.0,o*.035,false);
    if(d==1){fb(.04,.08,.006,hx,G0+.78,o*.003,dk);cy(.007,.008,hx,G0+.78,o*.008,true);fb(.04,.08,.006,hx,G0+.78,-o*.036,dk);cy(.007,.008,hx,G0+.78,-o*.0415,true)
-    fb(.016,.1,.03,d*(.02+w+.004),G0+.88,-o*.02,hm);fb(.016,.04,.02,d*(.02+w+.003),G0+.52,-o*.02,hm);
-    ap(.008,.16,.07,4.146,s0,G0+.88,dk);ap(.002,.06,.034,4.141,s0,G0+.88,bkk);ap(.008,.07,.05,4.146,s0,G0+.52,dk);ap(.002,.03,.026,4.141,s0,G0+.52,bkk)}
+    fb(.016,.1,.03,d*(.02+w+.004),G0+.88,-o*.02,hm);fb(.016,.04,.02,d*(.02+w+.003),G0+.52,-o*.02,hm);}
+   else{fb(.016,.1,.03,d*(.02+w+.004),G0+.88,-o*.02,hm);fb(.016,.04,.02,d*(.02+w+.003),G0+.52,-o*.02,hm)}   /* skrzydlo bierne: rygle (sworznie) przy brzegu */
    L.push({g:g,ph:ph,k:-o*d})});SD[key]={p:0,t:0,L:L}};
   mkd(.1,1,'f');mkd(1.9,-1,'r');
   [['sdf','f'],['sdr','r']].forEach(([id,k])=>{const b=document.getElementById(id);b.onclick=()=>{SD[k].t=SD[k].t?0:1;b.classList.toggle('on',!!SD[k].t)}})}
