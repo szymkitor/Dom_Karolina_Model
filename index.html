@@ -1442,7 +1442,7 @@ const kerbM=(()=>{const S=256,c=document.createElement('canvas');c.width=c.heigh
  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=8;return M(0xffffff,{map:t,roughness:.92,side:THREE.DoubleSide})})();
 const KLP=[];   /* linie styku krawezników z jezdnia (tryb liniowy) */
 /* naroza krawezników: ~90 st. = styk prosty (A przechodzi, B dochodzi do jego boku); inne katy = oba elementy sciete na ucios w plaszczyznie dwusiecznej (ciaglosc, bez wystawania i bez przenikania) */
-function kerbRun(P,rs,re,o){o=o||{};const n=P.length,hw=o.hw||.075,H=o.H||.14,BT=o.BT!==undefined?o.BT:-.1,C=o.C||.012,RD0=o.RD0!==undefined?o.RD0:-.30,LY=o.LY!==undefined?o.LY:RD0+.006,G=.01,RL=.6,
+function kerbRun(P,rs,re,o){o=o||{};const n=P.length,hw=o.hw||.075,H=o.H||.10,BT=o.BT!==undefined?o.BT:-.1,C=o.C||.012,RD0=o.RD0!==undefined?o.RD0:-.30,LY=o.LY!==undefined?o.LY:RD0+.006,G=.01,RL=.6,
   pr=[[-hw,BT],[-hw,H-C],[-hw+C,H],[hw-C,H],[hw,H-C],[hw,BT]],pv=[0];for(let k=1;k<pr.length;k++)pv.push(pv[k-1]+Math.hypot(pr[k][0]-pr[k-1][0],pr[k][1]-pr[k-1][1]));
   const dr=[],nl=[];for(let i=0;i<n-1;i++){const dx=P[i+1][0]-P[i][0],dy=P[i+1][1]-P[i][1],l=Math.hypot(dx,dy);dr.push([dx/l,dy/l,l]);nl.push([-dy/l,dx/l])}
   const JT=P.map((p,i)=>{if(i==0||i==n-1||o.butt===false)return null;const d1=dr[i-1],d2=dr[i],dot=d1[0]*d2[0]+d1[1]*d2[1],cr=d1[0]*d2[1]-d1[1]*d2[0],sa=Math.abs(cr);if(Math.abs(dot)>=.07)return null;   /* tylko ~90 st.: styk prosty; inne katy: ucios (mitre) - bez wystawania poza krawedzie sasiednich krawezników */
