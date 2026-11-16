@@ -1774,7 +1774,7 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
  const bx=(w,h,d,m,x,y,z)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);q.position.set(x,y,z);q.castShadow=true;g.add(q);return q},
   cyl=(r,h,m,x,y,z,rx)=>{const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,14),m);q.position.set(x,y,z);q.rotation.x=rx||0;q.castShadow=true;g.add(q);return q};
  /* słupek ogrodowy 35 × 8 × 8 cm na podstawie 12 × 12 cm, czarny mat, po dwa gniazda Ø5 cm na przeciwległych ścianach (wys. 13 i 27 cm), klapki odchylane do góry, wtyczki w gniazdach przedniej ściany */
- bx(.32,.03,.32,M(0xb4b3ae,{roughness:.95}),0,-.015,0);bx(.12,.008,.12,dk,0,.004,0);[[-.045,-.045],[.045,-.045],[-.045,.045],[.045,.045]].forEach(q=>cyl(.006,.002,bk,q[0],.0085,q[1]));
+ bx(.17,.03,.17,M(0xb4b3ae,{roughness:.95}),0,-.015,0);bx(.12,.008,.12,dk,0,.004,0);[[-.045,-.045],[.045,-.045],[-.045,.045],[.045,.045]].forEach(q=>cyl(.006,.002,bk,q[0],.0085,q[1]));
  bx(.08,.34,.08,dk,0,.178,0);bx(.086,.008,.086,dk,0,.352,0);
  [1,-1].forEach(sd=>[.13,.27].forEach(h=>{const open=sd>0&&h<.3;
   bx(.062,.07,.014,bk,0,h,sd*.047).rotation.y=0;[-.027,.027].forEach(o=>{cyl(.004,.004,bk,o,h-.028,sd*.055,Math.PI/2);});
