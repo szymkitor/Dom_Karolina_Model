@@ -805,21 +805,27 @@ function fwall(x0,y0,x1,y1,sa,sb){const P0=[x0,y0],P1=[x1,y1],SQ=(x,y)=>({c:[x,y
   const rg=new THREE.BoxGeometry(RLn,.025,2.475),ru=rg.attributes.uv;for(let i=8;i<12;i++)ru.setXY(i,ru.getX(i)*RLn,ru.getY(i)*2.475);const sm=M(0x3a3d42),rW=roofMat.clone();sm.shadowSide=rW.shadowSide=THREE.FrontSide;   /* cienki dach: do mapy cienia (swiatlo w wiacie) zapisuje sie spod (strona zwrocona do zrodla), a nie gorna scianka - inaczej wnetrze swiecilo przez szczeliny blachodachowki */
   const rf=add(rg,[sm,sm,rW,sm,sm,sm],rc[0],Y+.03+.0125,-rc[1]);rf.rotation.y=ph}
  {const rp=[Q(2.55,-.35),Q(4.15,-.35),Q(4.15,-.5),Q(2.55,-.5)],ys=[-.30,-.30,-.30,-.30],g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(rp.flatMap((p,i)=>[p[0],ys[i],-p[1]]),3));g.setAttribute('uv',new THREE.Float32BufferAttribute(rp.flatMap(p=>[p[0],p[1]]),2));g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();add(g,pvD,0,0,0,false)}   // przejście na gruncie z jezdni do wiaty
- /* kostka przy tarasie rozszerzona (N6d-O6c-P6a/c): od tarasu (y 0) w dol do y -3,3, na wschod do x 15,44, dalej pas 1,6 m prostopadly do skosu (t 2,51-4,19) do wiaty smietnikowej */
- {const ra=Q(4.19,3.118),rb=Q(4.19,2.025),rc=Q(2.51,2.025),rd=Q(2.51,3.449);flat([[12.1,0],[15.44,0],[15.44,ra[1]],rb,Q(4.15,2.025),Q(2.55,2.025),rc,[rd[0],-3.3],[12.1,-3.3]],-.30,0xbab5ab);
+ /* kostka przy tarasie rozszerzona (N6d-O6c-P6a/c): od tarasu (y 0) w dol do y -3,3, na wschod do x 13,05 i dalej UKOSEM (sciety narozmik) do naroza pasa przy wiacie (x 15,44; y -2,32), dalej pas 1,6 m prostopadly do skosu (t 2,51-4,19) do wiaty smietnikowej */
+ {const ra=Q(4.19,3.118),rb=Q(4.19,2.025),rc=Q(2.51,2.025),rd=Q(2.51,3.449);flat([[12.1,0],[13.05,0],ra,rb,Q(4.15,2.025),Q(2.55,2.025),rc,[rd[0],-3.3],[12.1,-3.3]],-.30,0xbab5ab);
   /* przejscie z frontu na taras tylny: zwir (jasniejszy od standardowej opaski) + duze prostokatne plyty ogrodowe (jak na wizualizacji), na zakrecie kwadratowa plyta; pas x 15,44-16,72, od krawezznika kostki (P6a) do tarasu (y 8,05) */
   const gc=document.createElement('canvas');gc.width=gc.height=128;const g2=gc.getContext('2d');g2.fillStyle='#a39e92';g2.fillRect(0,0,128,128);let sg=23;const rg=()=>(sg=(sg*16807)%2147483647)/2147483647;
   for(let i=0;i<1100;i++){g2.fillStyle=['#bcb6aa','#8e887c','#a8a296','#827c70','#c4beb2'][i%5];g2.beginPath();g2.ellipse(rg()*128,rg()*128,1.2+rg()*1.8,1+rg()*1.4,rg()*3,0,6.3);g2.fill()}
   const gt2=new THREE.CanvasTexture(gc);gt2.wrapS=gt2.wrapT=THREE.RepeatWrapping;gt2.anisotropy=8;const gm2=M(0xffffff,{map:gt2,roughness:1});gm2.userData.lnTex='grv';
-  {const gg=new THREE.ShapeGeometry(new THREE.Shape([[15.44,-1.12],[16.72,-1.12],[16.72,8.05],[15.44,8.05]].map(p=>new THREE.Vector2(p[0],p[1]))));gg.rotateX(-Math.PI/2);add(gg,gm2,0,-.295,0,false);{const wp=[[15.44,-1.12],[16.72,-1.12],[16.72,8.05],[15.44,8.05]];wp.skip=[2];GRVP.push(wp)}}
+  /* sciezka zwirowa z plytami: od tarasu tylnego prosto do y 2,0, dalej LUKIEM (dwa kubiczne luki Beziera: lewy i prawy brzeg) w dol i w lewo, do ukosnej krawedzi kostki (od x 13,78 do naroza pasa przy wiacie) */
+  const cb3=(P,t)=>{const u=1-t;return[u*u*u*P[0][0]+3*u*u*t*P[1][0]+3*u*t*t*P[2][0]+t*t*t*P[3][0],u*u*u*P[0][1]+3*u*u*t*P[1][1]+3*u*t*t*P[2][1]+t*t*t*P[3][1]]},
+   LA=[[15.44,2.0],[15.44,.6],[14.7,-.1],[13.78,-.75]],RA=[[16.72,2.0],[16.72,.2],[16.1,-1.1],[15.44,-1.74]],NS=40,lft=[],rgt=[];for(let i=0;i<=NS;i++){lft.push(cb3(LA,i/NS));rgt.push(cb3(RA,i/NS))}
+  const zw=(pt,sk)=>{const gg=new THREE.ShapeGeometry(new THREE.Shape(pt.map(p=>new THREE.Vector2(p[0],p[1]))));gg.rotateX(-Math.PI/2);add(gg,gm2,0,-.295,0,false);if(sk)pt.skip=sk;GRVP.push(pt)};
+  zw([[15.44,2.0],[16.72,2.0],[16.72,8.05],[15.44,8.05]],[0,2]);
+  {const cp=[...lft,ra,...rgt.slice().reverse()];zw(cp,[cp.length-1])}
   const pc=document.createElement('canvas');pc.width=pc.height=256;const p2=pc.getContext('2d');p2.fillStyle='#6b6a67';p2.fillRect(0,0,256,256);
   for(let i=0;i<22;i++){const cx=rg()*256,cy=rg()*256,rr=30+rg()*80,gd=p2.createRadialGradient(cx,cy,0,cx,cy,rr);gd.addColorStop(0,rg()<.5?'rgba(130,129,125,.28)':'rgba(70,69,66,.3)');gd.addColorStop(1,'rgba(100,99,95,0)');p2.fillStyle=gd;p2.fillRect(cx-rr,cy-rr,2*rr,2*rr)}
   for(let i=0;i<9000;i++){p2.fillStyle=rg()<.5?'rgba(150,148,143,'+(.05+rg()*.08)+')':'rgba(30,30,28,'+(.07+rg()*.1)+')';const z=rg()<.15?2:1;p2.fillRect(rg()*256,rg()*256,z,z)}
   for(let i=0;i<14;i++){p2.fillStyle='rgba(20,20,18,.35)';p2.beginPath();p2.arc(rg()*256,rg()*256,.8+rg()*1.4,0,6.3);p2.fill()}   /* pory betonu */
   const pt2=new THREE.CanvasTexture(pc);pt2.anisotropy=8;const plM=M(0xffffff,{map:pt2,roughness:.92});
   const plate=(x,y,w,d)=>add(new THREE.BoxGeometry(w,.04,d),plM,x,-.285,-y);
-  plate(16.08,-.42,1,1);   /* zakret: kwadratowa plyta 1,0 x 1,0 m (P6a) */
-  for(let k=0;k<11;k++)plate(16.08,.35+.7*k+.25,1,.5)}   /* plyty prostokatne 1,0 x 0,5 m co 0,76 m, miedzy nimi zwir */
+  for(let k=3;k<11;k++)plate(16.08,.35+.7*k+.25,1,.5);   /* prosta czesc: plyty 1,0 x 0,5 m co 0,7 m */
+  {const cl=lft.map((q,i)=>[(q[0]+rgt[i][0])/2,(q[1]+rgt[i][1])/2]),cum=[0];for(let i=1;i<cl.length;i++)cum.push(cum[i-1]+Math.hypot(cl[i][0]-cl[i-1][0],cl[i][1]-cl[i-1][1]));
+   for(let sd=0;sd<=cum[cum.length-1]-.55;sd+=.7){let i=1;while(i<cl.length-1&&cum[i]<sd)i++;const f=(sd-cum[i-1])/(cum[i]-cum[i-1]),x=cl[i-1][0]+(cl[i][0]-cl[i-1][0])*f,y=cl[i-1][1]+(cl[i][1]-cl[i-1][1])*f,tx=cl[i][0]-cl[i-1][0],ty=cl[i][1]-cl[i-1][1],th=Math.atan2(tx,-ty),m=plate(x,y,1,.5);m.rotation.y=th}}}   /* plyty po luku: dluzszy bok (1,0 m) prostopadle do kierunku sciezki, co 0,7 m wzdluz osi luku */   /* plyty prostokatne 1,0 x 0,5 m co 0,76 m, miedzy nimi zwir */
  // opaska żwirowa przy ścianach stykających się z trawnikiem
  const cv=document.createElement('canvas');cv.width=cv.height=128;const cc=cv.getContext('2d');cc.fillStyle='#8a857b';cc.fillRect(0,0,128,128);
  for(let i=0;i<900;i++){cc.fillStyle=['#a8a398','#6a665e','#78746a','#b3ac9d'][i%4];cc.beginPath();cc.arc(Math.random()*128,Math.random()*128,1.2+Math.random()*1.8,0,6.3);cc.fill()}
@@ -1515,7 +1521,7 @@ function kerbRun(P,rs,re,o){o=o||{};const n=P.length,hw=o.hw||.075,H=o.H||.10,BT
  WL=offP(RBn,.64),ER=offP(RBn,-.64);WL[0]=Q(2.51,2.025);ER[0]=Q(4.19,2.025);WL[1]=[WL[1][0]-ux*.2,WL[1][1]-uy*.2];ER[1]=[ER[1][0]+ux*.2,ER[1][1]+uy*.2];   /* krawezniki chodnika od ogrodu: czolem do slupow wiaty */
     /* krawezniki chodnika od ulicy: czolem do slupow */
  {const lA=Q(4.19,2.025),lB=Q(4.19,3.118),lC=Q(2.51,2.025),lD=Q(2.51,3.449);
- K([[10.05,.04],[15.44,.04],[15.44,lB[1]],lA]);   /* wschodnia krawedz nowej kostki (od tarasu w dol) i skos do wiaty (pas 1,6 m) - zarazem zachodni krawieznik zwirowego przejscia */
+ K([[10.05,.04],[13.05,.04],lB,lA]);   /* krawedz kostki od tarasu: prosto do x 13,05, dalej UKOS (kostka/zwir i trawnik) do naroza pasa przy wiacie i skos do wiaty (pas 1,6 m) */
  K([lC,lD,[10.19,-3.3],[10.19,-7.2]]);}   /* poludniowa krawedz kostki: od wiaty, wzdluz y -3,3, dalej sciezka do furtki (strona wschodnia) */
  
  
