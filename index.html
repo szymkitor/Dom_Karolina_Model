@@ -811,12 +811,14 @@ function fwall(x0,y0,x1,y1,sa,sb){const P0=[x0,y0],P1=[x1,y1],SQ=(x,y)=>({c:[x,y
   const gc=document.createElement('canvas');gc.width=gc.height=128;const g2=gc.getContext('2d');g2.fillStyle='#a39e92';g2.fillRect(0,0,128,128);let sg=23;const rg=()=>(sg=(sg*16807)%2147483647)/2147483647;
   for(let i=0;i<1100;i++){g2.fillStyle=['#bcb6aa','#8e887c','#a8a296','#827c70','#c4beb2'][i%5];g2.beginPath();g2.ellipse(rg()*128,rg()*128,1.2+rg()*1.8,1+rg()*1.4,rg()*3,0,6.3);g2.fill()}
   const gt2=new THREE.CanvasTexture(gc);gt2.wrapS=gt2.wrapT=THREE.RepeatWrapping;gt2.anisotropy=8;const gm2=M(0xffffff,{map:gt2,roughness:1});gm2.userData.lnTex='grv';
-  /* sciezka zwirowa z plytami: od tarasu tylnego prosto do y 2,0, dalej LUKIEM (dwa kubiczne luki Beziera: lewy i prawy brzeg) w dol i w lewo, do ukosnej krawedzi kostki (od x 13,78 do naroza pasa przy wiacie) */
+  /* sciezka zwirowa z plytami: od tarasu tylnego prosto do y 2,0, dalej LUKIEM (dwa kubiczne luki Beziera: lewy i prawy brzeg) w dol i w lewo, do ukosnej krawedzi kostki: stala szerokosc 1,28 m, koniec doczolowo (prostopadle do ukosu) przy waskim krawezniku kostki */
   const cb3=(P,t)=>{const u=1-t;return[u*u*u*P[0][0]+3*u*u*t*P[1][0]+3*u*t*t*P[2][0]+t*t*t*P[3][0],u*u*u*P[0][1]+3*u*u*t*P[1][1]+3*u*t*t*P[2][1]+t*t*t*P[3][1]]},
-   LA=[[15.44,2.0],[15.44,.6],[14.7,-.1],[13.78,-.75]],RA=[[16.72,2.0],[16.72,.2],[16.1,-1.1],[15.44,-1.74]],NS=40,lft=[],rgt=[];for(let i=0;i<=NS;i++){lft.push(cb3(LA,i/NS));rgt.push(cb3(RA,i/NS))}
+   dL=Math.hypot(ra[0]-13.05,ra[1]),dd=[(ra[0]-13.05)/dL,ra[1]/dL],TT=[dd[1],-dd[0]],EE=[13.05+dd[0]*1.9,dd[1]*1.9],   /* dd: kierunek ukosnej krawedzi kostki; TT: do niej prostopadle (sciezka dochodzi doczolowo); EE: srodek konca sciezki na ukosie */
+   PC=[[16.08,2.0],[16.08,.6],[EE[0]-TT[0]*1.2,EE[1]-TT[1]*1.2],EE],HW2=.64,NS=60,lft=[],rgt=[];   /* os luku (Bezier) i dwa brzegi w stalej odleglosci 0,64 m = stala szerokosc 1,28 m */
+  for(let i=0;i<=NS;i++){const t=i/NS,c=cb3(PC,t),a0=cb3(PC,Math.max(0,t-.002)),a1=cb3(PC,Math.min(1,t+.002)),tl=Math.hypot(a1[0]-a0[0],a1[1]-a0[1]),nx=-(a1[1]-a0[1])/tl,ny=(a1[0]-a0[0])/tl;lft.push([c[0]-nx*HW2,c[1]-ny*HW2]);rgt.push([c[0]+nx*HW2,c[1]+ny*HW2])}
   const zw=(pt,sk)=>{const gg=new THREE.ShapeGeometry(new THREE.Shape(pt.map(p=>new THREE.Vector2(p[0],p[1]))));gg.rotateX(-Math.PI/2);add(gg,gm2,0,-.295,0,false);if(sk)pt.skip=sk;GRVP.push(pt)};
   zw([[15.44,2.0],[16.72,2.0],[16.72,8.05],[15.44,8.05]],[0,2]);
-  {const cp=[...lft,ra,...rgt.slice().reverse()];zw(cp,[cp.length-1])}
+  {const cp=[...lft,...rgt.slice().reverse()];zw(cp,[cp.length-1])}
   const pc=document.createElement('canvas');pc.width=pc.height=256;const p2=pc.getContext('2d');p2.fillStyle='#6b6a67';p2.fillRect(0,0,256,256);
   for(let i=0;i<22;i++){const cx=rg()*256,cy=rg()*256,rr=30+rg()*80,gd=p2.createRadialGradient(cx,cy,0,cx,cy,rr);gd.addColorStop(0,rg()<.5?'rgba(130,129,125,.28)':'rgba(70,69,66,.3)');gd.addColorStop(1,'rgba(100,99,95,0)');p2.fillStyle=gd;p2.fillRect(cx-rr,cy-rr,2*rr,2*rr)}
   for(let i=0;i<9000;i++){p2.fillStyle=rg()<.5?'rgba(150,148,143,'+(.05+rg()*.08)+')':'rgba(30,30,28,'+(.07+rg()*.1)+')';const z=rg()<.15?2:1;p2.fillRect(rg()*256,rg()*256,z,z)}
@@ -825,7 +827,7 @@ function fwall(x0,y0,x1,y1,sa,sb){const P0=[x0,y0],P1=[x1,y1],SQ=(x,y)=>({c:[x,y
   const plate=(x,y,w,d)=>add(new THREE.BoxGeometry(w,.04,d),plM,x,-.285,-y);
   for(let k=3;k<11;k++)plate(16.08,.35+.7*k+.25,1,.5);   /* prosta czesc: plyty 1,0 x 0,5 m co 0,7 m */
   {const cl=lft.map((q,i)=>[(q[0]+rgt[i][0])/2,(q[1]+rgt[i][1])/2]),cum=[0];for(let i=1;i<cl.length;i++)cum.push(cum[i-1]+Math.hypot(cl[i][0]-cl[i-1][0],cl[i][1]-cl[i-1][1]));
-   for(let sd=0;sd<=cum[cum.length-1]-.55;sd+=.7){let i=1;while(i<cl.length-1&&cum[i]<sd)i++;const f=(sd-cum[i-1])/(cum[i]-cum[i-1]),x=cl[i-1][0]+(cl[i][0]-cl[i-1][0])*f,y=cl[i-1][1]+(cl[i][1]-cl[i-1][1])*f,tx=cl[i][0]-cl[i-1][0],ty=cl[i][1]-cl[i-1][1],th=Math.atan2(tx,-ty),m=plate(x,y,1,.5);m.rotation.y=th}}}   /* plyty po luku: dluzszy bok (1,0 m) prostopadle do kierunku sciezki, co 0,7 m wzdluz osi luku */   /* plyty prostokatne 1,0 x 0,5 m co 0,76 m, miedzy nimi zwir */
+   for(let sd=0;sd<=cum[cum.length-1]-.5;sd+=.7){let i=1;while(i<cl.length-1&&cum[i]<sd)i++;const f=(sd-cum[i-1])/(cum[i]-cum[i-1]),x=cl[i-1][0]+(cl[i][0]-cl[i-1][0])*f,y=cl[i-1][1]+(cl[i][1]-cl[i-1][1])*f,tx=cl[i][0]-cl[i-1][0],ty=cl[i][1]-cl[i-1][1],th=Math.atan2(tx,-ty),m=plate(x,y,1,.5);m.rotation.y=th}}}   /* plyty po luku: dluzszy bok (1,0 m) prostopadle do kierunku sciezki, co 0,7 m wzdluz osi luku */   /* plyty prostokatne 1,0 x 0,5 m co 0,76 m, miedzy nimi zwir */
  // opaska żwirowa przy ścianach stykających się z trawnikiem
  const cv=document.createElement('canvas');cv.width=cv.height=128;const cc=cv.getContext('2d');cc.fillStyle='#8a857b';cc.fillRect(0,0,128,128);
  for(let i=0;i<900;i++){cc.fillStyle=['#a8a398','#6a665e','#78746a','#b3ac9d'][i%4];cc.beginPath();cc.arc(Math.random()*128,Math.random()*128,1.2+Math.random()*1.8,0,6.3);cc.fill()}
