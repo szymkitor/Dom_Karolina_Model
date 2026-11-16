@@ -1120,22 +1120,19 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
   const ac=o.c-o.s*(D+.04),pl=(xc,zc2,w2,h2,t,off,m)=>add(new THREE.BoxGeometry(w2,h2,t),m,xc,zc2,-(ac+o.s*off),false),
    Lz0=z+.02,Lz1=z+h-fw,Lh=Lz1-Lz0,Lc=(Lz0+Lz1)/2,gkM=M(0x131415,{roughness:.8}),pnM=M(0x674f3c,{roughness:.42});
   [-1,1].forEach(k=>pl(a+k*.4775,Lc,.02,Lh,.05,.02,gkM));pl(a,Lz1-.002,.97,.02,.05,.02,gkM);   /* ciemna uszczelka w szczelinie miedzy skrzydlem a rama */
-  /* drzwi wejsciowe wg katalogu: Glass View 2 (fornir debowy, pionowy pas czarnej ramki z mozaika i waska matowa szyba przy stronie klamki, bez przetloczen) */
+  /* drzwi wejsciowe wg katalogu: Glass View 3 (ciemny orzech/debowy fornir, pionowa czarna ramka z jasna szyba przy stronie klamki, bez przetloczen) */
   const oakTx=(()=>{const W=256,H=512,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');let sd=21;const r=()=>(sd=(sd*16807)%2147483647)/2147483647;
-   x.fillStyle='#b07a42';x.fillRect(0,0,W,H);
-   for(let i=0;i<W;i+=1){const t=.5+.5*Math.sin(i*.35+Math.sin(i*.07)*3);x.fillStyle='rgba('+(120+40*t|0)+','+(70+30*t|0)+',30,'+(.10+.10*r())+')';x.fillRect(i,0,1,H)}
-   for(let k=0;k<90;k++){const x0=r()*W,y0=r()*H,l=40+r()*160,wv=(r()-.5)*6;x.strokeStyle='rgba('+(r()<.5?'92,52,22':'205,150,90')+','+(.10+.16*r())+')';x.lineWidth=.6+r()*1.2;x.beginPath();x.moveTo(x0,y0);for(let y=0;y<=l;y+=8)x.lineTo(x0+wv*Math.sin(y*.05+k)+(y*.01),y0+y);x.stroke()}
+   x.fillStyle='#5b3519';x.fillRect(0,0,W,H);
+   for(let i=0;i<W;i+=1){const t=.5+.5*Math.sin(i*.35+Math.sin(i*.07)*3);x.fillStyle='rgba('+(60+30*t|0)+','+(32+20*t|0)+',14,'+(.10+.10*r())+')';x.fillRect(i,0,1,H)}
+   for(let k=0;k<90;k++){const x0=r()*W,y0=r()*H,l=40+r()*160,wv=(r()-.5)*6;x.strokeStyle='rgba('+(r()<.5?'35,18,8':'120,76,42')+','+(.10+.16*r())+')';x.lineWidth=.6+r()*1.2;x.beginPath();x.moveTo(x0,y0);for(let y=0;y<=l;y+=8)x.lineTo(x0+wv*Math.sin(y*.05+k)+(y*.01),y0+y);x.stroke()}
    for(let k=0;k<6;k++){const cx=40+r()*176,cy=40+r()*430;for(let j=1;j<=5;j++){x.strokeStyle='rgba(100,58,26,'+(.12-j*.015)+')';x.lineWidth=1;x.beginPath();x.ellipse(cx,cy,5+j*5,30+j*26,0,0,7);x.stroke()}}
    const t=new THREE.CanvasTexture(c);t.anisotropy=4;return t})();
   const oakM=M(0xffffff,{map:oakTx,roughness:.55}),
-   mosT=(()=>{const W=12,H=96,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');let sd=5;const r=()=>(sd=(sd*16807)%2147483647)/2147483647;
-    for(let i=0;i<W;i++)for(let j=0;j<H;j++){const v=8+r()*r()*60|0;x.fillStyle='rgb('+v+','+v+','+(v+2)+')';x.fillRect(i,j,1,1)}
-    const t=new THREE.CanvasTexture(c);t.magFilter=t.minFilter=THREE.NearestFilter;t.generateMipmaps=false;return t})(),
-   mosM=M(0xffffff,{map:mosT,roughness:.5}),frgM=M(0xd3d8dc,{roughness:.45,metalness:0}),
-   sx=a+.19,fW=.15,gW=.06;   /* srodek pasa szyby: ok. 63-78% szerokosci skrzydla liczac od zawiasow */
+   mosM=M(0x0a0a0b,{roughness:.4,metalness:.1}),frgM=M(0xc9cfd3,{roughness:.4,metalness:0}),
+   sx=a+.16,fW=.21,gW=.11;   /* srodek pasa szyby: ok. 63-78% szerokosci skrzydla liczac od zawiasow */
   pl(a,Lc,.944,Lh+.002,.07,.05,oakM);   /* skrzydlo (lico .085 od osi ramy) */
-  pl(sx,Lz1-.02-(Lh-.03)/2,fW,Lh-.03,.006,.0885,mosM);   /* czarna ramka z mozaika, prawie na cala wysokosc */
-  pl(sx,Lz0+Lh*.138+Lh*.718/2,gW,Lh*.718,.006,.0925,frgM);   /* waska matowa szyba */
+  pl(sx,Lz1-Lh*.014-Lh*.876/2,fW,Lh*.876,.006,.0885,mosM);   /* czarna ramka: od ok. 1,4% do 89% wysokosci skrzydla (od gory) */
+  pl(sx,Lz1-Lh*.122-Lh*.744/2,gW,Lh*.744,.006,.0925,frgM);   /* jasna szyba w ramce (od 12% do 87% wysokosci) */
  }
  return}
  for(let i=0;i<o.n;i++){ub(o,x0+w*(i+.5)/o.n,zc,w/o.n-fw+.012,h-2*fw+.012,.03,glM);if(i)ub(o,x0+w*i/o.n,zc,.05,h-2*fw,.08,frM)}});
