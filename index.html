@@ -142,6 +142,13 @@ body.mtool canvas{cursor:crosshair}
 #cmp{background:var(--lg-tint),var(--lg-bg) !important;border:1px solid var(--lg-bd) !important;box-shadow:var(--lg-sh);-webkit-backdrop-filter:var(--lg-f);backdrop-filter:var(--lg-f);color:#fff;cursor:pointer;overflow:hidden;text-shadow:0 1px 6px rgba(10,25,45,.6);-webkit-tap-highlight-color:transparent;transition:transform .12s}#cmp:active{transform:scale(.94)}
 #cmp::before{content:"";position:absolute;left:13%;right:13%;top:2px;height:46%;border-radius:50% 50% 60% 60%/60% 60% 100% 100%;background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,0));opacity:.8;pointer-events:none}
 #cma{position:relative;z-index:1}
+#wkj,#wkx,#wkh{display:none}
+body.walking #wkj{display:block}body.walking #wkx{display:block}body.walking #wkh.show{display:block}
+#wkj{position:fixed;left:calc(22px + env(safe-area-inset-left,0px));bottom:calc(28px + env(safe-area-inset-bottom,0px));width:136px;height:136px;border-radius:50%;z-index:40;touch-action:none;user-select:none;-webkit-user-select:none;background:var(--lg-tint),var(--lg-bg);border:1px solid var(--lg-bd);box-shadow:var(--lg-sh);-webkit-backdrop-filter:var(--lg-f);backdrop-filter:var(--lg-f)}
+#wkj::before{content:"";position:absolute;inset:14px;border-radius:50%;border:1px dashed rgba(255,255,255,.35)}
+#wkj i{position:absolute;left:50%;top:50%;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;background:radial-gradient(120% 100% at 30% 15%,rgba(255,255,255,.85),rgba(255,255,255,.28) 70%);border:1px solid rgba(255,255,255,.7);box-shadow:0 4px 14px rgba(0,0,0,.28),inset 0 1.4px 1px rgba(255,255,255,.9);pointer-events:none}
+#wkx{position:fixed;left:50%;transform:translateX(-50%);top:calc(14px + env(safe-area-inset-top,0px));z-index:40;padding:9px 18px;border-radius:22px;font:600 13px system-ui,sans-serif;color:#fff;cursor:pointer;background:var(--lg-tint),var(--lg-bg);border:1px solid var(--lg-bd);box-shadow:var(--lg-sh);-webkit-backdrop-filter:var(--lg-f);backdrop-filter:var(--lg-f);text-shadow:0 1px 6px rgba(10,25,4,.5)}
+#wkh{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(190px + env(safe-area-inset-bottom,0px));z-index:40;padding:8px 14px;border-radius:16px;font:500 12.5px system-ui,sans-serif;color:#fff;pointer-events:none;background:rgba(20,24,28,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);text-align:center;max-width:80vw}
 </style></head><body><div id="clk" aria-label="Pora dnia"><span id="clh">--:--</span><span id="cld"></span></div>
 <div id="cmp" style="position:fixed;right:10px;top:calc(10px + env(safe-area-inset-top,0px));width:46px;height:46px;border:1px solid var(--line);border-radius:50%;background:var(--panel);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600"><div id="cma" style="line-height:1;text-align:center">▲<br>N</div></div>
 <button class="fab sub" data-p="pn_view" data-k="view" aria-label="Widok i siatka" title="Widok i siatka" aria-expanded="false"><svg class="h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
@@ -152,6 +159,7 @@ body.mtool canvas{cursor:crosshair}
 <button class="fab sub" data-p="pn_area" data-k="area" aria-label="Pole powierzchni" title="Pole powierzchni" aria-expanded="false"><svg class="h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 7 6h13l-3 12z"/><path d="M9.5 15l5-6M13 15l5-6"/></svg><svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
 <button class="fab sub" data-p="pn_rt" data-k="rt" aria-label="Ray tracing" title="Ray tracing" aria-expanded="false"><svg class="h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
 <button class="fab sub" data-p="pn_cctv" data-k="cctv" aria-label="Podgląd kamer" title="Podgląd kamer" aria-expanded="false"><svg class="h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5h10.5a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5H4A1.5 1.5 0 0 1 2.5 15v-5A1.5 1.5 0 0 1 4 8.5z"/><path d="M16 11.5l5.5-3v7l-5.5-3"/><circle cx="6.5" cy="6" r=".6" fill="currentColor"/></svg><svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+<button class="fab sub" data-k="walk" aria-label="Spacer po działce" title="Spacer po działce (widok z oczu człowieka)"><svg class="h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4.5" r="1.8"/><path d="M10 21l2-6.5-2.5-2.2.8-4.3 3.6 1.5 2.3 2.5M10.3 8.2L7.5 11M12 14.5l3.2 2.3.8 4.2"/></svg></button>
 <button class="fab sub" data-k="reset" aria-label="Reset aplikacji" title="Reset do ustawień początkowych"><svg class="h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 1 0 2.7-6.2"/><path d="M3.5 4v4.6h4.6"/></svg></button>
 <button class="fab fm" id="fabm" aria-label="Menu" title="Menu" aria-expanded="false"><svg class="h" viewBox="0 0 24 24" fill="currentColor"><circle cx="7" cy="7" r="2.3"/><circle cx="17" cy="7" r="2.3"/><circle cx="7" cy="17" r="2.3"/><circle cx="17" cy="17" r="2.3"/></svg><svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
 <div class="ui hid" id="pn_view">
@@ -236,7 +244,7 @@ function tgl(i,o){const prev=cur;cur=o?i:-1;panels.forEach((p,j)=>{if(p)p.classL
  if(prev>=0&&prev!==cur)hook(prev,false);if(cur>=0&&cur!==prev)hook(cur,true);menu=false;main.classList.remove('open');main.setAttribute('aria-expanded','false');fan();if(o)place()}
 function setMenu(o){if(o&&cur>=0)tgl(-1,false);menu=o;main.classList.toggle('open',o);main.setAttribute('aria-expanded',o);apply()}
 function toMenu(){tgl(-1,false);setMenu(true)}   /* krzyzyk / baniak glowny przy otwartym oknie: powrot do menu babelkow (nie zamyka wszystkiego) */
-subs.forEach((b,i)=>b.addEventListener('click',()=>{if(b.dataset.k==='reset'){b.querySelector('svg').style.transform='rotate(-360deg)';setTimeout(()=>location.reload(),280);return}if(cur===i)toMenu();else tgl(i,true)}));   /* reset: przeladowanie przywraca swiatla, pore dnia, kamere, drzwi, tryby; polozenie banieczki zostaje (localStorage) */
+subs.forEach((b,i)=>b.addEventListener('click',()=>{if(b.dataset.k==='walk'){setMenu(false);if(window.__walkToggle)window.__walkToggle();return}if(b.dataset.k==='reset'){b.querySelector('svg').style.transform='rotate(-360deg)';setTimeout(()=>location.reload(),280);return}if(cur===i)toMenu();else tgl(i,true)}));   /* reset: przeladowanie przywraca swiatla, pore dnia, kamere, drzwi, tryby; polozenie banieczki zostaje (localStorage) */
 let d0=null,drag=false;
 main.addEventListener('pointerdown',e=>{d0={x:e.clientX,y:e.clientY};drag=false;main.classList.remove('snap');try{main.setPointerCapture(e.pointerId)}catch(x){}});
 main.addEventListener('pointermove',e=>{if(!d0)return;if(!drag&&Math.hypot(e.clientX-d0.x,e.clientY-d0.y)>6){drag=true;main.classList.add('drag');if(cur>=0)tgl(-1,false);menu=false;main.classList.remove('open');apply()}
@@ -345,10 +353,10 @@ const ren=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performa
 ren.shadowMap.enabled=true;ren.shadowMap.autoUpdate=false;ren.shadowMap.needsUpdate=true;document.body.prepend(ren.domElement);
 let dirty=true;const ctl=new THREE.OrbitControls(cam,ren.domElement);ctl.addEventListener("change",()=>{dirty=true});ctl.maxPolarAngle=Math.PI/2;ctl.enableDamping=true;
 const V={corner:[[-22,11,24],[7.4,2.5,-9]],front:[[7.4,5,32],[7.4,2.5,-9]],back:[[7.4,7,-52],[7.4,2.5,-9]],top:[[10,115,-16.4],[10,0,-16.5]],left:[[-46,6,-11],[7.4,2.5,-11]],right:[[61,6,-11],[7.4,2.5,-11]]};
-function view(k){cam.position.set(...V[k][0]);ctl.target.set(...V[k][1]);if(ORTHO&&k!=='corner'){const t=V[k][1];if(k==='top'){cam.position.x=t[0];cam.position.z=t[2]}else cam.position.y=t[1]}ctl.update();dirty=true}
+function view(k){if(window.WALK&&WALK.on)window.__walkToggle(false);cam.position.set(...V[k][0]);ctl.target.set(...V[k][1]);if(ORTHO&&k!=='corner'){const t=V[k][1];if(k==='top'){cam.position.x=t[0];cam.position.z=t[2]}else cam.position.y=t[1]}ctl.update();dirty=true}
 /* kompas: klik obraca widok wokol celu kamery tak, by polnoc byla na gorze ekranu (kierunek patrzenia = kierunek polnocy) */
 {const cmE=document.getElementById('cmp');if(cmE){cmE.setAttribute('role','button');cmE.setAttribute('aria-label','Ustaw widok polnoca do gory');cmE.title='Polnoc na gorze';let an=0;
- cmE.addEventListener('click',()=>{const a0=nB*Math.PI/180,n=[-Math.sin(a0),-Math.cos(a0)],t=ctl.target,o=cam.position.clone().sub(t),h=Math.hypot(o.x,o.z);
+ cmE.addEventListener('click',()=>{if(window.WALK&&WALK.on)return;const a0=nB*Math.PI/180,n=[-Math.sin(a0),-Math.cos(a0)],t=ctl.target,o=cam.position.clone().sub(t),h=Math.hypot(o.x,o.z);
   if(h<1e-3){cam.position.x=t.x-n[0]*.001;cam.position.z=t.z-n[1]*.001;ctl.update();dirty=true;return}
   let d=Math.atan2(n[1],n[0])-Math.atan2(-o.z,-o.x);d=Math.atan2(Math.sin(d),Math.cos(d));if(Math.abs(d)<1e-3)return;
   const Y=new THREE.Vector3(0,1,0),t0=performance.now(),D=450,id=++an;
@@ -2163,6 +2171,47 @@ return out}
  if(idx.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();add(g,M(0x0b0c0d,{roughness:.55,side:THREE.DoubleSide}),0,0,0,false)}}
 batchStatics();
 const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
+/* TRYB SPACERU: widok z oczu człowieka (wys. oczu 1,65 m), start tuż za drzwiami wejściowymi (plan x 8,35; y 1,5, patrzymy na ulicę), joystick ekranowy (ruch), przeciąganie po ekranie lub strzałki (rozglądanie), WASD / Shift z klawiatury; kolizje: obrysy budynków (FOOT), ogrodzenie, basen, tunel (wejście od frontu), inspekt, samochód, słupek; wysokość terenu: taras 0,00 + stopień, pochylnia podjazdu */
+{const W=window.WALK={on:false,x:8.35,z:-1.5,yaw:Math.PI,pit:0,y:null,jx:0,jy:0,keys:{}},PLY=[[-3,-7.5],[14.78,-7.5],[19.45,-2.65],[19.45,21.35],[21.9,21.35],[21.8,37.4],[-3.4,37.4]],PR=.26,EYE=1.65,
+ pip=(x,y,P)=>{let c=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const a=P[i],b=P[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])c=!c}return c},
+ dseg=(x,y,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],L=dx*dx+dy*dy,t=L?Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/L)):0;return Math.hypot(x-a[0]-dx*t,y-a[1]-dy*t)},
+ dpoly=(x,y,P)=>{let m=1e9;for(let i=0;i<P.length;i++)m=Math.min(m,dseg(x,y,P[i],P[(i+1)%P.length]));return m},
+ drect=(x,y,r)=>Math.hypot(Math.max(r[0]-x,0,x-r[2]),Math.max(r[1]-y,0,y-r[3])),
+ RECT=[[17.8,29.3,17.9,36.4],[20.8,29.3,20.9,36.4],[17.8,36.3,20.9,36.4],[17.8,29.3,18.85,29.4],[19.85,29.3,20.9,29.4],[18.52,25.6,20.965,28.35]],CIR=[[9.53,.19,.3],[15.75,33.75,1.62],[17.5,36.38,.14]];let CAR=null;
+ const blocked=(x,y)=>{if(!pip(x,y,PLY)||dpoly(x,y,PLY)<PR+.05)return true;for(const P of (window.FOOT||[]))if(pip(x,y,P)||dpoly(x,y,P)<PR)return true;
+  for(const r of RECT)if(drect(x,y,r)<PR)return true;for(const c of CIR)if(Math.hypot(x-c[0],y-c[1])<c[2]+PR)return true;if(CAR&&drect(x,y,CAR)<PR)return true;return false},
+ gh=(x,y)=>{if(x>=7.25&&x<=10.05){if(y>=-.4&&y<=2.5)return 0;if(y>=-.8&&y<-.4)return -.15}
+  if(x>=.87&&x<=6.45&&y>=-5&&y<=0)return -.30+.05*(y+5)/5;if(x>=9.8&&x<=14.9&&y>=11.3&&y<=14)return 0;return -.30},
+ ex=document.createElement('button'),jb=document.createElement('div'),ht=document.createElement('div'),kn=document.createElement('i');
+ ex.id='wkx';ex.textContent='Wyjdź ze spaceru';jb.id='wkj';jb.appendChild(kn);ht.id='wkh';ht.textContent='Lewy joystick: chodzenie · przeciągnij po ekranie, by się rozglądać';document.body.prepend(ex,jb,ht);
+ let S=null,jid=null,lid=null,lx=0,ly=0,hT=0;
+ const setJ=(e)=>{const r=jb.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,R=r.width/2-30;let dx=e.clientX-cx,dy=e.clientY-cy;const L=Math.hypot(dx,dy);if(L>R){dx*=R/L;dy*=R/L}W.jx=dx/R;W.jy=-dy/R;kn.style.transform='translate('+dx+'px,'+dy+'px)'};
+ jb.addEventListener('pointerdown',e=>{jid=e.pointerId;try{jb.setPointerCapture(jid)}catch(x){}setJ(e);e.preventDefault()});
+ jb.addEventListener('pointermove',e=>{if(e.pointerId===jid)setJ(e)});
+ const jend=e=>{if(e.pointerId!==jid)return;jid=null;W.jx=W.jy=0;kn.style.transform=''};jb.addEventListener('pointerup',jend);jb.addEventListener('pointercancel',jend);
+ const cv=ren.domElement;
+ cv.addEventListener('pointerdown',e=>{if(!W.on||lid!==null)return;lid=e.pointerId;lx=e.clientX;ly=e.clientY;try{cv.setPointerCapture(lid)}catch(x){}});
+ cv.addEventListener('pointermove',e=>{if(!W.on||e.pointerId!==lid)return;W.yaw+=(e.clientX-lx)*.0042;W.pit=Math.max(-1.3,Math.min(1.3,W.pit+(e.clientY-ly)*.0035));lx=e.clientX;ly=e.clientY;dirty=true});
+ const lend=e=>{if(e.pointerId===lid)lid=null};cv.addEventListener('pointerup',lend);cv.addEventListener('pointercancel',lend);
+ addEventListener('keydown',e=>{if(!W.on)return;const k=e.key.toLowerCase();if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(k)){W.keys[k]=true;e.preventDefault()}});
+ addEventListener('keyup',e=>{W.keys[e.key.toLowerCase()]=false});
+ const place=()=>{const gY=gh(W.x,-W.z),ty=gY+EYE;if(W.y===null)W.y=ty;cam.position.set(W.x,W.y,W.z);cam.rotation.set(-W.pit,-W.yaw,0,'YXZ')};
+ window.__walkStep=dt=>{dt=Math.min(dt||0,.1);const K=W.keys;let fw=W.jy+((K.w?1:0)-(K.s?1:0)),sd=W.jx+((K.d?1:0)-(K.a?1:0));const m=Math.hypot(fw,sd);if(m>1){fw/=m;sd/=m}
+  if(K.arrowleft)W.yaw-=1.6*dt;if(K.arrowright)W.yaw+=1.6*dt;if(K.arrowup)W.pit=Math.max(-1.3,W.pit-1.2*dt);if(K.arrowdown)W.pit=Math.min(1.3,W.pit+1.2*dt);
+  const sp=(K.shift?3.2:2.1)*Math.min(1,Math.hypot(fw,sd)),fx=Math.sin(W.yaw),fz=-Math.cos(W.yaw),rx=Math.cos(W.yaw),rz=Math.sin(W.yaw);
+  if(sp>0&&dt>0){const L=Math.hypot(fw,sd)||1,vx=(fx*fw+rx*sd)/L*sp*dt,vz=(fz*fw+rz*sd)/L*sp*dt,n=Math.max(1,Math.ceil(Math.hypot(vx,vz)/.1));
+   for(let i=0;i<n;i++){const nx=W.x+vx/n,nz=W.z+vz/n;if(!blocked(nx,-nz)){W.x=nx;W.z=nz}else if(!blocked(nx,-W.z))W.x=nx;else if(!blocked(W.x,-nz))W.z=nz}}
+  const ty=gh(W.x,-W.z)+EYE;W.y+=(ty-W.y)*Math.min(1,dt*10);place();dirty=true};
+ window.__walkToggle=(on)=>{if(on===undefined)on=!W.on;if(on===W.on)return;const fb=document.querySelector('.fab.sub[data-k=walk]');
+  if(on){const ob=document.getElementById('orth');if(ORTHO&&ob)ob.click();
+   S={p:cam.position.clone(),t:ctl.target.clone(),fov:cam.fov,near:cam.near};ctl.enabled=false;
+   const car=scene.children.find(o=>o.userData&&o.userData.hl===1);if(car){const b=new THREE.Box3().setFromObject(car);CAR=[b.min.x-.05,-b.max.z-.05,b.max.x+.05,-b.min.z+.05]}
+   W.x=8.35;W.z=-1.5;W.yaw=Math.PI;W.pit=0;W.y=null;W.jx=W.jy=0;W.keys={};cam.fov=68;cam.near=.05;cam.updateProjectionMatrix();W.on=true;document.body.classList.add('walking');place();
+   ht.classList.add('show');clearTimeout(hT);hT=setTimeout(()=>ht.classList.remove('show'),6000)}
+  else{W.on=false;document.body.classList.remove('walking');ht.classList.remove('show');cam.rotation.order='XYZ';cam.fov=S.fov;cam.near=S.near;cam.updateProjectionMatrix();cam.position.copy(S.p);ctl.target.copy(S.t);ctl.enabled=true;ctl.update()}
+  if(fb)fb.classList.toggle('open',W.on);dirty=true};
+ ex.addEventListener('click',()=>window.__walkToggle(false))}
+
 (function loop(t){requestAnimationFrame(loop);
  if(window.RL){const R=window.RL;if(R.p!==R.t){const d=R.t-R.p;R.p=Math.abs(d)<.002?R.t:R.p+d*.05;R.apply();ren.shadowMap.needsUpdate=true;dirty=true}}
  const gdt=t&&lastG?Math.min(.1,(t-lastG)/1000):0;if(t)lastG=t;
@@ -2173,7 +2222,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
  if(window.GL){const L=window.GL,mv=gate.position.x!==gT;if(mv||L.on){L.on=mv;const k=mv?.5+.5*Math.sin(t*.007):0;L.m.emissive.setHSL(.05+.035*k,1,.5);L.m.emissiveIntensity=mv?.3+2.4*k:0;L.m.color.setHSL(.07,.9,mv?.45+.15*k:.3);L.pl.intensity=mv?(.4+2.2*k)*(.25+.75*SIM.g):0;if(window.LED){LED.emissive.setHex(mv?0xff8a1a:0x22cc55);LED.emissiveIntensity=mv?.8+1.6*k:.7}dirty=true}}
  if(playing){tH=(tH+.01)%24;$('tm').value=tH;sim()}
  if(shReq&&(!playing||t-lastSh>120)){ren.shadowMap.needsUpdate=true;lastSh=t;shReq=false;dirty=true}
- const ch=ctl.update();
+ if(window.WALK&&WALK.on&&window.__walkStep)window.__walkStep(gdt);const ch=(window.WALK&&WALK.on)?false:ctl.update();
  if(ch||dirty){dirty=false;
   cam.getWorldDirection(fv);const l=Math.hypot(fv.x,fv.z)||1,fx=fv.x/l,fz=fv.z/l,nx=-Math.sin(nB*RD),nz=-Math.cos(nB*RD);$('cma').style.transform='rotate('+Math.atan2(nx*(-fz)+nz*fx,nx*fx+nz*fz)+'rad)';
   drawFrame();
