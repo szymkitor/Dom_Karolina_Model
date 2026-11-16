@@ -1459,8 +1459,8 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
    mt.set(X[0]*s,d[0]*s,Z[0]*s,p[0],X[1]*s,d[1]*s,Z[1]*s,p[1],X[2]*s,d[2]*s,Z[2]*s,p[2],0,0,0,1);im.setMatrixAt(i,mt);
    im.setColorAt(i,rnd()<.45?cl.setHSL(.2+rnd()*.03,.16+.1*rnd(),.55+.12*rnd()):cl.setHSL(.24+rnd()*.04,.3+.15*rnd(),.30+.12*rnd()))});
   im.position.set(px,ys,-cy);im.frustumCulled=false;im.castShadow=im.receiveShadow=true;im.userData.plant=1;scene.add(im)}}
-/* inspekt ogrodowy z ziolami (Q15c, Q15d, Q14a, Q14b: x 18-21, y 22,5-25,5): prosta, kwadratowa drewniana skrzynia 3 x 3 m (wypelnia caly obszar), wys. 45 cm, bez pokryw i skosow; 9 gatunkow ziol w polach 3 x 3 (po 1 x 1 m, w kazdym 4 rosliny) z drewnianymi tabliczkami: lawenda, rozmaryn, szalwia / mieta, oregano, tymianek / szczypiorek, bazylia, pietruszka */
-{const cx=19.5,cy=24.0,gy=-.30,LX=3,WZ=3,HH=.45,T=.03,SY=.40,grp=new THREE.Group();grp.position.set(cx,gy,-cy);scene.add(grp);
+/* inspekt ogrodowy z ziolami (Q15c, Q15d, Q14a, Q14b: x 18-21, y 22,5-25,5): prosta prostokatna drewniana skrzynia 2,445 x 2,75 m, wys. 45 cm nad gruntem, bez pokryw i skosow; 9 gatunkow ziol w polach 3 x 3 (po 1 x 1 m, w kazdym 4 rosliny) z drewnianymi tabliczkami: lawenda, rozmaryn, szalwia / mieta, oregano, tymianek / szczypiorek, bazylia, pietruszka */
+{const cx=19.76,cy=24.125,gy=-.30,LX=2.445,WZ=2.75,HH=.50,T=.03,SY=.45,grp=new THREE.Group();grp.position.set(cx,gy-.05,-cy);grp.rotation.y=.00623;scene.add(grp);   /* prostokat 2,445 x 2,75 m: dluzszy (wschodni) bok przylega do opaski z kory przy wschodniej granicy (x ok. 20,98; obrot 0,36 st. wg skosu granicy), poludniowy kraniec 0,5 m od opaski z kory przy y 22,25 (y 22,75-25,5); zagłębiony 5 cm w grunt */
  let sd=77;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647,rr=(a,b)=>a+(b-a)*rnd();
  const put=(par,g,m,x,y,z,rx=0,ry=0,rz=0)=>{const me=new THREE.Mesh(g,m);me.position.set(x,y,z);me.rotation.set(rx,ry,rz);me.castShadow=me.receiveShadow=true;par.add(me);statics.push(me);return me};
  const jit=(hex,k=1)=>{const c=new THREE.Color(hex),h={};c.getHSL(h);return c.setHSL(h.h+rr(-.015,.015)*k,Math.min(1,h.s*rr(.88,1.1)),Math.min(.9,h.l*rr(.86,1.14)))};
@@ -1500,7 +1500,8 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
   thyme=(px,pz)=>{for(let i=0;i<44;i++){const [x,z]=ring(px,pz,.2);blob(x,SY+.015+rnd()*.035,z,.03,.012,.03,jit(0x5a7650),0,rnd()*6,0)}
    for(let i=0;i<16;i++){const [x,z]=ring(px,pz,.18);blob(x,SY+.06+rnd()*.015,z,.01,.01,.01,jit(0xd68fb5))}};
  const PLN=[[lav,-1,-1,'Lawenda'],[rosem,0,-1,'Rozmaryn'],[sage,1,-1,'Szałwia'],[mint,-1,0,'Mięta'],[oreg,0,0,'Oregano'],[thyme,1,0,'Tymianek'],[chive,-1,1,'Szczypiorek'],[basil,0,1,'Bazylia'],[pars,1,1,'Pietruszka']];
- PLN.forEach(([f,x,z])=>[-.25,.25].forEach(dx=>[-.25,.25].forEach(dz=>f(x+dx,z+dz))));
+ PLN.forEach(q=>{q[1]*=LX/3;q[2]*=WZ/3});
+ PLN.forEach(([f,x,z])=>[-.2,.2].forEach(dx=>[-.22,.22].forEach(dz=>f(x+dx,z+dz))));
  {const g=new THREE.CylinderGeometry(.004,.0045,1,5);g.translate(0,.5,0);const im=new THREE.InstancedMesh(g,M(0xffffff,{roughness:.85}),ST.length),o=new THREE.Object3D();ST.forEach(([x,z,h,lx,lz,col,tk],i)=>{o.position.set(x,SY,z);o.rotation.set(lx,0,lz);o.scale.set(tk,h,tk);o.updateMatrix();im.setMatrixAt(i,o.matrix);im.setColorAt(i,col)});im.frustumCulled=false;im.castShadow=im.receiveShadow=true;grp.add(im)}
  {const g=new THREE.SphereGeometry(1,7,5),im=new THREE.InstancedMesh(g,M(0xffffff,{roughness:.8}),BL.length),o=new THREE.Object3D();BL.forEach(([x,y,z,sx,sy,sz,col,rx,ry,rz],i)=>{o.position.set(x,y,z);o.rotation.set(rx,ry,rz);o.scale.set(sx,sy,sz);o.updateMatrix();im.setMatrixAt(i,o.matrix);im.setColorAt(i,col)});im.frustumCulled=false;im.castShadow=im.receiveShadow=true;grp.add(im)}
  PLN.forEach(([f,x,z,nm])=>{const c=document.createElement('canvas');c.width=160;c.height=56;const q=c.getContext('2d');q.fillStyle='#d9bd8f';q.fillRect(0,0,160,56);q.strokeStyle='rgba(90,60,30,.5)';q.lineWidth=3;q.strokeRect(1.5,1.5,157,53);q.fillStyle='#3a2612';q.font='bold 26px sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText(nm,80,29,148);
