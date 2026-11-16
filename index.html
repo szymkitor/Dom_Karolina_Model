@@ -475,10 +475,10 @@ const add=(g,m,x=0,y=0,z=0,sh=true)=>{const me=new THREE.Mesh(g,m);me.position.s
 function pvTex(){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');x.fillStyle='#6c6a66';x.fillRect(0,0,128,128);
  const bw=25.6,bh=12.8;for(let r=0;r<10;r++)for(let k=-1;k<6;k++){const ox=(r%2)*bw/2,t=150+Math.floor(Math.random()*45);x.fillStyle='rgb('+t+','+(t-2)+','+(t-6)+')';x.fillRect(k*bw+ox+.7,r*bh+.7,bw-1.4,bh-1.4)}
  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=4;return t}
-function grTex(){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');x.fillStyle='#5a8a38';x.fillRect(0,0,256,256);
- for(let i=0;i<260;i++){x.fillStyle=['#4d7c2e','#69993f','#7fae4c'][i%3];x.globalAlpha=.25;x.beginPath();x.arc(Math.random()*256,Math.random()*256,6+Math.random()*16,0,6.3);x.fill()}
- x.globalAlpha=1;const cl=['#3f6a27','#4f7d2f','#62933a','#79a846','#8bb957','#a3c667'];
- for(let i=0;i<9000;i++){const px=Math.random()*256,py=Math.random()*256,a=-1.57+(Math.random()-.5)*1.2,l=3+Math.random()*6;x.strokeStyle=cl[i%6];x.lineWidth=.8+Math.random()*.6;x.beginPath();x.moveTo(px,py);x.lineTo(px+Math.cos(a)*l,py+Math.sin(a)*l);x.stroke()}
+function grTex(){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');x.fillStyle='#3f5e28';x.fillRect(0,0,256,256);
+ for(let i=0;i<260;i++){x.fillStyle=['#33502a','#4b6b2d','#5d7c35','#6b7a3a'][i%4];x.globalAlpha=.3;x.beginPath();x.arc(Math.random()*256,Math.random()*256,6+Math.random()*16,0,6.3);x.fill()}
+ x.globalAlpha=1;const cl=['#2a461f','#35552a','#41622a','#4e7130','#5c8037','#6c8e3f','#7a8a45'];
+ for(let i=0;i<9000;i++){const px=Math.random()*256,py=Math.random()*256,a=-1.57+(Math.random()-.5)*1.2,l=3+Math.random()*6;x.strokeStyle=cl[i%7];x.lineWidth=.8+Math.random()*.6;x.beginPath();x.moveTo(px,py);x.lineTo(px+Math.cos(a)*l,py+Math.sin(a)*l);x.stroke()}
  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(.5,.5);t.anisotropy=4;return t}
 const pvM=M(0xffffff,{map:pvTex(),roughness:.95}),grT=grTex(),grM=M(0xffffff,{map:grT,roughness:1}),grB=M(0xdce8cc,{map:grT,roughness:1});
 const GRVP=[],KOSP=[],BARR=[],BARK=[];   /* rejestry do wstegi pod zwirem: obrysy zwiru, kostki i przeszkod */
@@ -707,7 +707,7 @@ function bUV(g,ou=0,ow=0){const p=g.attributes.position,n=g.attributes.normal,u=
 const G0=-.3,FY=-7.3,wallM=blkM,pilM=M(0x8b8e93),capM=M(0x4a4d52),gateM=M(0x30353b,{roughness:.5,metalness:.4}),fenM=M(0x2d3b2f,{transparent:true,opacity:.55});
 const PGR=-.34,CT=G0+.05,CH=CT-PGR,CB=.2,DT=.05,HW=.1999;   /* pustaki od poziomu gruntu (G0), warstwa 20 cm; daszek DT = 5 cm */   /* os muru frontowego FY: zewnetrzne lico (40 cm) na granicy dzialki y=-7,5; CB: warstwa bloczka 20 cm; PT: plyta 10 cm; HW: polowa grubosci muru (2 bloczki = 40 cm) */   /* jeden cokol: wysokosc CH, spod na gruncie (PGR), gora CT */
 function seg(x0,y0,x1,y1,h,t,m,y=G0,al=false,owv){const L=Math.hypot(x1-x0,y1-y0),bg_=new THREE.BoxGeometry(L,h,t),ph_=Math.atan2(y1-y0,x1-x0),cx_=(x0+x1)/2,cy_=(y0+y1)/2,me=add((m===wallM||m===colM)?bUV(bg_,al===false?cx_*Math.cos(ph_)+cy_*Math.sin(ph_):L/2+(typeof al==='number'?al:0),owv!==undefined?owv:cx_*Math.sin(ph_)-cy_*Math.cos(ph_)):bg_,m,(x0+x1)/2,y+h/2,-(y0+y1)/2);me.rotation.y=Math.atan2(y1-y0,x1-x0)}
-function pillar(x,y){add(bUV(new THREE.BoxGeometry(.4,10*CB,.4),.2,.2),colM,x,G0+5*CB,-y);dasC(x,y,0,G0+10*CB+DT/2)}   /* kolumna 40 x 40: 10 warstw pustakow (2,0 m) od gruntu + 2 daszki 40 x 20 x 5 cm */
+function pillar(x,y){add(bUV(new THREE.BoxGeometry(.4,10*CB,.4),.2,.2),colM,x,G0+5*CB,-y);dasC(x,y,0,G0+10*CB+DT/2)}   /* kolumna 40 x 40: 10 warstw pustakow (2,0 m) od gruntu + 2 daszki 20 x 40 x 5 cm */
 const stM=M(0x3d444c,{roughness:.6,metalness:.3}),hM=M(0xc2c6cc,{metalness:.8,roughness:.3}),sdoorM=(()=>{const S=256,c=document.createElement('canvas');c.width=c.height=S;const a=c.getContext('2d');let sd=9;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;
  for(let i=0;i<8;i++){const v=56+Math.round(rnd()*7);a.fillStyle='rgb('+v+','+(v+4)+','+(v+9)+')';a.fillRect(i*32,0,32,S);for(let k=0;k<7;k++){a.strokeStyle='rgba('+(rnd()<.5?'255,255,255,.035':'0,0,0,.07')+')';a.beginPath();const x=i*32+3+rnd()*26;a.moveTo(x,0);a.lineTo(x+(rnd()-.5)*3,S);a.stroke()}a.fillStyle='rgba(10,12,14,.8)';a.fillRect(i*32,0,2,S)}
  a.fillStyle='rgba(10,12,14,.8)';a.fillRect(0,0,S,3);a.fillRect(0,S-3,S,3);a.fillStyle='rgba(120,130,140,.16)';[34,222].forEach(y=>a.fillRect(0,y,S,9));
