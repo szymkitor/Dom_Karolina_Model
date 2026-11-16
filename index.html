@@ -1693,14 +1693,17 @@ function tap(x,y,z,yaw){const g=new THREE.Group(),br=M(0xb8995a,{roughness:.35,m
  {const pts=[[0,-.08,.115],[0,-.2,.13],[0,-.42,.17],[.01,-.65,.24],[.05,-.8,.34],[.12,-.815,.48],[.28,-.815,.58],[.48,-.815,.52],[.55,-.815,.34],[.42,-.815,.2],[.22,-.815,.22],[.2,-.815,.4]].map(p=>new THREE.Vector3(p[0],p[1],p[2])),hz=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,false,'centripetal'),90,.0125,8,false),M(0x2f7a3c,{roughness:.55}));hz.castShadow=true;g.add(hz);cy(.021,.05,0,-.1,.115,br)}
  g.position.set(x,y,z);g.rotation.y=yaw;scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})}
 tap(9.8,.55,-21.0,Math.PI/2);tap(1,.55,-21.1,-Math.PI/2);tap(0,.55,-.6,-Math.PI/2);
-/* wieszaki na waz ogrodowy (stalowe, grafitowe, na elewacji): okragla tarcza 9 cm na 2 wkretach, wspornik 17 cm z odgietym do gory koncem (ok. 4 cm); model wg typowego wieszaka Stalco Garden XTR - strony produktu nie udalo sie otworzyc, wymiary przyblizone.
-   jeden na lewo od kranu przy podjezdzie (sciana zach. garazu J7d, patrzac od zewnatrz), jeden na prawo od kranu N14c (sciana wsch. tylu od strony tarasu) */
-function hoseHook(x,y,z,yaw){const g=new THREE.Group(),m=M(0x2b2e33,{roughness:.45,metalness:.7}),cy=(r,h,px,py,pz,rx)=>{const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,18),m);q.position.set(px,py,pz);q.rotation.x=rx||0;q.castShadow=true;g.add(q)};
- cy(.045,.008,0,0,.004,Math.PI/2);cy(.016,.012,0,0,.014,Math.PI/2);[[.026,.026],[-.026,-.026]].forEach(([a,b])=>cy(.006,.004,a,b,.01,Math.PI/2));
- const pts=[[0,0,.014],[0,0,.1],[0,.004,.15],[0,.02,.18],[0,.045,.19],[0,.065,.185]].map(q=>new THREE.Vector3(q[0],q[1],q[2])),tb=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),40,.0075,10,false),m);tb.castShadow=true;g.add(tb);
- const bl=new THREE.Mesh(new THREE.SphereGeometry(.0105,12,10),m);bl.position.set(0,.065,.185);g.add(bl);
+/* wieszaki na waz ogrodowy Stalco Garden (wg zdjec produktu): czarny stalowy wieszak scienny w ksztalcie polksiezyca - tylna plyta przy scianie i przednia wargaw ksztalcie sierpa, polaczone wygieta rynna na waz; wymiary przyblizone (ok. 30 x 15 cm, wysiegniecie 12 cm).
+   jeden na lewo od kranu przy podjezdzie (sciana zach. garazu J7d), jeden na prawo od kranu najblizej szopy (K14c, sciana zach. tylu), patrzac od zewnatrz */
+function hoseHook(x,y,z,yaw){const g=new THREE.Group(),m=M(0x17181b,{roughness:.55,metalness:.35,side:THREE.DoubleSide}),W=.30,H=.15,h=.045,D=.12,TH=.004,N=28,
+ ar=(k,r)=>{const xx=-W/2+W*k/N;return[xx,r*Math.sqrt(Math.max(0,1-Math.pow(xx/(W/2),2)))]},
+ cres=()=>{const pts=[];for(let k=0;k<=N;k++)pts.push(ar(k,H));for(let k=N;k>=0;k--)pts.push(ar(k,h));return new THREE.Shape(pts.map(q=>new THREE.Vector2(q[0],q[1])))},
+ mk=zz=>{const e=new THREE.Mesh(new THREE.ExtrudeGeometry(cres(),{depth:TH,bevelEnabled:false}),m);e.position.z=zz;e.castShadow=true;g.add(e)};
+ mk(0);mk(D-TH);
+ {const P=[],I=[];for(let k=0;k<=N;k++){const q=ar(k,h);P.push(q[0],q[1],0,q[0],q[1],D);if(k<N){const a=2*k;I.push(a,a+1,a+2,a+1,a+3,a+2)}}
+  const tg=new THREE.BufferGeometry();tg.setAttribute('position',new THREE.Float32BufferAttribute(P,3));tg.setIndex(I);tg.computeVertexNormals();const tr=new THREE.Mesh(tg,m);tr.castShadow=true;g.add(tr)}
  g.position.set(x,y,z);g.rotation.y=yaw;scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})}
-hoseHook(0,.68,-1.05,-Math.PI/2);hoseHook(9.8,.68,-21.2,Math.PI/2);
+hoseHook(0,.66,-1.05,-Math.PI/2);hoseHook(1,.66,-20.65,-Math.PI/2);
 // kran na słupku (dodatkowy punkt wody) wystający z paska żwirowego przed szopą, na lewo od drzwi: rura Ø40 mm, h 70 cm, mosiężna głowica, wąż
 {const g=new THREE.Group(),br=M(0xb8995a,{roughness:.35,metalness:.85}),gz=M(0x9aa0a6,{roughness:.45,metalness:.6}),hd=M(0x1c1d20,{roughness:.6}),cy=(r,h,px,py,pz,m,rx)=>{const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,14),m);q.position.set(px,py,pz);q.rotation.x=rx||0;q.castShadow=true;g.add(q)};
  cy(.02,.7,0,.35,0,gz);cy(.04,.03,0,.015,0,gz);cy(.027,.08,0,.74,0,br);cy(.014,.1,0,.74,.05,br,Math.PI/2);cy(.012,.04,0,.71,.1,br);cy(.01,.05,0,.79,0,br);cy(.03,.012,0,.82,0,hd);cy(.021,.05,0,.69,.1,br);
