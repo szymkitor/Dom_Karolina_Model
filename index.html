@@ -175,6 +175,7 @@ body.mtool canvas{cursor:crosshair}
  <section><h3><span class="t">Światła</span><button id="lm">Wszystkie</button></h3>
   <h4>Szopa</h4><div class="chips"><button id="l8">Wnętrze</button><button id="l6">Światło zewnętrzne</button></div>
   <h4>Wiata śmietnikowa</h4><div class="chips"><button id="l9">Wnętrze</button></div>
+  <h4>Tunel foliowy</h4><div class="chips"><button id="l10">Żarówka</button></div>
   <h4>Dom</h4><div class="chips"><button id="l2">Wejście</button><button id="l3">Światło tarasowe</button><button id="l5f">Kinkiety – front</button><button id="l5s">Kinkiety – boczne</button><button id="l5t">Kinkiety – taras</button><button id="l7">Pompa ciepła</button><button id="l4">Nad garażem</button><button id="l1">Trawnik</button></div></section></div>
 <div class="ui hid" id="pn_elem">
  <div class="hd"><div class="tt">Elementy</div><div class="st">Brama, roleta, pergola</div></div>
@@ -462,7 +463,7 @@ function lnSet(on){if(on===LN.on)return;if(on){lnBuild();LN.sw=[];LN.hid=[];if(w
    if(o.isMesh){const m=o.material;if(o.isInstancedMesh||o.userData.plant||(m&&m.userData&&m.userData.plant)||(m&&!Array.isArray(m)&&m.blending===THREE.AdditiveBlending)){if(o.visible){o.visible=false;LN.hid.push(o)}}else{LN.sw.push([o,m]);o.material=lnMat(m)}}
    else if((o.isPoints||o.isSprite||o===gridMesh)&&o.visible){o.visible=false;LN.hid.push(o)}});LN.ls.forEach(l=>l.visible=true);LN.hs.forEach(l=>l.visible=true);LNX.forEach(l=>l.visible=true)}
  else{LN.ls.forEach(l=>l.visible=false);LN.hs.forEach(l=>l.visible=false);LNX.forEach(l=>l.visible=false);LN.sw.forEach(([o,m])=>o.material=m);LN.hid.forEach(o=>o.visible=true);LN.sw=[];LN.hid=[];ren.shadowMap.needsUpdate=true;shReq=true}
- LN.on=on;['lm','l1','l2','l3','l4','l5f','l5s','l5t','l6','l7','l8','l9','tm','dy','pl','ptgo','camv'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=on});if(on){playing=false;document.getElementById('pl').textContent='▶'}dirty=true}
+ LN.on=on;['lm','l1','l2','l3','l4','l5f','l5s','l5t','l6','l7','l8','l9','l10','tm','dy','pl','ptgo','camv'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=on});if(on){playing=false;document.getElementById('pl').textContent='▶'}dirty=true}
 function drawFrame(){applyProj();if(window.__mtUpd)window.__mtUpd();if(!LN.on){ren.render(scene,cam);return}
  ren.shadowMap.needsUpdate=false;const bg=scene.background,sv=bg&&bg.clone?bg.clone():null;if(sv)bg.set(0xffffff);ren.render(scene,cam);if(sv)bg.copy(sv)}
 document.getElementById('orth').onclick=e=>{const o=!ORTHO;setProj(o);e.currentTarget.classList.toggle('on',o)};
@@ -1767,7 +1768,42 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
  fr(.03,.05,.78,sy+.265,sz);fr(.03,.05,.78,sy-.265,sz);fr(.03,.58,.05,sy,sz-.365);fr(.03,.58,.05,sy,sz+.365);fr(.02,.5,.025,sy,sz);fr(.06,.03,.84,sy-.30,sz);
  const gm=new THREE.Mesh(new THREE.BoxGeometry(.012,.5,.68),new THREE.MeshBasicMaterial({color:0x141a20}));gm.position.set(sx+.016,sy,sz);gm.userData.cOn=0xffdf9e;gm.userData.cOff=0x141a20;scene.add(gm);
  addLight('l8',gm,new THREE.SpotLight(0xffd9a0,1.5,5,.9,.8,1),new THREE.Vector3(sx+.08,sy,sz),new THREE.Vector3(sx+3,sy-1.3,sz))}
-['l1','l2','l3','l4','l6','l7','l8','l9'].forEach(id=>{$(id).onclick=()=>setL(id,!lights[id].on)});
+// slupek ogrodowy z 3 zintegrowanymi gniazdkami (P18b, ok. 12 cm od pasa kory przy tylnej granicy), kabel do pompy filtrującej basenu (po ziemi i dalej przy dole ściany basenu) oraz kabel do tylnej ściany tunelu foliowego: wyłącznik na ścianie i żarówka w połowie długości tunelu (chip l10)
+{const px=17.5,pz=-36.38,nx=-.566,nz=.824,th=Math.atan2(nx,nz),CX=15.75,CY=33.75,gy=-.30,dk=M(0x2b2e33,{roughness:.55,metalness:.35}),wh=M(0xd9dcde,{roughness:.5}),bk=M(0x111214,{roughness:.7}),
+ g=new THREE.Group();g.position.set(px,gy,pz);g.rotation.y=th;scene.add(g);
+ const bx=(w,h,d,m,x,y,z)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);q.position.set(x,y,z);q.castShadow=true;g.add(q);return q},
+  cyl=(r,h,m,x,y,z,rx)=>{const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,14),m);q.position.set(x,y,z);q.rotation.x=rx||0;q.castShadow=true;g.add(q);return q};
+ bx(.17,.012,.17,dk,0,.006,0);bx(.09,1.05,.06,dk,0,.537,0);bx(.10,.02,.07,dk,0,1.072,0);
+ [.35,.60,.85].forEach(h=>{bx(.075,.075,.012,wh,0,h,.036);cyl(.027,.006,dk,0,h,.043,Math.PI/2);[-.011,.011].forEach(o=>cyl(.0045,.008,bk,o,h,.046,Math.PI/2));[-.026,.026].forEach(o=>bx(.008,.014,.004,M(0xb9bec3,{roughness:.4,metalness:.8}),o,h,.044));bx(.06,.012,.008,dk,0,h+.043,.044)});
+ g.traverse(o=>{if(o.isMesh)statics.push(o)});
+ const L=(lx,ly,lz)=>new THREE.Vector3(px+lx*nz+lz*nx,gy+ly,pz-lx*nx+lz*nz),W=(x,y,Y)=>new THREE.Vector3(x,y,-Y),cm=M(0x16171a,{roughness:.55}),
+  cab=(pts,r)=>{add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,false,'centripetal'),Math.max(30,pts.length*10),r||.008,6,false),cm,0,0,0,false)},
+  plug=(h,lx)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(.045,.05,.05),bk);q.position.copy(L(lx,h,.07));q.rotation.y=th;q.castShadow=true;scene.add(q);statics.push(q)};
+ plug(.35,-.03);plug(.60,.03);
+ // pompa filtrująca przy ścianie basenu (kąt 35° od osi +x, skimmer jest na 0°), dwa krótkie króćce do ściany
+ {const fp=35*Math.PI/180,rp=1.70,ppx=CX+rp*Math.cos(fp),ppy=CY+rp*Math.sin(fp),pg=new THREE.Group();pg.position.set(ppx,G0+.008,-ppy);pg.rotation.y=fp;scene.add(pg);
+  const pb=M(0x2f6fd0,{roughness:.5}),pw=M(0xeef1f2,{roughness:.4}),hs=M(0x58626b,{roughness:.6}),
+   pq=(geo,m,x,y,z)=>{const q=new THREE.Mesh(geo,m);q.position.set(x,y,z);q.castShadow=q.receiveShadow=true;pg.add(q);return q};
+  pq(new THREE.BoxGeometry(.2,.14,.22),pb,.03,.07,0);pq(new THREE.CylinderGeometry(.075,.075,.2,20),pw,.03,.24,0);pq(new THREE.CylinderGeometry(.08,.08,.025,20),pb,.03,.352,0);
+  [-.05,.05].forEach(z=>pq(new THREE.CylinderGeometry(.017,.017,.14,10).rotateZ(Math.PI/2),hs,-.14,.08,z));
+  pg.traverse(o=>{if(o.isMesh)statics.push(o)});
+  const LP=(lx,ly,lz)=>new THREE.Vector3(ppx+lx*Math.cos(fp)+lz*Math.sin(fp),G0+.008+ly,-ppy-lx*Math.sin(fp)+lz*Math.cos(fp)),
+   AP=(r,f,y)=>new THREE.Vector3(CX+r*Math.cos(f),y,-(CY+r*Math.sin(f)));
+  const f0=Math.atan2(36.38-.25-CY,17.5-CX),ya=G0+.018,pts=[L(-.03,.35,.095),L(-.03,.28,.12),L(-.03,.1,.16),L(-.03,.017,.24),W(17.2,ya,36.0),AP(1.56,f0+.03,ya),AP(1.515,f0,ya)];
+  for(let a=f0-.08;a>fp+.1;a-=.09)pts.push(AP(1.515,a,ya));
+  pts.push(AP(1.515,fp+.095,ya),LP(-.07,.02,-.16),LP(.03,.03,-.125));cab(pts)}
+ // kabel do tunelu: po ziemi tuż przy tylnej ścianie tunelu, wejście przez folię przy podłodze, w górę po ścianie do wyłącznika, dalej pod rurą kalenicową do środka długości i zwis z żarówką
+ {const cx=19.35,Ye=36.35,Ym=32.85,ya=gy+.017,sh=gy+1.15,top=gy+1.772,
+   pts=[L(.03,.60,.095),L(.03,.52,.12),L(.03,.1,.17),L(.03,.017,.26),W(17.9,ya,36.41),W(18.7,ya,36.415),W(cx-.12,ya,36.40),W(cx,ya,36.36),W(cx,ya+.03,36.33),W(cx,gy+.5,36.325),W(cx,sh-.04,36.318)];
+  cab(pts);cab([W(cx,sh+.04,36.318),W(cx,sh+.4,36.32),W(cx,top-.08,36.318),W(cx,top,36.30),W(cx,top,35.0),W(cx,top,33.5),W(cx,top,Ym+.08),W(cx,top-.02,Ym)]);
+  const swm=M(0xe6e8ea,{roughness:.45}),sw=new THREE.Mesh(new THREE.BoxGeometry(.08,.08,.03),swm);sw.position.copy(W(cx,sh,36.31));sw.castShadow=true;scene.add(sw);statics.push(sw);
+  const bm=new THREE.MeshBasicMaterial({color:0x9aa0a4});bm.userData={cOn:0xffe2a0,cOff:0x9aa0a4};const bt=new THREE.Mesh(new THREE.BoxGeometry(.04,.05,.012),bm);bt.position.copy(W(cx,sh,36.294));scene.add(bt);
+  const sk=new THREE.Mesh(new THREE.CylinderGeometry(.022,.022,.07,14),M(0xcfd2d4,{roughness:.4,metalness:.5}));sk.position.copy(W(cx,gy+1.455,Ym));scene.add(sk);statics.push(sk);
+  const cd=new THREE.Mesh(new THREE.CylinderGeometry(.004,.004,.32,6),cm);cd.position.copy(W(cx,gy+1.62,Ym));scene.add(cd);statics.push(cd);
+  const gm=new THREE.MeshBasicMaterial({color:0xcfd6d9});gm.userData={cOn:0xfff3d0,cOff:0xcfd6d9};const bu=new THREE.Mesh(new THREE.SphereGeometry(.05,16,12),gm);bu.position.copy(W(cx,gy+1.35,Ym));scene.add(bu);
+  const nk=new THREE.Mesh(new THREE.CylinderGeometry(.018,.03,.05,12),gm);nk.position.copy(W(cx,gy+1.405,Ym));scene.add(nk);
+  const pt=new THREE.PointLight(0xffd9a0,2.0,5,1.5);pt.position.copy(W(cx,gy+1.33,Ym));scene.add(pt);lights.l10={on:false,spots:[pt],lenses:[bu,nk,bt]}}}
+['l1','l2','l3','l4','l6','l7','l8','l9','l10'].forEach(id=>{$(id).onclick=()=>setL(id,!lights[id].on)});
 // scalenie statycznych obiektów o tym samym materiale w jeden obiekt: geometria bez zmian, wielokrotnie mniej wywołań rysowania (przezroczyste, wielomateriałowe i ruchome zostają osobno)
 function batchStatics(){scene.updateMatrixWorld(true);
  const mkey=m=>(m.isMeshStandardMaterial&&!m.envMap&&!m.transparent&&m.emissive.getHex()===0&&m.emissiveIntensity===1)?'S'+m.color.getHex()+'|'+m.roughness+'|'+m.metalness+'|'+(m.map?m.map.uuid:'')+'|'+m.side+'|'+m.alphaTest:m.uuid,G=new Map();
@@ -1917,7 +1953,7 @@ hoseHook(0,.66,-1.05,-Math.PI/2);hoseHook(1,.66,-20.3,-Math.PI/2);
   m(plate,blk,0,0,.007);m(body,blk,0,0,.014);{const ll=new THREE.LineSegments(sgL,sgLM);ll.position.set(0,0,.014);ll.visible=false;ll.userData.ln=1;g.add(ll);LNX.push(ll)}m(cap,blk,0,.1,.014);m(cap,blk,0,-.1,.014);m(lg,SG[k].lens,0,.1008,.014);m(lg,SG[k].lens,0,-.1008,.014).userData.lensDown=1;m(wash,SG[k].glow,0,0,.004).renderOrder=4;
   g.position.set(x,y,z);g.rotation.y=yaw;g.scale.setScalar(1.4);g.userData.sconce=k;scene.add(g);g.traverse(o=>{if(o.isMesh&&o.material!==SG[k].glow)statics.push(o)})};
  sc(.58,1.568,0,0,'f');sc(6.73,1.568,0,0,'f');sc(10.06,1.568,-2.5,0,'f');sc(14.9,1.568,-3.6,Math.PI/2,'s');sc(14.9,1.568,-6.6,Math.PI/2,'s');sc(9.8,1.568,-13.665,Math.PI/2,'t');sc(9.8,1.568,-17.28,Math.PI/2,'t')}
-const LL=['l1','l2','l3','l4','l6','l7','l8','l9'];
+const LL=['l1','l2','l3','l4','l6','l7','l8','l9','l10'];
 function syncM(){const any=LL.some(id=>lights[id]&&lights[id].on)||(SG&&SCK.some(k=>SG[k].on));$("lm").classList.toggle('on',any);if(window.__fabSync)__fabSync(any)}
 updSc();SCK.forEach(k=>{$(SCI[k]).onclick=()=>{SG[k].on=!SG[k].on;$(SCI[k]).classList.toggle('on',SG[k].on);updSc();syncM()}});
 LL.forEach(id=>setL(id,false));SCK.forEach(k=>SG[k].on=false);updSc();syncM();
