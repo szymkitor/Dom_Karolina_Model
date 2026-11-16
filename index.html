@@ -1773,13 +1773,21 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
  g=new THREE.Group();g.position.set(px,gy,pz);g.rotation.y=th;scene.add(g);
  const bx=(w,h,d,m,x,y,z)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);q.position.set(x,y,z);q.castShadow=true;g.add(q);return q},
   cyl=(r,h,m,x,y,z,rx)=>{const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,14),m);q.position.set(x,y,z);q.rotation.x=rx||0;q.castShadow=true;g.add(q);return q};
- bx(.17,.012,.17,dk,0,.006,0);bx(.09,1.05,.06,dk,0,.537,0);bx(.10,.02,.07,dk,0,1.072,0);
- [.35,.60,.85].forEach(h=>{bx(.075,.075,.012,wh,0,h,.036);cyl(.027,.006,dk,0,h,.043,Math.PI/2);[-.011,.011].forEach(o=>cyl(.0045,.008,bk,o,h,.046,Math.PI/2));[-.026,.026].forEach(o=>bx(.008,.014,.004,M(0xb9bec3,{roughness:.4,metalness:.8}),o,h,.044));bx(.06,.012,.008,dk,0,h+.043,.044)});
+ /* słupek ogrodowy 35 × 8 × 8 cm na podstawie 12 × 12 cm, czarny mat, po dwa gniazda Ø5 cm na przeciwległych ścianach (wys. 13 i 27 cm), klapki odchylane do góry, wtyczki w gniazdach przedniej ściany */
+ bx(.12,.008,.12,dk,0,.004,0);[[-.045,-.045],[.045,-.045],[-.045,.045],[.045,.045]].forEach(q=>cyl(.006,.002,bk,q[0],.0085,q[1]));
+ bx(.08,.34,.08,dk,0,.178,0);bx(.086,.008,.086,dk,0,.352,0);
+ [1,-1].forEach(sd=>[.13,.27].forEach(h=>{const open=sd>0&&h<.3;
+  bx(.062,.07,.014,bk,0,h,sd*.047).rotation.y=0;[-.027,.027].forEach(o=>{cyl(.004,.004,bk,o,h-.028,sd*.055,Math.PI/2);});
+  const lg=new THREE.Group();lg.position.set(0,h+.032,sd*.057);lg.rotation.y=sd>0?0:Math.PI;lg.rotation.x=open?-1.9:0;g.add(lg);
+  const ld=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.012,18),bk);ld.rotation.x=Math.PI/2;ld.position.set(0,-.03,.004);ld.castShadow=true;lg.add(ld);
+  const hg=new THREE.Mesh(new THREE.BoxGeometry(.044,.014,.016),bk);hg.position.set(0,-.004,0);lg.add(hg);
+  if(!open){const rc=new THREE.Mesh(new THREE.CylinderGeometry(.021,.021,.004,16),dk);rc.rotation.x=Math.PI/2;rc.position.set(0,-.03,.011);lg.add(rc)}
+  else{cyl(.022,.004,wh,0,h,sd*.056,Math.PI/2);[-.011,.011].forEach(o=>cyl(.0045,.006,dk,o,h,sd*.059,Math.PI/2))}}));
  g.traverse(o=>{if(o.isMesh)statics.push(o)});
  const L=(lx,ly,lz)=>new THREE.Vector3(px+lx*nz+lz*nx,gy+ly,pz-lx*nx+lz*nz),W=(x,y,Y)=>new THREE.Vector3(x,y,-Y),cm=M(0x16171a,{roughness:.55}),
   cab=(pts,r)=>{add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,false,'centripetal'),Math.max(30,pts.length*10),r||.008,6,false),cm,0,0,0,false)},
-  plug=(h,lx)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(.045,.05,.05),bk);q.position.copy(L(lx,h,.07));q.rotation.y=th;q.castShadow=true;scene.add(q);statics.push(q)};
- plug(.35,-.03);plug(.60,.03);
+  plug=(h,lx)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(.045,.05,.05),bk);q.position.copy(L(lx,h,.082));q.rotation.y=th;q.castShadow=true;scene.add(q);statics.push(q)};
+ plug(.13,0);plug(.27,0);
  // pompa filtrująca przy ścianie basenu (kąt 35° od osi +x, skimmer jest na 0°), dwa krótkie króćce do ściany
  {const fp=35*Math.PI/180,rp=1.70,ppx=CX+rp*Math.cos(fp),ppy=CY+rp*Math.sin(fp),pg=new THREE.Group();pg.position.set(ppx,G0+.008,-ppy);pg.rotation.y=fp;scene.add(pg);
   const pb=M(0x2f6fd0,{roughness:.5}),pw=M(0xeef1f2,{roughness:.4}),hs=M(0x58626b,{roughness:.6}),
@@ -1789,12 +1797,12 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
   pg.traverse(o=>{if(o.isMesh)statics.push(o)});
   const LP=(lx,ly,lz)=>new THREE.Vector3(ppx+lx*Math.cos(fp)+lz*Math.sin(fp),G0+.008+ly,-ppy-lx*Math.sin(fp)+lz*Math.cos(fp)),
    AP=(r,f,y)=>new THREE.Vector3(CX+r*Math.cos(f),y,-(CY+r*Math.sin(f)));
-  const f0=Math.atan2(36.38-.25-CY,17.5-CX),ya=G0+.018,pts=[L(-.03,.35,.095),L(-.03,.28,.12),L(-.03,.1,.16),L(-.03,.017,.24),W(17.2,ya,36.0),AP(1.56,f0+.03,ya),AP(1.515,f0,ya)];
+  const f0=Math.atan2(36.38-.25-CY,17.5-CX),ya=G0+.018,pts=[L(0,.13,.11),L(0,.09,.14),L(-.02,.04,.18),L(-.03,.017,.24),W(17.2,ya,36.0),AP(1.56,f0+.03,ya),AP(1.515,f0,ya)];
   for(let a=f0-.08;a>fp+.1;a-=.09)pts.push(AP(1.515,a,ya));
   pts.push(AP(1.515,fp+.095,ya),LP(-.07,.02,-.16),LP(.03,.03,-.125));cab(pts)}
  // kabel do tunelu: po ziemi tuż przy tylnej ścianie tunelu, wejście przez folię przy podłodze, w górę po ścianie do wyłącznika, dalej pod rurą kalenicową do środka długości i zwis z żarówką
  {const cx=19.35,Ye=36.35,Ym=32.85,ya=gy+.017,sh=gy+1.15,top=gy+1.772,
-   pts=[L(.03,.60,.095),L(.03,.52,.12),L(.03,.1,.17),L(.03,.017,.26),W(17.9,ya,36.41),W(18.7,ya,36.415),W(cx-.12,ya,36.40),W(cx,ya,36.36),W(cx,ya+.03,36.33),W(cx,gy+.5,36.325),W(cx,sh-.04,36.318)];
+   pts=[L(0,.27,.11),L(.02,.21,.14),L(.04,.1,.17),L(.03,.017,.26),W(17.9,ya,36.41),W(18.7,ya,36.415),W(cx-.12,ya,36.40),W(cx,ya,36.36),W(cx,ya+.03,36.33),W(cx,gy+.5,36.325),W(cx,sh-.04,36.318)];
   cab(pts);cab([W(cx,sh+.04,36.318),W(cx,sh+.4,36.32),W(cx,top-.08,36.318),W(cx,top,36.30),W(cx,top,35.0),W(cx,top,33.5),W(cx,top,Ym+.08),W(cx,top-.02,Ym)]);
   const swm=M(0xe6e8ea,{roughness:.45}),sw=new THREE.Mesh(new THREE.BoxGeometry(.08,.08,.03),swm);sw.position.copy(W(cx,sh,36.31));sw.castShadow=true;scene.add(sw);statics.push(sw);
   const bm=new THREE.MeshBasicMaterial({color:0x9aa0a4});bm.userData={cOn:0xffe2a0,cOff:0x9aa0a4};const bt=new THREE.Mesh(new THREE.BoxGeometry(.04,.05,.012),bm);bt.position.copy(W(cx,sh,36.294));scene.add(bt);
