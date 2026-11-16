@@ -1778,14 +1778,22 @@ function batchStatics(){scene.updateMatrixWorld(true);
   const bg=new THREE.BufferGeometry();bg.setAttribute('position',new THREE.BufferAttribute(P,3));bg.setAttribute('normal',new THREE.BufferAttribute(N,3));bg.setAttribute('uv',new THREE.BufferAttribute(U,2));
   const mm=new THREE.Mesh(bg,g.m);mm.userData.stat=1;mm.castShadow=g.cs;mm.receiveShadow=g.rs;scene.add(mm);g.l.forEach(me=>{me.parent.remove(me);me.geometry.dispose()})}catch(e){console.warn('batch',e)}})}
 // krany ogrodowe (3 szt.): N14c (ściana wschodnia tyłu, od strony tarasu), K14c (ściana zachodnia, róg), J7d (ściana zachodnia garażu)
-function tap(x,y,z,yaw){const g=new THREE.Group(),br=M(0xb8995a,{roughness:.35,metalness:.85}),hd=M(0x1c1d20,{roughness:.6}),
+function tap(x,y,z,yaw,hs){const g=new THREE.Group(),br=M(0xb8995a,{roughness:.35,metalness:.85}),hd=M(0x1c1d20,{roughness:.6}),
  cy=(r,h,px,py,pz,m,rx)=>{const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,14),m);q.position.set(px,py,pz);q.rotation.x=rx||0;q.castShadow=true;g.add(q)};
  cy(.036,.01,0,0,.005,br,Math.PI/2);cy(.014,.12,0,0,.06,br,Math.PI/2);cy(.02,.03,0,0,.06,br,Math.PI/2);
  cy(.011,.045,0,.03,.06,br);cy(.028,.012,0,.055,.06,hd);
  cy(.012,.06,0,-.03,.115,br);cy(.017,.025,0,-.065,.115,br);
- {const pts=[[0,-.08,.115],[0,-.2,.13],[0,-.42,.17],[.01,-.65,.24],[.05,-.8,.34],[.12,-.815,.48],[.28,-.815,.58],[.48,-.815,.52],[.55,-.815,.34],[.42,-.815,.2],[.22,-.815,.22],[.2,-.815,.4]].map(p=>new THREE.Vector3(p[0],p[1],p[2])),hz=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,false,'centripetal'),90,.0125,8,false),M(0x2f7a3c,{roughness:.55}));hz.castShadow=true;g.add(hz);cy(.021,.05,0,-.1,.115,br)}
+ {const pts=[[0,-.08,.115],[0,-.2,.13],[0,-.42,.17],[.01,-.65,.24],[.05,-.8,.34],[.12,-.815,.48],[.28,-.815,.58],[.48,-.815,.52],[.55,-.815,.34],[.42,-.815,.2],[.22,-.815,.22],[.2,-.815,.4]].map(p=>new THREE.Vector3(p[0],p[1],p[2])),hz=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,false,'centripetal'),90,.0125,8,false),M(0x2f7a3c,{roughness:.55}));if(!hs){hz.castShadow=true;g.add(hz)}cy(.021,.05,0,-.1,.115,br)}
+ /* waz ogrodowy zwiniety na wieszaku (hs = strona wieszaka wzgledem kranu: -1 na lewo, +1 na prawo, patrzac od zewnatrz): zielony waz fi 21 mm schodzi z kranu, 4 rowne zwoje lezace w korycie wieszaka (pod gorna krawedzia, miedzy plytami), koniec z mosiezna szybkozlaczka i dysza zwisa pod zwojami */
+ if(hs){const sg=-hs,HX=hs*.45,dz=.0215,z0=.1035,Rr=[[0,.168],[.06,.164],[.12,.1495],[.15,.1225],[.18,.10],[.2,0],[.205,-.1],[.18,-.2],[.12,-.28],[.04,-.325],[0,-.33]],seq=[];
+  for(let k=7;k>=0;k--)seq.push([sg*Rr[k][0],Rr[k][1]]);for(let k=1;k<=10;k++)seq.push([-sg*Rr[k][0],Rr[k][1]]);seq.push([sg*Rr[9][0],Rr[9][1]],[sg*Rr[8][0],Rr[8][1]]);
+  const P=[[0,-.125,.115],[0,-.2,.12],[hs*.1,-.26,.115],[hs*.2,-.25,.108]],NL=4,n=seq.length;
+  for(let i=0;i<NL;i++)for(let j=0;j<n;j++){const z=z0-(i+j/n)*dz,jx=((i*7+j*3)%5-2)*.0012;P.push([HX+seq[j][0]+jx,seq[j][1],z])}
+  const zl=z0-NL*dz+.0015;P.push([HX+sg*.14,-.36,zl+.02],[HX+sg*.13,-.43,zl+.05]);
+  const hm=M(0x2f7a3c,{roughness:.5}),tb=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(P.map(q=>new THREE.Vector3(q[0],q[1],q[2])),false,'centripetal'),P.length*8,.0105,8,false),hm);tb.castShadow=true;g.add(tb);
+  const ex=HX+sg*.13,ez=zl+.05;cy(.0135,.035,ex,-.445,ez,br);cy(.016,.085,ex,-.51,ez,M(0xd9822b,{roughness:.55}));cy(.009,.03,ex,-.57,ez,hd)}
  g.position.set(x,y,z);g.rotation.y=yaw;scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})}
-tap(9.8,.55,-21.0,Math.PI/2);tap(1,.55,-21.1,-Math.PI/2);tap(0,.55,-.6,-Math.PI/2);
+tap(9.8,.55,-21.0,Math.PI/2);tap(1,.55,-21.1,-Math.PI/2,1);tap(0,.55,-.6,-Math.PI/2,-1);
 /* wieszaki na waz ogrodowy Stalco Garden (wg zdjec produktu): czarny stalowy wieszak scienny w ksztalcie polksiezyca - tylna plyta przy scianie i przednia wargaw ksztalcie sierpa, polaczone wygieta rynna na waz; wymiary przyblizone (ok. 30 x 15 cm, wysiegniecie 12 cm).
    jeden na lewo od kranu przy podjezdzie (sciana zach. garazu J7d), jeden na prawo od kranu najblizej szopy (K14c, sciana zach. tylu), patrzac od zewnatrz */
 function hoseHook(x,y,z,yaw){const g=new THREE.Group(),m=M(0x17181b,{roughness:.55,metalness:.35,side:THREE.DoubleSide}),W=.30,H=.15,h=.045,D=.12,TH=.004,N=28,
