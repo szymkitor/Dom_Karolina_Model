@@ -1313,7 +1313,10 @@ FOOT.push([[-2.9,34.5],[1.1,34.5],[1.1,36.9],[-2.9,36.9]]);   /* szopa */
  [-35.65,-34.85].forEach(z=>{const q=SR(fx+.045,z);add(bu(new THREE.BoxGeometry(.04,1.95,.8)),shM,q[0],G0+1.025,q[1],false).rotation.y=-Math.PI/2});
  [-35.29,-35.21].forEach(z=>{const q=SR(fx+.07,z);add(new THREE.BoxGeometry(.05,.14,.03),M(0x2a2d31,{metalness:.6}),q[0],G0+1,q[1],false).rotation.y=-Math.PI/2});
 }
-function fence(x0,y0,x1,y1,h=1.5){seg(x0,y0,x1,y1,h,.04,fenM);const n=Math.ceil(Math.hypot(x1-x0,y1-y0)/2.5);for(let i=0;i<=n;i++){const k=i/n;add(new THREE.BoxGeometry(.08,h+.1,.08),pilM,x0+(x1-x0)*k,G0+(h+.1)/2,-(y0+(y1-y0)*k))}}
+const concM=gnTex(400,100,1,1,a=>{gnBlock(a,0,0,400,100,'#b3b2ad',2500,2,0);a.fillStyle='rgba(90,88,82,.35)';a.fillRect(0,48,400,4);a.fillRect(0,22,400,2);a.fillRect(0,76,400,2)},.05);   /* plyta podmurowki: beton z poziomymi zebrami */
+function fence(x0,y0,x1,y1,h=1.5){seg(x0,y0,x1,y1,h,.04,fenM);const n=Math.ceil(Math.hypot(x1-x0,y1-y0)/2.5);for(let i=0;i<=n;i++){const k=i/n;add(new THREE.BoxGeometry(.08,h+.1,.08),pilM,x0+(x1-x0)*k,G0+(h+.1)/2,-(y0+(y1-y0)*k))}
+ if(n>0){const dx=(x1-x0)/Math.hypot(x1-x0,y1-y0),dy=(y1-y0)/Math.hypot(x1-x0,y1-y0);   /* podmurowka: prefabrykowane plyty betonowe 25 cm miedzy slupkami, wpuszczone 5 cm w grunt (zatrzymuja ziemie), gora 20 cm nad gruntem */
+  for(let i=0;i<n;i++){const ka=i/n,kb=(i+1)/n;seg(x0+(x1-x0)*ka+dx*.04,y0+(y1-y0)*ka+dy*.04,x0+(x1-x0)*kb-dx*.04,y0+(y1-y0)*kb-dy*.04,.25,.055,concM,G0-.05)}}}
 [[-3.0045,-7,-3.4,37.4],[-3.4,37.4,21.8,37.4],[21.8,37.4,21.9,21.35],[21.9,21.35,19.45,21.35],[19.45,21.35,19.45,-2.55]].forEach(s=>fence(...s));   /* ostatni slupek przeslo konczy sie 10 cm przed narozem muru skosu (y -2,55): slupek 8 x 8 cm i panel nie wchodza w kolumne koncowa */
 /* ogrodzenie przy zlaczu (ta sama wysokosc 1,5 m co na calym obwodzie): krotkie przeslo za skrzynka (35 cm od jej tylu) od granicy do slupa muru, z zawrotka przy slupie - zamyka dojscie na posesje */
 fence(-3.0045,-7,-2.2,-7);fence(-2.2,-7,-2.2,-7.1);   /* po stronie sasiada tak samo: przeslo za skrzynka od granicy do poczatku jego ogrodzenia frontowego (x -3,75), z zawrotka */
