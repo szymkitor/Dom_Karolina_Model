@@ -117,6 +117,28 @@ body.mtool canvas{cursor:crosshair}
 #clh{position:relative;z-index:1;font:600 34px/1.05 ui-rounded,'SF Pro Rounded',-apple-system,'Segoe UI',system-ui,sans-serif;letter-spacing:.02em;font-variant-numeric:tabular-nums;text-shadow:0 1px 1px rgba(255,255,255,.35),0 2px 10px rgba(10,25,45,.45)}
 #cld{position:relative;z-index:1;font:600 11px/1.2 ui-rounded,'SF Pro Rounded',-apple-system,system-ui,sans-serif;letter-spacing:.08em;opacity:.9;text-shadow:0 1px 6px rgba(10,25,45,.5)}
 @media(max-width:520px){#clk{padding:6px 14px 7px;border-radius:22px}#clh{font-size:26px}}
+
+/* Liquid Glass (jak zegar): przezroczyste, zakrzywione szklo z rozmyciem tla, jasnym obrzezem, odblaskiem gornym i delikatnym kolorowym refleksem - babelki, panele, przyciski, kompas */
+:root{--lg-bg:linear-gradient(155deg,rgba(255,255,255,.42) 0%,rgba(255,255,255,.12) 42%,rgba(255,255,255,.05) 60%,rgba(255,255,255,.2) 100%);--lg-bd:rgba(255,255,255,.5);--lg-f:blur(16px) saturate(190%) brightness(1.08);--lg-sh:0 10px 32px rgba(10,25,45,.3),0 2px 6px rgba(10,25,45,.18),inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -1.5px 2px rgba(255,255,255,.35),inset 0 0 22px rgba(255,255,255,.14);--lg-shs:0 4px 12px rgba(10,25,45,.2),inset 0 1.4px 1px rgba(255,255,255,.9),inset 0 -1px 2px rgba(255,255,255,.35),inset 0 0 10px rgba(255,255,255,.12);--lg-tint:radial-gradient(120% 90% at 85% 120%,rgba(255,170,90,.28),rgba(255,170,90,0) 60%),radial-gradient(90% 70% at 10% -20%,rgba(140,200,255,.3),rgba(140,200,255,0) 60%)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--lg-bg:linear-gradient(155deg,rgba(255,255,255,.3) 0%,rgba(255,255,255,.08) 42%,rgba(255,255,255,.03) 60%,rgba(255,255,255,.14) 100%);--lg-bd:rgba(255,255,255,.34)}}
+:root[data-theme="dark"]{--lg-bg:linear-gradient(155deg,rgba(255,255,255,.3) 0%,rgba(255,255,255,.08) 42%,rgba(255,255,255,.03) 60%,rgba(255,255,255,.14) 100%);--lg-bd:rgba(255,255,255,.34)}
+.fab,.fab:hover{background:var(--lg-tint),var(--lg-bg);-webkit-backdrop-filter:var(--lg-f);backdrop-filter:var(--lg-f);border:1px solid var(--lg-bd);box-shadow:var(--lg-sh);color:#fff}
+.fab::before{content:"";position:absolute;left:13%;right:13%;top:2px;height:46%;border-radius:50% 50% 60% 60%/60% 60% 100% 100%;background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,0));opacity:.8;pointer-events:none}
+.fab svg{filter:drop-shadow(0 1px 3px rgba(10,25,45,.6))}
+.fab.sub.open{background:radial-gradient(120% 100% at 30% 0%,rgba(255,200,120,.65),rgba(255,130,60,.3) 65%),var(--lg-bg);border-color:rgba(255,215,160,.85)}
+.fab.fm.open{background:radial-gradient(120% 100% at 30% 0%,rgba(215,225,235,.6),rgba(120,140,160,.3) 65%),var(--lg-bg);box-shadow:var(--lg-sh)}
+.fab.drag{box-shadow:0 18px 40px rgba(10,25,45,.38),inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 0 22px rgba(255,255,255,.2)}
+.ui{background:var(--lg-tint),var(--lg-bg);-webkit-backdrop-filter:var(--lg-f);backdrop-filter:var(--lg-f);border:1px solid var(--lg-bd);box-shadow:0 16px 48px rgba(10,25,45,.32),0 2px 6px rgba(10,25,45,.16),inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -1.5px 2px rgba(255,255,255,.3),inset 0 0 26px rgba(255,255,255,.12)}
+.hd{background:linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,0));border-bottom:1px solid rgba(255,255,255,.35)}
+.ui section{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.34);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 0 14px rgba(255,255,255,.06)}
+.ui button,.ui select{background:var(--lg-bg);-webkit-backdrop-filter:blur(10px) saturate(180%);backdrop-filter:blur(10px) saturate(180%);border:1px solid var(--lg-bd);box-shadow:var(--lg-shs)}
+.ui button:hover{background:linear-gradient(155deg,rgba(255,255,255,.55),rgba(255,255,255,.2) 50%,rgba(255,255,255,.3))}
+.chips button.on,.seg2 button.on,.mtkb button.on{background:linear-gradient(155deg,rgba(255,200,130,.7),rgba(255,130,70,.38));border-color:rgba(255,215,160,.9)}
+.ui .swb.on,#gr.on,#lm.on,#ptgo{background:linear-gradient(155deg,rgba(255,190,110,.95),rgba(232,100,58,.85));border-color:rgba(255,220,170,.8);box-shadow:0 4px 12px rgba(232,100,58,.4),inset 0 1.4px 1px rgba(255,255,255,.8),inset 0 -1px 2px rgba(255,255,255,.25)}
+.mtmenu{background:var(--lg-bg);-webkit-backdrop-filter:var(--lg-f);backdrop-filter:var(--lg-f);border-color:var(--lg-bd);box-shadow:var(--lg-sh)}.mtmenu button{background:var(--lg-bg);border-color:var(--lg-bd);box-shadow:var(--lg-shs)}
+#cmp{background:var(--lg-tint),var(--lg-bg) !important;border:1px solid var(--lg-bd) !important;box-shadow:var(--lg-sh);-webkit-backdrop-filter:var(--lg-f);backdrop-filter:var(--lg-f);color:#fff;cursor:pointer;overflow:hidden;text-shadow:0 1px 6px rgba(10,25,45,.6);-webkit-tap-highlight-color:transparent;transition:transform .12s}#cmp:active{transform:scale(.94)}
+#cmp::before{content:"";position:absolute;left:13%;right:13%;top:2px;height:46%;border-radius:50% 50% 60% 60%/60% 60% 100% 100%;background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,0));opacity:.8;pointer-events:none}
+#cma{position:relative;z-index:1}
 </style></head><body><div id="clk" aria-label="Pora dnia"><span id="clh">--:--</span><span id="cld"></span></div>
 <div id="cmp" style="position:fixed;right:10px;top:calc(10px + env(safe-area-inset-top,0px));width:46px;height:46px;border:1px solid var(--line);border-radius:50%;background:var(--panel);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600"><div id="cma" style="line-height:1;text-align:center">▲<br>N</div></div>
 <button class="fab sub" data-p="pn_view" data-k="view" aria-label="Widok i siatka" title="Widok i siatka" aria-expanded="false"><svg class="h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
@@ -209,17 +231,18 @@ function hook(i,on){try{if(window.__panelHook&&subs[i])window.__panelHook(subs[i
 function tgl(i,o){const prev=cur;cur=o?i:-1;panels.forEach((p,j)=>{if(p)p.classList.toggle('hid',!(o&&j===i))});subs.forEach((b,j)=>{const on=o&&j===i;b.classList.toggle('open',on);b.setAttribute('aria-expanded',on)});
  if(prev>=0&&prev!==cur)hook(prev,false);if(cur>=0&&cur!==prev)hook(cur,true);menu=false;main.classList.remove('open');main.setAttribute('aria-expanded','false');fan();if(o)place()}
 function setMenu(o){if(o&&cur>=0)tgl(-1,false);menu=o;main.classList.toggle('open',o);main.setAttribute('aria-expanded',o);apply()}
-subs.forEach((b,i)=>b.addEventListener('click',()=>{if(b.dataset.k==='reset'){b.querySelector('svg').style.transform='rotate(-360deg)';setTimeout(()=>location.reload(),280);return}tgl(i,cur!==i)}));   /* reset: przeladowanie przywraca swiatla, pore dnia, kamere, drzwi, tryby; polozenie banieczki zostaje (localStorage) */
+function toMenu(){tgl(-1,false);setMenu(true)}   /* krzyzyk / baniak glowny przy otwartym oknie: powrot do menu babelkow (nie zamyka wszystkiego) */
+subs.forEach((b,i)=>b.addEventListener('click',()=>{if(b.dataset.k==='reset'){b.querySelector('svg').style.transform='rotate(-360deg)';setTimeout(()=>location.reload(),280);return}if(cur===i)toMenu();else tgl(i,true)}));   /* reset: przeladowanie przywraca swiatla, pore dnia, kamere, drzwi, tryby; polozenie banieczki zostaje (localStorage) */
 let d0=null,drag=false;
 main.addEventListener('pointerdown',e=>{d0={x:e.clientX,y:e.clientY};drag=false;main.classList.remove('snap');try{main.setPointerCapture(e.pointerId)}catch(x){}});
 main.addEventListener('pointermove',e=>{if(!d0)return;if(!drag&&Math.hypot(e.clientX-d0.x,e.clientY-d0.y)>6){drag=true;main.classList.add('drag');if(cur>=0)tgl(-1,false);menu=false;main.classList.remove('open');apply()}
  if(drag){const w=W(),h=H(),px=e.clientX,py=e.clientY,dd={left:px,right:w-px,top:py,bottom:h-py};pos.e=Object.keys(dd).sort((a,b)=>dd[a]-dd[b])[0];mx=clamp(px-SM/2,0,w-SM);my=clamp(py-SM/2,0,h-SM);main.style.left=mx+'px';main.style.top=my+'px';fan()}});
 const end=()=>{if(!d0)return;const was=drag;d0=null;drag=false;main.classList.remove('drag');
  if(was){const w=W(),h=H(),k=pos.e,x0=G+ins.l,x1=w-SM-G-ins.r,y0=G+ins.t,y1=h-SM-G-ins.b;pos={e:k,t:(k==='left'||k==='right')?(clamp(my,y0,y1)-y0)/Math.max(1,y1-y0):(clamp(mx,x0,x1)-x0)/Math.max(1,x1-x0)};try{localStorage.setItem('fabPos2',JSON.stringify(pos))}catch(x){}main.classList.add('snap');xy();setTimeout(()=>main.classList.remove('snap'),320)}};
-main.addEventListener('pointerup',()=>{const was=drag;end();if(was)return;if(cur>=0){tgl(-1,false)}else setMenu(!menu)});
+main.addEventListener('pointerup',()=>{const was=drag;end();if(was)return;if(cur>=0){toMenu()}else setMenu(!menu)});
 main.addEventListener('pointercancel',end);
 const rs=()=>{xy()};addEventListener('resize',rs);addEventListener('orientationchange',()=>setTimeout(rs,250));if(window.visualViewport)visualViewport.addEventListener('resize',rs);
-addEventListener('keydown',e=>{if(e.key==='Escape'){if(cur>=0)tgl(-1,false);else setMenu(false)}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(cur>=0)toMenu();else setMenu(false)}});
 document.addEventListener('pointerdown',e=>{const inside=main.contains(e.target)||subs.some(b=>b.contains(e.target));if(inside)return;if(cur>=0){if(!panels[cur].contains(e.target)&&subs[cur].dataset.k!=='meas')tgl(-1,false)}else if(menu)setMenu(false)},true);
 xy();const lb=subs.find(b=>b.dataset.k==='lights');window.__fabSync=lit=>{if(lb)lb.classList.toggle('lit',lit);main.classList.toggle('lit',lit)};
 const gr=document.getElementById('gr');gr.addEventListener('click',()=>gr.classList.toggle('on'))})();
@@ -319,6 +342,13 @@ ren.shadowMap.enabled=true;ren.shadowMap.autoUpdate=false;ren.shadowMap.needsUpd
 let dirty=true;const ctl=new THREE.OrbitControls(cam,ren.domElement);ctl.addEventListener("change",()=>{dirty=true});ctl.maxPolarAngle=Math.PI/2;ctl.enableDamping=true;
 const V={corner:[[-22,11,24],[7.4,2.5,-9]],front:[[7.4,5,32],[7.4,2.5,-9]],back:[[7.4,7,-52],[7.4,2.5,-9]],top:[[10,115,-16.4],[10,0,-16.5]],left:[[-46,6,-11],[7.4,2.5,-11]],right:[[61,6,-11],[7.4,2.5,-11]]};
 function view(k){cam.position.set(...V[k][0]);ctl.target.set(...V[k][1]);if(ORTHO&&k!=='corner'){const t=V[k][1];if(k==='top'){cam.position.x=t[0];cam.position.z=t[2]}else cam.position.y=t[1]}ctl.update();dirty=true}
+/* kompas: klik obraca widok wokol celu kamery tak, by polnoc byla na gorze ekranu (kierunek patrzenia = kierunek polnocy) */
+{const cmE=document.getElementById('cmp');if(cmE){cmE.setAttribute('role','button');cmE.setAttribute('aria-label','Ustaw widok polnoca do gory');cmE.title='Polnoc na gorze';let an=0;
+ cmE.addEventListener('click',()=>{const a0=nB*Math.PI/180,n=[-Math.sin(a0),-Math.cos(a0)],t=ctl.target,o=cam.position.clone().sub(t),h=Math.hypot(o.x,o.z);
+  if(h<1e-3){cam.position.x=t.x-n[0]*.001;cam.position.z=t.z-n[1]*.001;ctl.update();dirty=true;return}
+  let d=Math.atan2(n[1],n[0])-Math.atan2(-o.z,-o.x);d=Math.atan2(Math.sin(d),Math.cos(d));if(Math.abs(d)<1e-3)return;
+  const Y=new THREE.Vector3(0,1,0),t0=performance.now(),D=450,id=++an;
+  const st=now=>{if(id!==an)return;let k=Math.min(1,(now-t0)/D);k=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;cam.position.copy(t).add(o.clone().applyAxisAngle(Y,-d*k));ctl.update();dirty=true;if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st)})}}
 // rzut ortogonalny (macierz rzutu kamery podmieniana na ortogonalną, ta sama kamera i sterowanie), tryb liniowy (biae bryy + krawdzie geometrii, bez oświetlenia) i zapis PNG
 let ORTHO=false,ORHH=0;
 function applyProj(){if(!ORTHO)return;const d=cam.position.distanceTo(ctl.target),hh=d*Math.tan(cam.fov*Math.PI/360),hw=hh*cam.aspect;cam.projectionMatrix.makeOrthographic(-hw,hw,hh,-hh,cam.near,cam.far);cam.projectionMatrixInverse.copy(cam.projectionMatrix).invert();ORHH=hh}
