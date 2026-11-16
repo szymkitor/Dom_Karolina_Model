@@ -1459,8 +1459,8 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
    mt.set(X[0]*s,d[0]*s,Z[0]*s,p[0],X[1]*s,d[1]*s,Z[1]*s,p[1],X[2]*s,d[2]*s,Z[2]*s,p[2],0,0,0,1);im.setMatrixAt(i,mt);
    im.setColorAt(i,rnd()<.45?cl.setHSL(.2+rnd()*.03,.16+.1*rnd(),.55+.12*rnd()):cl.setHSL(.24+rnd()*.04,.3+.15*rnd(),.30+.12*rnd()))});
   im.position.set(px,ys,-cy);im.frustumCulled=false;im.castShadow=im.receiveShadow=true;im.userData.plant=1;scene.add(im)}}
-/* inspekt ogrodowy z ziolami (Q15c, Q15d, Q14a, Q14b: x 18-21, y 22,5-25,5): drewniana skrzynia 2,4 x 1,2 m, przod (od poludnia) 30 cm, tyl 45 cm, boki sciete ukosnie, dwie szklane pokrywy odchylone do tylu; w srodku dwa rzedy po 4 ziola: z tylu koper, lawenda, rozmaryn, szalwia, z przodu szczypiorek, bazylia, pietruszka, tymianek; drewniane tabliczki z nazwami */
-{const cx=19.5,cy=24.0,gy=-.30,LX=2.4,WZ=1.2,HF=.30,HB=.45,T=.03,SY=.26,grp=new THREE.Group();grp.position.set(cx,gy,-cy);scene.add(grp);
+/* inspekt ogrodowy z ziolami (Q15c, Q15d, Q14a, Q14b: x 18-21, y 22,5-25,5): prosta, kwadratowa drewniana skrzynia 1,5 x 1,5 m, wys. 45 cm, bez pokryw i skosow; 9 ziol w ukladzie 3 x 3 z drewnianymi tabliczkami: lawenda, rozmaryn, szalwia / mieta, oregano, tymianek / szczypiorek, bazylia, pietruszka */
+{const cx=19.5,cy=24.0,gy=-.30,LX=1.5,WZ=1.5,HH=.45,T=.03,SY=.40,grp=new THREE.Group();grp.position.set(cx,gy,-cy);scene.add(grp);
  let sd=77;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647,rr=(a,b)=>a+(b-a)*rnd();
  const put=(par,g,m,x,y,z,rx=0,ry=0,rz=0)=>{const me=new THREE.Mesh(g,m);me.position.set(x,y,z);me.rotation.set(rx,ry,rz);me.castShadow=me.receiveShadow=true;par.add(me);statics.push(me);return me};
  const jit=(hex,k=1)=>{const c=new THREE.Color(hex),h={};c.getHSL(h);return c.setHSL(h.h+rr(-.015,.015)*k,Math.min(1,h.s*rr(.88,1.1)),Math.min(.9,h.l*rr(.86,1.14)))};
@@ -1468,27 +1468,19 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
  const wc=document.createElement('canvas');wc.width=256;wc.height=240;{const x=wc.getContext('2d'),cl=['#b98b57','#a97c4a','#c29662','#b0834f'];for(let b=0;b<4;b++){x.fillStyle=cl[b];x.fillRect(0,b*60,256,60);for(let i=0;i<26;i++){x.strokeStyle='rgba('+(rnd()<.5?'90,58,28':'220,180,125')+','+(.12+rnd()*.18)+')';x.lineWidth=.6+rnd()*1.2;const y0=b*60+4+rnd()*52;x.beginPath();x.moveTo(0,y0);x.bezierCurveTo(80,y0+rr(-3,3),170,y0+rr(-3,3),256,y0+rr(-2,2));x.stroke()}x.fillStyle='rgba(40,24,10,.55)';x.fillRect(0,b*60,256,1.5);x.fillRect(0,b*60+58.5,256,1.5)}}
  const wt=new THREE.CanvasTexture(wc);wt.wrapS=wt.wrapT=THREE.RepeatWrapping;wt.anisotropy=8;
  const wmat=(rx,ry)=>{const t=wt.clone();t.needsUpdate=true;t.repeat.set(rx,ry);return M(0xffffff,{map:t,roughness:.8})},pm=M(0x8a6238,{roughness:.85});
- put(grp,new THREE.BoxGeometry(LX,HF,T),wmat(LX/.6,HF/.6),0,HF/2,WZ/2-T/2);   /* przod */
- put(grp,new THREE.BoxGeometry(LX,HB,T),wmat(LX/.6,HB/.6),0,HB/2,-WZ/2+T/2);   /* tyl */
- {const hz=WZ/2-T,sh=new THREE.Shape([new THREE.Vector2(-hz,0),new THREE.Vector2(hz,0),new THREE.Vector2(hz,HF),new THREE.Vector2(-hz,HB)]),mk=(x0)=>{const g=new THREE.ExtrudeGeometry(sh,{depth:T,bevelEnabled:false});g.rotateY(-Math.PI/2);g.translate(x0,0,0);return g},sm=wmat(1/.6,1/.6);put(grp,mk(-LX/2+T),sm,0,0,0);put(grp,mk(LX/2),sm,0,0,0)}   /* boki (trapez, ukos do przodu) */
- [[-1,1,HF],[1,1,HF],[-1,-1,HB],[1,-1,HB]].forEach(([sx,sz,H])=>put(grp,new THREE.BoxGeometry(.06,H,.06),pm,sx*(LX/2-.03),H/2,sz*(WZ/2-.03)));   /* slupki narozne */
- put(grp,new THREE.BoxGeometry(LX+.02,.02,.075),pm,0,HF+.01,WZ/2-.03);put(grp,new THREE.BoxGeometry(LX+.02,.02,.075),pm,0,HB+.01,-WZ/2+.03);
- {const Ls=Math.hypot(WZ-.12,HB-HF),ph=Math.atan2(HB-HF,WZ-.12);[-1,1].forEach(s=>put(grp,new THREE.BoxGeometry(.075,.02,Ls),pm,s*(LX/2-.03),(HF+HB)/2+.01,0,ph,0,0))}   /* listwy gorne boków */
+ put(grp,new THREE.BoxGeometry(LX,HH,T),wmat(LX/.6,HH/.6),0,HH/2,WZ/2-T/2);put(grp,new THREE.BoxGeometry(LX,HH,T),wmat(LX/.6,HH/.6),0,HH/2,-WZ/2+T/2);   /* przod i tyl */
+ [-1,1].forEach(s=>put(grp,new THREE.BoxGeometry(T,HH,WZ-2*T),wmat((WZ-2*T)/.6,HH/.6),s*(LX/2-T/2),HH/2,0));   /* boki */
+ [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz])=>put(grp,new THREE.BoxGeometry(.06,HH,.06),pm,sx*(LX/2-.03),HH/2,sz*(WZ/2-.03)));   /* slupki narozne */
+ [-1,1].forEach(s=>{put(grp,new THREE.BoxGeometry(LX+.02,.02,.075),pm,0,HH+.01,s*(WZ/2-.03));put(grp,new THREE.BoxGeometry(.075,.02,WZ-.12),pm,s*(LX/2-.03),HH+.01,0)});   /* listwy gorne */
  put(grp,new THREE.BoxGeometry(LX-2*T,SY,WZ-2*T),M(0x3a2a1c,{roughness:1}),0,SY/2,0);   /* ziemia */
- /* pokrywy: rama drewniana + szyba, zawias przy tylnej krawedzi, odchylone do tylu (ok. 100 st.) */
- const glM=M(0xd6ecee,{transparent:true,opacity:.3,roughness:.08,side:THREE.DoubleSide,depthWrite:false});
- [-1,1].forEach(s=>{const Lw=LX/2-.02,Ll=1.24,lg=new THREE.Group();lg.position.set(s*(LX/4),HB+.03,-WZ/2+.01);lg.rotation.x=-Math.PI*100/180;grp.add(lg);
-  put(lg,new THREE.BoxGeometry(Lw,.03,.05),pm,0,0,.025);put(lg,new THREE.BoxGeometry(Lw,.03,.05),pm,0,0,Ll-.025);[-1,1].forEach(q=>put(lg,new THREE.BoxGeometry(.05,.03,Ll),pm,q*(Lw/2-.025),0,Ll/2));put(lg,new THREE.BoxGeometry(.03,.03,Ll-.1),pm,0,0,Ll/2);
-  put(lg,new THREE.BoxGeometry(Lw-.1,.006,Ll-.1),glM,0,.004,Ll/2)});
  /* rosliny: dwa mesh instancjonowane (lodygi i bryly liscie/kwiaty) */
  const ST=[],BL=[],tipOf=(x,z,h,lx,lz)=>[x-Math.sin(lz)*h,SY+h*Math.cos(lz)*Math.cos(lx),z+Math.sin(lx)*h],
   stem=(x,z,h,lx,lz,col,tk=1)=>{ST.push([x,z,h,lx,lz,col,tk]);return tipOf(x,z,h,lx,lz)},
   blob=(x,y,z,sx,sy,sz,col,rx=0,ry=0,rz=0)=>BL.push([x,y,z,sx,sy,sz,col,rx,ry,rz]),
   along=(x,z,h,lx,lz,t)=>{const tp=tipOf(x,z,h,lx,lz);return[x+(tp[0]-x)*t,SY+(tp[1]-SY)*t,z+(tp[2]-z)*t]},
   ring=(px,pz,r)=>{const a=rnd()*6.283,d=Math.sqrt(rnd())*r;return[px+Math.cos(a)*d,pz+Math.sin(a)*d,a]};
- const dill=(px,pz)=>{for(let i=0;i<8;i++){const [x,z]=ring(px,pz,.1),h=rr(.5,.72),lx=rr(-.12,.12),lz=rr(-.12,.12),tp=stem(x,z,h,lx,lz,jit(0x6fa04a));
-   blob(tp[0],tp[1],tp[2],.075,.012,.075,jit(0xd8c83c));for(let k=0;k<6;k++)blob(tp[0]+rr(-.05,.05),tp[1]-.01,tp[2]+rr(-.05,.05),.012,.012,.012,jit(0xe3d44a));
-   for(let k=0;k<5;k++){const p=along(x,z,h,lx,lz,.25+.14*k);blob(p[0],p[1],p[2],.04,.008,.04,jit(0x9cc065),rr(-.6,.6),rnd()*6,rr(-.6,.6))}}},
+ const mint=(px,pz)=>{for(let i=0;i<14;i++){const [x,z]=ring(px,pz,.14),h=rr(.2,.38),lx=rr(-.2,.2),lz=rr(-.2,.2);stem(x,z,h,lx,lz,jit(0x4f7a3a),1.1);
+   for(let k=0;k<6;k++){const p=along(x,z,h,lx,lz,.25+.13*k),a=rnd()*6.283;[0,1].forEach(q=>blob(p[0]+Math.cos(a+q*3.14)*.03,p[1],p[2]+Math.sin(a+q*3.14)*.03,.028,.01,.042,jit(0x3a8f3c),rr(-.4,.3),a+q*3.14,rr(-.3,.3)))}}},
   lav=(px,pz)=>{for(let i=0;i<8;i++){const [x,z,a]=ring(px,pz,.1);blob(x,SY+.04,z,.075,.02,.1,jit(0x8e9e86),rr(-.5,.5),a,rr(-.5,.5))}
    for(let i=0;i<12;i++){const [x,z]=ring(px,pz,.09),h=rr(.38,.55),lx=rr(-.16,.16),lz=rr(-.16,.16),tp=stem(x,z,h,lx,lz,jit(0x7d9a62));blob(tp[0],tp[1],tp[2],.013,.038,.013,jit(0x7a58c8));blob(tp[0]-Math.sin(lz)*(-.03),tp[1]-.035,tp[2],.012,.03,.012,jit(0x8c6bd6))}},
   rosem=(px,pz)=>{for(let i=0;i<14;i++){const [x,z]=ring(px,pz,.1),h=rr(.35,.58),lx=rr(-.18,.18),lz=rr(-.18,.18);stem(x,z,h,lx,lz,jit(0x6b6a45));
@@ -1502,14 +1494,17 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
     for(let k=0;k<10;k++){const p=along(x,z,h,lx,lz,.2+.08*k),a=rnd()*6.283;[0,1].forEach(q=>blob(p[0]+Math.cos(a+q*3.14)*.035,p[1],p[2]+Math.sin(a+q*3.14)*.035,.045,.012,.06,jit(rnd()<.8?0x4fa83a:0x3d8a2e),rr(-.5,.4),a+q*3.14,rr(-.3,.3)))}}},
   pars=(px,pz)=>{for(let i=0;i<18;i++){const [x,z]=ring(px,pz,.15),h=rr(.12,.24),lx=rr(-.4,.4),lz=rr(-.4,.4),tp=stem(x,z,h,lx,lz,jit(0x4a8a35),.7);
     for(let k=0;k<3;k++)blob(tp[0]+rr(-.02,.02),tp[1]+rr(-.01,.02),tp[2]+rr(-.02,.02),.032,.026,.032,jit(0x2e7d2a),rr(-.4,.4),rnd()*6,rr(-.4,.4))}},
+  oreg=(px,pz)=>{for(let i=0;i<10;i++){const [x,z]=ring(px,pz,.12),h=rr(.15,.3),lx=rr(-.2,.2),lz=rr(-.2,.2),tp=stem(x,z,h,lx,lz,jit(0x6a8f45));
+    for(let k=0;k<6;k++){const p=along(x,z,h,lx,lz,.3+.12*k);[-1,1].forEach(q=>blob(p[0]+q*.015,p[1],p[2]+rr(-.01,.01),.02,.012,.02,jit(0x4f8a3f),0,rnd()*6,0))}
+    blob(tp[0],tp[1]+.005,tp[2],.022,.016,.022,jit(0xc88bb8))}},
   thyme=(px,pz)=>{for(let i=0;i<44;i++){const [x,z]=ring(px,pz,.2);blob(x,SY+.015+rnd()*.035,z,.03,.012,.03,jit(0x5a7650),0,rnd()*6,0)}
    for(let i=0;i<16;i++){const [x,z]=ring(px,pz,.18);blob(x,SY+.06+rnd()*.015,z,.01,.01,.01,jit(0xd68fb5))}};
- const PLN=[[dill,-.9,-.27,'Koper'],[lav,-.3,-.27,'Lawenda'],[rosem,.3,-.27,'Rozmaryn'],[sage,.9,-.27,'Szałwia'],[chive,-.9,.2,'Szczypiorek'],[basil,-.3,.2,'Bazylia'],[pars,.3,.2,'Pietruszka'],[thyme,.9,.2,'Tymianek']];
+ const PLN=[[lav,-.5,-.5,'Lawenda'],[rosem,0,-.5,'Rozmaryn'],[sage,.5,-.5,'Szałwia'],[mint,-.5,0,'Mięta'],[oreg,0,0,'Oregano'],[thyme,.5,0,'Tymianek'],[chive,-.5,.5,'Szczypiorek'],[basil,0,.5,'Bazylia'],[pars,.5,.5,'Pietruszka']];
  PLN.forEach(([f,x,z])=>f(x,z));
  {const g=new THREE.CylinderGeometry(.004,.0045,1,5);g.translate(0,.5,0);const im=new THREE.InstancedMesh(g,M(0xffffff,{roughness:.85}),ST.length),o=new THREE.Object3D();ST.forEach(([x,z,h,lx,lz,col,tk],i)=>{o.position.set(x,SY,z);o.rotation.set(lx,0,lz);o.scale.set(tk,h,tk);o.updateMatrix();im.setMatrixAt(i,o.matrix);im.setColorAt(i,col)});im.frustumCulled=false;im.castShadow=im.receiveShadow=true;grp.add(im)}
  {const g=new THREE.SphereGeometry(1,7,5),im=new THREE.InstancedMesh(g,M(0xffffff,{roughness:.8}),BL.length),o=new THREE.Object3D();BL.forEach(([x,y,z,sx,sy,sz,col,rx,ry,rz],i)=>{o.position.set(x,y,z);o.rotation.set(rx,ry,rz);o.scale.set(sx,sy,sz);o.updateMatrix();im.setMatrixAt(i,o.matrix);im.setColorAt(i,col)});im.frustumCulled=false;im.castShadow=im.receiveShadow=true;grp.add(im)}
  PLN.forEach(([f,x,z,nm])=>{const c=document.createElement('canvas');c.width=160;c.height=56;const q=c.getContext('2d');q.fillStyle='#d9bd8f';q.fillRect(0,0,160,56);q.strokeStyle='rgba(90,60,30,.5)';q.lineWidth=3;q.strokeRect(1.5,1.5,157,53);q.fillStyle='#3a2612';q.font='bold 26px sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText(nm,80,29,148);
-  const t=new THREE.CanvasTexture(c);t.anisotropy=4;const zz=z>0?.5:-.03;put(grp,new THREE.BoxGeometry(.012,.1,.006),pm,x,SY+.03,zz);put(grp,new THREE.BoxGeometry(.16,.056,.008),M(0xffffff,{map:t,roughness:.8}),x,SY+.1,zz+.005)});
+  const t=new THREE.CanvasTexture(c);t.anisotropy=4;const zz=Math.min(z+.27,WZ/2-.07);put(grp,new THREE.BoxGeometry(.012,.1,.006),pm,x,SY+.03,zz);put(grp,new THREE.BoxGeometry(.16,.056,.008),M(0xffffff,{map:t,roughness:.8}),x,SY+.1,zz+.005)});
 }
 // tunel foliowy do warzyw (P18b–Q16b): półeliptyczne łuki z rur stalowych Ø25 co 1 m, szer. 3,0 m, wys. 1,8 m, dł. 7 m, folia UV, wejście od strony domu (południe), dwie grządki
 {const a=1.5,b=1.8,L=7,cx=19.35,Ys=29.35,Ye=Ys+L,gy=-.30,st=M(0xb9bec3,{roughness:.45,metalness:.4}),pt=(th,Y,k=0)=>new THREE.Vector3(cx+(a+k)*Math.cos(th),gy+(b+k)*Math.sin(th),-Y);
