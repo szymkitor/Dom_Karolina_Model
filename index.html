@@ -1101,21 +1101,14 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
  if(o.kind=='door'){[a-.5,a+.5].forEach(x=>ub(o,x,z+(h-fw)/2,.05,h-fw,.08,frM));[x0+.25,x1-.25].forEach(x=>ub(o,x,zc,.47,h-.12,.03,glM));0;{const ac=o.c-o.s*(D+.04),hx=a+.36,hy=zc-.05,fz=e=>-(ac+o.s*(.097+e)),ix=M(0xcfd3d8,{metalness:.9,roughness:.26}),bk=M(0x16181b,{metalness:.5,roughness:.45}),
    cy=(r,l,x,y,e,rx,rz,m)=>{const q=add(new THREE.CylinderGeometry(r,r,l,24),m,x,y,fz(e),false);q.rotation.x=rx;q.rotation.z=rz;return q};
   const bxp=(w2,h2,t,x,y,e,m)=>add(new THREE.BoxGeometry(w2,h2,t),m,x,y,fz(e),false),R=Math.PI/2,dy=hy-.02;
-  /* klamka nowoczesna kwadratowa (stal nierdzewna szczotkowana + czarne wstawki): dlugi prostokatny szyld ze sfazowanymi krawedziami i czarnym wglebieniem, kwadratowa rozeta, masywna klamka o przekroju kwadratowym z lekkim skosem na koncu, kwadratowa rozeta wkladki z okraglym otworem na klucz */
-  const st=M(0xc9cdd2,{metalness:.9,roughness:.3}),stl=M(0xe4e7ea,{metalness:.9,roughness:.2}),stb=M(0x8e9399,{metalness:.9,roughness:.38}),bl=M(0x101113,{metalness:.4,roughness:.5});
-  bxp(.064,.34,.004,hx,dy,.002,stb);   /* podstawa szyldu */
-  bxp(.058,.334,.009,hx,dy,.0085,st);   /* szyld */
-  [-1,1].forEach(k=>bxp(.003,.334,.0012,hx+k*.0275,dy,.0136,stl));   /* jasne fazy bokow szyldu */
-  bxp(.044,.318,.002,hx,dy,.0135,bl);   /* czarne wglebienie (na stali, od jej licu) */
-  bxp(.034,.30,.002,hx,dy,.0155,st);   /* srodkowa listwa stalowa */
-  [-1,1].forEach(k=>bxp(.007,.007,.003,hx,dy+k*.155,.0165,bl));   /* sruby */
-  bxp(.054,.054,.012,hx,hy,.019,st);bxp(.054,.054,.001,hx,hy,.0255,stl);bxp(.042,.042,.003,hx,hy,.0262,bl);bxp(.032,.032,.003,hx,hy,.0278,st);   /* rozeta: stal + czarny pierscien + stal */
-  bxp(.028,.028,.046,hx,hy,.045,st);   /* szyjka */
-  bxp(.036,.036,.032,hx,hy,.071,st);   /* kolano (kostka) */
-  bxp(.165,.03,.03,hx-.0825+.018,hy,.071,st);   /* sztaba klamki: przekroj kwadratowy 3 x 3 cm */
-  bxp(.165,.002,.03,hx-.0825+.018,hy+.0155,.071,stl);   /* faza gorna */
-  bxp(.012,.03,.03,hx-.153,hy,.071,stl);   /* czolo klamki */
-  bxp(.046,.046,.007,hx,dy-.125,.0195,st);bxp(.032,.032,.003,hx,dy-.125,.0235,bl);cy(.0075,.003,hx,dy-.125,.0255,Math.PI/2,0,stb);bxp(.0035,.012,.002,hx,dy-.125,.0268,bl);   /* rozeta zamka z kluczykiem */}
+  /* okucia wg katalogu Glass View 3 (czarne matowe): klamka z kwadratowa rozeta i sztaba o przekroju prostokatnym, nad nia kwadratowa rozeta zamka gornego, pod nia kwadratowa rozeta wkladki, trzy czarne zawiasy z lewej krawedzi skrzydla */
+  const bkm=M(0x0c0c0d,{metalness:.35,roughness:.42}),kh=M(0x4a4d51,{metalness:.5,roughness:.4}),Hy=(z+h-fw)-.446*(h-fw-.02),HX=a+.385;
+  bxp(.05,.05,.012,HX,Hy,.019,bkm);   /* rozeta klamki */
+  bxp(.028,.028,.046,HX,Hy,.045,bkm);   /* szyjka */
+  bxp(.036,.036,.032,HX,Hy,.071,bkm);   /* kolano */
+  bxp(.17,.022,.03,HX-.085+.018,Hy,.071,bkm);   /* sztaba klamki w strone ramki */
+  [[Hy+.33],[Hy-.085]].forEach(([yy])=>{bxp(.055,.055,.008,HX,yy,.0195,bkm);bxp(.006,.016,.002,HX,yy+.004,.0245,kh);bxp(.009,.009,.002,HX,yy-.012,.0245,kh)});   /* rozety zamkow z otworem na klucz */
+  [.154,.443,.85].forEach(f=>bxp(.022,.15,.02,a-.462,(z+h-fw)-f*(h-fw-.02),-.006,bkm));   /* zawiasy */}
  {/* drzwi: skrzydlo grubosci 7 cm wysuniete przed lico ramy (rama .08 glebokosci, skrzydlo licem 4,5 cm przed nia), plyta srodkowa wypukla, ciemna uszczelka w szczelinach, zawiasy ukryte */
   const ac=o.c-o.s*(D+.04),pl=(xc,zc2,w2,h2,t,off,m)=>add(new THREE.BoxGeometry(w2,h2,t),m,xc,zc2,-(ac+o.s*off),false),
    Lz0=z+.02,Lz1=z+h-fw,Lh=Lz1-Lz0,Lc=(Lz0+Lz1)/2,gkM=M(0x131415,{roughness:.8}),pnM=M(0x674f3c,{roughness:.42});
@@ -1131,8 +1124,8 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
    mosM=M(0x0a0a0b,{roughness:.4,metalness:.1}),frgM=M(0xc9cfd3,{roughness:.4,metalness:0}),
    sx=a+.16,fW=.21,gW=.11;   /* srodek pasa szyby: ok. 63-78% szerokosci skrzydla liczac od zawiasow */
   pl(a,Lc,.944,Lh+.002,.07,.05,oakM);   /* skrzydlo (lico .085 od osi ramy) */
-  pl(sx,Lz1-Lh*.014-Lh*.876/2,fW,Lh*.876,.006,.0885,mosM);   /* czarna ramka: od ok. 1,4% do 89% wysokosci skrzydla (od gory) */
-  pl(sx,Lz1-Lh*.122-Lh*.744/2,gW,Lh*.744,.006,.0925,frgM);   /* jasna szyba w ramce (od 12% do 87% wysokosci) */
+  pl(sx,Lc,fW,Lh,.006,.0885,mosM);   /* czarna ramka przez cala wysokosc skrzydla (jak w katalogu) */
+  pl(sx,Lz1-Lh*.118-Lh*.769/2,gW,Lh*.769,.006,.0925,frgM);   /* jasna szyba w ramce (od 12% do 89% wysokosci) */
  }
  return}
  for(let i=0;i<o.n;i++){ub(o,x0+w*(i+.5)/o.n,zc,w/o.n-fw+.012,h-2*fw+.012,.03,glM);if(i)ub(o,x0+w*i/o.n,zc,.05,h-2*fw,.08,frM)}});
