@@ -2408,7 +2408,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
  {const go=gT!==0||gate.position.x!==0,fo=!!window.FK&&(FK.t!==0||FK.p!==0);if(window.__lk0!==go||window.__lk1!==fo){window.__lk0=go;window.__lk1=fo;const g=$('gt'),f=$('fk0'),hg=$('lkg'),hf=$('lkf');g.disabled=!go&&fo;f.disabled=go&&!fo;hg.textContent=g.disabled?'Zablokowane: furtka jest otwarta – najpierw ją zamknij.':'';hg.style.display=g.disabled?'block':'none';hf.textContent=f.disabled?'Zablokowane: brama przesuwna nie jest zamknięta – najpierw ją zamknij.':'';hf.style.display=f.disabled?'block':'none'}}
  if(window.SD){for(const k in SD){const F=SD[k];if(F.p!==F.t){const d=F.t-F.p,st=.6*gdt;F.p=Math.abs(d)<=st?F.t:F.p+Math.sign(d)*st;F.L.forEach(l=>{l.g.rotation.y=l.ph+l.k*(Math.PI/2)*F.p});ren.shadowMap.needsUpdate=true;dirty=true}}}
  if(window.GL){const L=window.GL,mv=gate.position.x!==gT;if(mv||L.on){L.on=mv;const k=mv?.5+.5*Math.sin(t*.007):0;L.m.emissive.setHSL(.05+.035*k,1,.5);L.m.emissiveIntensity=mv?.3+2.4*k:0;L.m.color.setHSL(.07,.9,mv?.45+.15*k:.3);L.pl.intensity=mv?(.4+2.2*k)*(.25+.75*SIM.g):0;if(window.LED){LED.emissive.setHex(mv?0xff8a1a:0x22cc55);LED.emissiveIntensity=mv?.8+1.6*k:.7}dirty=true}}
- if(playing){tH=(tH+.1*window.__spd()*gdt)%24;$('tm').value=tH;sim()}
+ if(playing){tH+=.1*window.__spd()*gdt;while(tH>=24){tH-=24;dN=dN%365+1;$('dy').value=dN}$('tm').value=tH;sim()}
  if(shReq&&(!playing||t-lastSh>120)){ren.shadowMap.needsUpdate=true;lastSh=t;shReq=false;dirty=true}
  if(window.WALK&&WALK.on&&window.__walkStep)window.__walkStep(gdt);const ch=(window.WALK&&WALK.on)?false:ctl.update();
  if(ch||dirty){dirty=false;
