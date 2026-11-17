@@ -1890,7 +1890,7 @@ function sim(){const lat=52.2*RD,dec=23.44*RD*Math.sin(2*Math.PI*(284+dN)/365),d
  moon.position.set(7-vx*60,38,-10-vz*60);moon.intensity=.3*(1-day);
  scene.background.copy(mx(0x0a1020,0xcfe2f3,day).lerp(new THREE.Color(0xf3a678),tw));stars.material.opacity=.9*(1-day);
  const g=1-day;glassM.emissive.setHex(0xffb860);glassM.emissiveIntensity=g*.8;SIM.g=g;updSc();[glassM,roofGlass].forEach(m=>m.envMapIntensity=.1+.45*day);CARENV.forEach(m=>m.envMapIntensity=m.userData.b*(.12+.88*day));
- const hh=Math.floor(tH),mm=Math.round((tH-hh)*60)%60,dt=new Date(2026,0,dN);
+ const tmin=Math.round(tH*60)%1440,hh=Math.floor(tmin/60),mm=tmin%60,dt=new Date(2026,0,dN);
  $('tl').textContent=String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')+' (słońce '+Math.round(ed)+'°)';$('clh').textContent=String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');$('cld').textContent=(ed>0?'☀ ':'☾ ')+dt.getDate()+'.'+String(dt.getMonth()+1).padStart(2,'0');$('dl').textContent=dt.getDate()+'.'+String(dt.getMonth()+1).padStart(2,'0');shReq=true;dirty=true}
 $('tm').oninput=e=>{tH=+e.target.value;sim()};$('dy').oninput=e=>{dN=+e.target.value;sim()};const spU=()=>{const k=Math.pow(10,+$('spd').value),m=6*k;$('spl').textContent='×'+(k<10?k.toFixed(1):Math.round(k))+' · 1 s = '+(m<1?Math.round(m*60)+' s':m<60?m.toFixed(m<10?1:0)+' min':(m/60).toFixed(1)+' h')};window.__spd=()=>Math.pow(10,+$('spd').value);$('spd').oninput=spU;spU();$('pl').onclick=()=>{playing=!playing;$('pl').textContent=playing?'❚❚':'▶';$('spr').style.display=playing?'block':'none'};sim();
 // oświetlenie punktowe (włączane przyciskami): LED/halogen nad oknem sypialni (tył, L14) i nad bramą garażu (front), downlighty w podbitce nad tarasem wejściowym i (3 w rzędzie) nad zadaszonym tarasem z tyłu
