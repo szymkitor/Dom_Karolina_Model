@@ -1525,7 +1525,17 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
  [-1,1].forEach(s=>put(grp,new THREE.BoxGeometry(T,HH,WZ-2*T),wmat((WZ-2*T)/.6,HH/.6),s*(LX/2-T/2),HH/2,0));   /* boki */
  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz])=>put(grp,new THREE.BoxGeometry(.065,HH,.065),pm,sx*(LX/2-.0275),HH/2,sz*(WZ/2-.0275)));   /* slupki narozne: wystaja 5 mm przed deski (bez wspolplaszczyznowych scian = bez migotania) */
  [-1,1].forEach(s=>{put(grp,new THREE.BoxGeometry(LX+.03,.02,.07),pm,0,HH+.01,s*(WZ/2-.02));put(grp,new THREE.BoxGeometry(.07,.02,WZ-.11),pm,s*(LX/2-.02),HH+.01,0)});   /* listwy gorne: ramka z wysunieciem 1,5 cm, narozniki bez nakladania (czolowe styki) */
- put(grp,new THREE.BoxGeometry(LX-2*T,SY,WZ-2*T),M(0x3a2a1c,{roughness:1}),0,SY/2,0);   /* ziemia */
+ /* tekstura ziemi ogrodowej (wspolna dla inspektu i grzadek w tunelu): ciemnobrazowa gleba z grudkami, wlokienkami korzeni/kompostu, drobnym zwirkiem i jasnymi paprochami; plytka bezszwowa 256 px (kropki zawijane na krawedziach) + mapa nierownosci */
+ window.__soilMat=(rx,ry)=>{if(!window.__soilT){let q=991;const r=()=>(q=(q*16807)%2147483647)/2147483647,mk=(base,cols,bump)=>{const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');x.fillStyle=base;x.fillRect(0,0,256,256);
+   const dot=(px,py,rw,rh,col,a,rot)=>{x.fillStyle=col;x.globalAlpha=a;for(const ox of[-256,0,256])for(const oy of[-256,0,256]){if(px+ox<-8||px+ox>264||py+oy<-8||py+oy>264)continue;x.beginPath();x.ellipse(px+ox,py+oy,rw,rh,rot,0,6.2832);x.fill()}x.globalAlpha=1};
+   for(let i=0;i<260;i++)dot(r()*256,r()*256,6+r()*14,4+r()*10,cols[Math.floor(r()*3)],.18+r()*.22,r()*3);   /* duze plamy / grudy */
+   for(let i=0;i<2600;i++)dot(r()*256,r()*256,.8+r()*2.6,.7+r()*2.2,cols[Math.floor(r()*cols.length)],.55+r()*.4,r()*3);   /* drobne grudki */
+   for(let i=0;i<90;i++){const px=r()*256,py=r()*256,a=r()*3.14,l=3+r()*9;x.strokeStyle=cols[3];x.globalAlpha=.5;x.lineWidth=.8+r()*.8;x.beginPath();x.moveTo(px,py);x.lineTo(px+Math.cos(a)*l,py+Math.sin(a)*l);x.stroke();x.globalAlpha=1}   /* wlokienka */
+   if(!bump)for(let i=0;i<70;i++)dot(r()*256,r()*256,.9+r()*1.5,.8+r()*1.2,r()<.5?'#8d7c66':'#6c5e4c',.8,r()*3);   /* zwirek i paprochy */
+   const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=8;return t};
+   window.__soilT=[mk('#3a2a1c',['#2a1d12','#4b3624','#5a4430','#22180f','#33261a'],false),mk('#808080',['#505050','#a0a0a0','#c0c0c0','#303030','#909090'],true)]}
+  const m=window.__soilT[0].clone(),b=window.__soilT[1].clone();m.needsUpdate=b.needsUpdate=true;m.repeat.set(rx,ry);b.repeat.set(rx,ry);return M(0xffffff,{map:m,bumpMap:b,bumpScale:2.2,roughness:1})};
+ put(grp,new THREE.BoxGeometry(LX-2*T,SY,WZ-2*T),window.__soilMat((LX-2*T)/.6,(WZ-2*T)/.6),0,SY/2,0);   /* ziemia */
  /* rosliny: 5 gatunkow ziol (oregano, bazylia, kolendra, szalwia, mieta), wszystkie w stanie wegetatywnym - bez kwiatow. Ta sama technika co sadzonki w tunelu: lodygi jako ciagle rurki po krzywych Catmulla-Roma (zwezajace sie, rozgalezione rekurencyjnie), liscie jako instancje cienkich blaszek o wlasciwym dla gatunku ksztalcie (bazylia: szerokie jajowate lyzeczkowate; mieta: zmarszczone, piłkowane; szalwia: podluzne szaroziolone, pomarszczone; oregano: drobne jajowate; kolendra: rozeta trojdzielnych lisci przyziemnych i pierzaste liscie lodygowe), liscie naprzeciwlegle co 90 st. */
 const PLN=[[null,-.8,-.62,'Oregano'],[null,0,-.62,'Bazylia'],[null,.8,-.62,'Kolendra'],[null,-.45,.62,'Szałwia'],[null,.45,.62,'Mięta']];
 PLN.forEach(q=>{q[1]*=LX/2.445;q[2]*=WZ/2.75});
@@ -1613,7 +1623,7 @@ PLN.forEach(q=>{q[1]*=LX/2.445;q[2]*=WZ/2.75});
   cap(el,Ye);cap(el.concat([[-.5,0],[-.5,1.9],[.5,1.9],[.5,0]]),Ys)}
  [-.5,.5].forEach(d=>add(new THREE.BoxGeometry(.025,1.9,.025),st,cx+d,gy+.95,-Ys));add(new THREE.BoxGeometry(.975,.025,.025),st,cx,gy+1.9-.0125,-Ys);
  add(new THREE.BoxGeometry(2*a,.02,L),M(0x26272a,{roughness:1}),cx,gy+.01,-(Ys+L/2));   // ciemna podłoga (folia/agrowłóknina), bez tekstury
- const sm=M(0x3b2a1c,{roughness:1});[-.9,.9].forEach(d=>add(new THREE.BoxGeometry(.9,.12,L-.4),sm,cx+d,gy+.03,-(Ys+L/2)));
+ const sm=window.__soilMat(.9/.6,(L-.4)/.6);[-.9,.9].forEach(d=>add(new THREE.BoxGeometry(.9,.12,L-.4),sm,cx+d,gy+.03,-(Ys+L/2)));
 
  /* sadzonki w tunelu (4 rzędy w dwóch grządkach): ogórki na sznurkach (x-1,1 m), pomidory przy palikach (x-0,7 m), papryka słodka i jalapeño (x+0,7 m), bakłażany (x+1,1 m). Łodygi jako ciągłe rurki po krzywych Catmulla-Roma (zwężające się), liście jako instancje cienkich blaszek (pomidor: liść złożony z listków, ogórek: pięciokątny, bakłażan: owalny, papryki: lancetowate), owoce jako bryły obrotowe o właściwych kształtach (pomidor z kielichem, ogórek, bakłażan, papryka kostropata, jalapeño), kwiaty gwiazdkowe */
  {const gb=gy+.09,rs=(()=>{let q=29;return()=>(q=(q*16807)%2147483647)/2147483647})(),gs=()=>rs()+rs()+rs()-1.5,
