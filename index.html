@@ -1560,16 +1560,16 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
  PLN.forEach(([f,x,z,nm])=>{const c=document.createElement('canvas');c.width=160;c.height=56;const q=c.getContext('2d');q.fillStyle='#d9bd8f';q.fillRect(0,0,160,56);q.strokeStyle='rgba(90,60,30,.5)';q.lineWidth=3;q.strokeRect(1.5,1.5,157,53);q.fillStyle='#3a2612';q.font='bold 26px sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText(nm,80,29,148);
   const t=new THREE.CanvasTexture(c);t.anisotropy=4;const zz=Math.min(z+.42,WZ/2-.07);put(grp,new THREE.BoxGeometry(.012,.1,.006),pm,x,SY+.03,zz);put(grp,new THREE.BoxGeometry(.16,.056,.008),M(0xffffff,{map:t,roughness:.8}),x,SY+.1,zz+.005)});
 }
-// tunel foliowy do warzyw (P18b–Q16b): półeliptyczne łuki z rur stalowych Ø25 co 1 m, szer. 3,0 m, wys. 1,8 m, dł. 7 m, folia UV, wejście od strony domu (południe), dwie grządki
-{const a=1.5,b=1.8,L=7,cx=19.35,Ys=29.35,Ye=Ys+L,gy=-.30,st=M(0xb9bec3,{roughness:.45,metalness:.4}),pt=(th,Y,k=0)=>new THREE.Vector3(cx+(a+k)*Math.cos(th),gy+(b+k)*Math.sin(th),-Y);
+// tunel foliowy do warzyw (P18b–Q16b): półeliptyczne łuki z rur stalowych Ø25 co 1 m, szer. 3,0 m, wys. 2,2 m (wejście 1,0 × 1,9 m), dł. 7 m, folia UV, wejście od strony domu (południe), dwie grządki
+{const a=1.5,b=2.2,L=7,cx=19.35,Ys=29.35,Ye=Ys+L,gy=-.30,st=M(0xb9bec3,{roughness:.45,metalness:.4}),pt=(th,Y,k=0)=>new THREE.Vector3(cx+(a+k)*Math.cos(th),gy+(b+k)*Math.sin(th),-Y);
  for(let i=0;i<=7;i++)add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(Array.from({length:25},(_,j)=>pt(Math.PI*j/24,Ys+i))),48,.0125,6,false),st);
  [0,15,45,90,135,165,180].forEach(d=>{const p=pt(d*Math.PI/180,0);const m=add(new THREE.CylinderGeometry(.0125,.0125,L,6),st,p.x,Math.max(p.y,gy+.02),-(Ys+L/2));m.rotation.x=Math.PI/2});
  {const fm=M(0xe9f1f2,{transparent:true,opacity:.34,roughness:.25,side:THREE.DoubleSide,depthWrite:false}),N=40,pos=[],idx=[];[Ys,Ye].forEach(Y=>{for(let j=0;j<=N;j++){const p=pt(Math.PI*j/N,Y,.015);pos.push(p.x,p.y,p.z)}});
   for(let j=0;j<N;j++)idx.push(j,j+N+1,j+1,j+1,j+N+1,j+N+2);const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();add(g,fm,0,0,0,false);
   const el=[];for(let j=0;j<=N;j++)el.push([(a+.015)*Math.cos(Math.PI*j/N),(b+.015)*Math.sin(Math.PI*j/N)]);
   const cap=(pts,Y)=>{const g=new THREE.ShapeGeometry(new THREE.Shape(pts.map(p=>new THREE.Vector2(p[0],p[1]))));add(g,fm,cx,gy,-Y,false)};
-  cap(el,Ye);cap(el.concat([[-.5,0],[-.5,1.5],[.5,1.5],[.5,0]]),Ys)}
- [-.5,.5].forEach(d=>{const m=add(new THREE.CylinderGeometry(.0125,.0125,1.5,6),st,cx+d,gy+.75,-Ys)});{const m=add(new THREE.CylinderGeometry(.0125,.0125,1,6),st,cx,gy+1.5,-Ys);m.rotation.z=Math.PI/2}
+  cap(el,Ye);cap(el.concat([[-.5,0],[-.5,1.9],[.5,1.9],[.5,0]]),Ys)}
+ [-.5,.5].forEach(d=>{const m=add(new THREE.CylinderGeometry(.0125,.0125,1.9,6),st,cx+d,gy+.95,-Ys)});{const m=add(new THREE.CylinderGeometry(.0125,.0125,1,6),st,cx,gy+1.9,-Ys);m.rotation.z=Math.PI/2}
  add(new THREE.BoxGeometry(2*a,.02,L),M(0x26272a,{roughness:1}),cx,gy+.01,-(Ys+L/2));   // ciemna podłoga (folia/agrowłóknina), bez tekstury
  const sm=M(0x3b2a1c,{roughness:1});[-.9,.9].forEach(d=>add(new THREE.BoxGeometry(.9,.12,L-.4),sm,cx+d,gy+.03,-(Ys+L/2)));
  {const pg=new THREE.IcosahedronGeometry(.16,1),im=new THREE.InstancedMesh(pg,M(0xffffff,{roughness:.9}),52),o=new THREE.Object3D(),cc=new THREE.Color();let k=0,sd=5;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;   // rzędy młodych roślin (pomidory / ogórki)
@@ -1820,16 +1820,16 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
   for(let a=f0-.08;a>fp+.1;a-=.09)pts.push(AP(1.515,a,ya));
   pts.push(AP(1.515,fp+.095,ya),LP(-.07,.02,-.16),LP(.03,.03,-.125));cab(pts)}
  // kabel do tunelu: po ziemi tuż przy tylnej ścianie tunelu, wejście przez folię przy podłodze, w górę po ścianie do wyłącznika, dalej pod rurą kalenicową do środka długości i zwis z żarówką
- {const cx=19.35,Ye=36.35,Ym=32.85,ya=gy+.017,sh=gy+1.15,top=gy+1.772,
+ {const cx=19.35,Ye=36.35,Ym=32.85,ya=gy+.017,sh=gy+1.15,top=gy+2.172,
    pts=[L(0,.27,.11),L(.02,.21,.14),L(.04,.1,.17),L(.03,-.013,.26),W(17.9,ya,36.41),W(18.7,ya,36.415),W(cx-.12,ya,36.40),W(cx,ya,36.36),W(cx,ya+.03,36.33),W(cx,gy+.5,36.325),W(cx,sh-.04,36.318)];
   cab(pts);cab([W(cx,sh+.04,36.318),W(cx,sh+.4,36.32),W(cx,top-.08,36.318),W(cx,top,36.30),W(cx,top,35.0),W(cx,top,33.5),W(cx,top,Ym+.08),W(cx,top-.02,Ym)]);
   const swm=M(0xe6e8ea,{roughness:.45}),sw=new THREE.Mesh(new THREE.BoxGeometry(.08,.08,.03),swm);sw.position.copy(W(cx,sh,36.31));sw.castShadow=true;scene.add(sw);statics.push(sw);
   const bm=new THREE.MeshBasicMaterial({color:0x9aa0a4});bm.userData={cOn:0xffe2a0,cOff:0x9aa0a4};const bt=new THREE.Mesh(new THREE.BoxGeometry(.04,.05,.012),bm);bt.position.copy(W(cx,sh,36.294));scene.add(bt);
-  const sk=new THREE.Mesh(new THREE.CylinderGeometry(.022,.022,.07,14),M(0xcfd2d4,{roughness:.4,metalness:.5}));sk.position.copy(W(cx,gy+1.455,Ym));scene.add(sk);statics.push(sk);
-  const cd=new THREE.Mesh(new THREE.CylinderGeometry(.004,.004,.32,6),cm);cd.position.copy(W(cx,gy+1.62,Ym));scene.add(cd);statics.push(cd);
-  const gm=new THREE.MeshBasicMaterial({color:0xcfd6d9});gm.userData={cOn:0xfff3d0,cOff:0xcfd6d9};const bu=new THREE.Mesh(new THREE.SphereGeometry(.05,16,12),gm);bu.position.copy(W(cx,gy+1.35,Ym));scene.add(bu);
-  const nk=new THREE.Mesh(new THREE.CylinderGeometry(.018,.03,.05,12),gm);nk.position.copy(W(cx,gy+1.405,Ym));scene.add(nk);
-  const pt=new THREE.PointLight(0xffd9a0,2.0,5,1.5);pt.position.copy(W(cx,gy+1.33,Ym));scene.add(pt);lights.l10={on:false,spots:[pt],lenses:[bu,nk,bt]}}}
+  const sk=new THREE.Mesh(new THREE.CylinderGeometry(.022,.022,.07,14),M(0xcfd2d4,{roughness:.4,metalness:.5}));sk.position.copy(W(cx,gy+1.955,Ym));scene.add(sk);statics.push(sk);
+  const cd=new THREE.Mesh(new THREE.CylinderGeometry(.004,.004,.2,6),cm);cd.position.copy(W(cx,gy+2.09,Ym));scene.add(cd);statics.push(cd);
+  const gm=new THREE.MeshBasicMaterial({color:0xcfd6d9});gm.userData={cOn:0xfff3d0,cOff:0xcfd6d9};const bu=new THREE.Mesh(new THREE.SphereGeometry(.05,16,12),gm);bu.position.copy(W(cx,gy+1.85,Ym));scene.add(bu);
+  const nk=new THREE.Mesh(new THREE.CylinderGeometry(.018,.03,.05,12),gm);nk.position.copy(W(cx,gy+1.905,Ym));scene.add(nk);
+  const pt=new THREE.PointLight(0xffd9a0,2.0,5,1.5);pt.position.copy(W(cx,gy+1.83,Ym));scene.add(pt);lights.l10={on:false,spots:[pt],lenses:[bu,nk,bt]}}}
 ['l1','l2','l3','l4','l6','l7','l8','l9','l10'].forEach(id=>{$(id).onclick=()=>setL(id,!lights[id].on)});
 // scalenie statycznych obiektów o tym samym materiale w jeden obiekt: geometria bez zmian, wielokrotnie mniej wywołań rysowania (przezroczyste, wielomateriałowe i ruchome zostają osobno)
 function batchStatics(){scene.updateMatrixWorld(true);
