@@ -309,7 +309,7 @@ async function go(){
    if(o.transparent&&o.opacity<1){m.transparent=true;m.opacity=o.opacity}if(o.alphaTest){m.alphaTest=o.alphaTest}m.side=o.side}
   mats.set(o,m);return m};
  const vis=o=>{for(let p=o;p;p=p.parent)if(!p.visible)return false;return true};
- const buckets=new Map();let budget=1.5e6,stride=1;
+ const buckets=new Map();let budget=8e5,stride=1;
  const mkc=(om,ic)=>{const m0=mk(om);if(!m0||!ic)return m0;const k=om.uuid+'|'+ic.getHex();if(mats.has(k))return mats.get(k);const m=m0.clone();m.color.multiply(col(ic));mats.set(k,m);return m};   /* kolor instancji (setColorAt) - render go nie czyta, wiec liscie/kwiaty wychodzily biale: kazdy skwantowany kolor dostaje wlasny material */
  const addMesh=(mesh,mw,ic)=>{const g=mesh.geometry,pa=g&&g.attributes.position;if(!pa||pa.isInterleavedBufferAttribute)return;const fs=mesh.userData&&mesh.userData.lensDown?-1:1;   /* dolna soczewka kinkietu: normalna w dol (w modelu rastrowym obie leza w gore) */
   const arr=Array.isArray(mesh.material),mm=arr?mesh.material:[mesh.material],groups=arr&&g.groups.length?g.groups:[{start:0,count:Infinity,materialIndex:0}],na=g.attributes.normal,ua=g.attributes.uv,idx=g.index,cnt=idx?idx.count:pa.count,e=mw.elements,det=mw.determinant(),n=new O.Matrix3().getNormalMatrix(mw).elements,done=new Map();
@@ -327,7 +327,7 @@ async function go(){
   if(o.isInstancedMesh){const tri=(o.geometry.index?o.geometry.index.count:o.geometry.attributes.position.count)/3;if(budget<tri)return;for(let i=0;i<o.count&&budget>=tri;i+=stride){o.getMatrixAt(i,mt);im.multiplyMatrices(o.matrixWorld,mt);let ic=null;if(o.instanceColor){o.getColorAt(i,icc);const q=v=>Math.min(255,Math.round(Math.max(0,Math.min(1,v))*255/20)*20);ic=new O.Color().setRGB(q(icc.r)/255,q(icc.g)/255,q(icc.b)/255)}addMesh(o,im,ic);budget-=tri}}
   else addMesh(o,o.matrixWorld)});
  buckets.forEach((b,m)=>{if(!b.i.length)return;const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(new Float32Array(b.p),3));g.setAttribute('normal',new T.BufferAttribute(new Float32Array(b.n),3));g.setAttribute('uv',new T.BufferAttribute(new Float32Array(b.u),2));g.setIndex(new T.BufferAttribute(new Uint32Array(b.i),1));sc.add(new T.Mesh(g,m))});
- buckets.clear();
+ buckets.clear();let tcount=0;sc.children.forEach(x=>{if(x.isMesh&&x.geometry.index)tcount+=x.geometry.index.count/3});
  let nl=0;const wp=o=>new T.Vector3().setFromMatrixPosition(new T.Matrix4().fromArray(o.matrixWorld.elements));
  A.scene.traverse(o=>{if(!o.isLight||!vis(o)||!(o.intensity>.001)||o===window.NUML)return;   /* reflektor numeru domu pomijamy: numer oswietla gorna soczewka kinkietu */
  const c=col(o.color);let l=null;
@@ -342,8 +342,8 @@ async function go(){
  const bg=A.scene.background&&A.scene.background.isColor?A.scene.background:new O.Color(.8,.88,.95),k=Math.min(1,(bg.r+bg.g+bg.b)/2.6);
  const env=new PT.GradientEquirectTexture(512);env.topColor.copy(new T.Color().setHex(0xbfd2ea).multiplyScalar(k));env.bottomColor.copy(new T.Color().setHex(0xd2c6ae).multiplyScalar(k*.85));env.exponent=1.2;   /* niebo jasne i mniej nasycone (wczesniej ciemny, nasycony blekit zabarwial caly cien na niebiesko i niedoswietlal scene) */env.update();me.info='siatki: '+sc.children.filter(x=>x.isMesh).length+', światła: '+nl+', jasność nieba: '+k.toFixed(2);sc.environment=env;sc.background=env;sc.environmentIntensity=1.9;sc.backgroundIntensity=1;
  A.cam.updateMatrixWorld(true);const hh=A.ortho,cam=hh?new T.OrthographicCamera(-hh*W/H,hh*W/H,hh,-hh,.1,3000):new T.PerspectiveCamera(A.cam.fov,W/H,.1,2000),pp=new O.Vector3(),qq=new O.Quaternion(),ss=new O.Vector3();A.cam.matrixWorld.decompose(pp,qq,ss);cam.position.set(pp.x,pp.y,pp.z);cam.quaternion.set(qq.x,qq.y,qq.z,qq.w);cam.updateMatrixWorld(true);
- msg('Budowanie struktury BVH (to chwilę potrwa)…');await new Promise(r=>setTimeout(r,60));if(st!==me)return;
- const pt=new PT.WebGLPathTracer(r);pt.bounces=6;pt.filterGlossyFactor=.4;pt.rasterizeScene=false;pt.minSamples=1;pt.setScene(sc,cam);me.pt=pt;
+ msg('Budowanie struktury BVH ('+Math.round(tcount/1000)+' tys. trójkątów) – to chwilę potrwa…');await new Promise(r=>setTimeout(r,60));if(st!==me)return;
+ const pt=new PT.WebGLPathTracer(r);pt.bounces=6;pt.filterGlossyFactor=.4;pt.rasterizeScene=false;pt.minSamples=1;me.pt=pt;if(pt.setSceneAsync){await pt.setSceneAsync(sc,cam,{onProgress:p=>msg('Budowanie BVH: '+Math.round(p*100)+'% ('+Math.round(tcount/1000)+' tys. trójkątów)')});if(st!==me)return}else pt.setScene(sc,cam);
  const loop=()=>{if(st!==me||!me.run)return;pt.renderSample();const s=Math.floor(pt.samples);msg(me.info+' · próbki: '+s+' / '+q+(s>=q?' — gotowe':''));$('ptbar').style.width=Math.min(100,s/q*100)+'%';if(s>=q){$('ptsave').disabled=false;return}requestAnimationFrame(loop)};
  $('ptsave').disabled=false;loop();
  }catch(e){console.error(e);if(st===me)msg('Błąd: '+(e&&e.message||e))}}
