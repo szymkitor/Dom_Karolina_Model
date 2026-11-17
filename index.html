@@ -2419,7 +2419,8 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
  if(window.GL){const L=window.GL,mv=gate.position.x!==gT;if(mv||L.on){L.on=mv;const k=mv?.5+.5*Math.sin(t*.007):0;L.m.emissive.setHSL(.05+.035*k,1,.5);L.m.emissiveIntensity=mv?.3+2.4*k:0;L.m.color.setHSL(.07,.9,mv?.45+.15*k:.3);L.pl.intensity=mv?(.4+2.2*k)*(.25+.75*SIM.g):0;if(window.LED){LED.emissive.setHex(mv?0xff8a1a:0x22cc55);LED.emissiveIntensity=mv?.8+1.6*k:.7}dirty=true}}
  if(playing){tH+=.1*window.__spd()*gdt;while(tH>=24){tH-=24;dN=dN%365+1;$('dy').value=dN}$('tm').value=tH;sim()}
  if(shReq&&(!playing||t-lastSh>120)){ren.shadowMap.needsUpdate=true;lastSh=t;shReq=false;dirty=true}
- if(window.WALK&&WALK.on&&window.__walkStep)window.__walkStep(gdt);const ch=(window.WALK&&WALK.on)?false:ctl.update();
+ if(window.WALK&&WALK.on&&window.__walkStep&&!document.getElementById('ptov').classList.contains('show'))window.__walkStep(gdt);   /* podczas renderu (ray tracing) petla spaceru jest wstrzymana: bez tego co klatke rysowany jest raster za nakladka i zabiera GPU ssciezkowemu renderowi */
+ const ch=(window.WALK&&WALK.on)?false:ctl.update();
  if(ch||dirty){dirty=false;
   cam.getWorldDirection(fv);const l=Math.hypot(fv.x,fv.z)||1,fx=fv.x/l,fz=fv.z/l,nx=-Math.sin(nB*RD),nz=-Math.cos(nB*RD);$('cma').style.transform='rotate('+Math.atan2(nx*(-fz)+nz*fx,nx*fx+nz*fz)+'rad)';
   drawFrame();
