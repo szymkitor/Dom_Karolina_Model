@@ -1512,7 +1512,7 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
    mt.set(X[0]*s,d[0]*s,Z[0]*s,p[0],X[1]*s,d[1]*s,Z[1]*s,p[1],X[2]*s,d[2]*s,Z[2]*s,p[2],0,0,0,1);im.setMatrixAt(i,mt);
    im.setColorAt(i,rnd()<.45?cl.setHSL(.2+rnd()*.03,.16+.1*rnd(),.55+.12*rnd()):cl.setHSL(.24+rnd()*.04,.3+.15*rnd(),.30+.12*rnd()))});
   im.position.set(px,ys,-cy);im.frustumCulled=false;im.castShadow=im.receiveShadow=true;im.userData.plant=1;scene.add(im)}}
-/* inspekt ogrodowy z ziolami (Q15c, Q15d, Q14a, Q14b: x 18-21, y 22,5-25,5): prosta prostokatna drewniana skrzynia 2,445 x 2,75 m, wys. 45 cm nad gruntem, bez pokryw i skosow; 9 gatunkow ziol w polach 3 x 3 (po 1 x 1 m, w kazdym 4 rosliny) z drewnianymi tabliczkami: lawenda, rozmaryn, szalwia / mieta, oregano, tymianek / szczypiorek, bazylia, pietruszka */
+/* inspekt ogrodowy z ziolami (Q15c, Q15d, Q14a, Q14b: x 18-21, y 22,5-25,5): prosta prostokatna drewniana skrzynia 2,445 x 2,75 m, wys. 45 cm nad gruntem, bez pokryw i skosow; 5 gatunkow ziol (oregano, bazylia, kolendra / szalwia, mieta) z drewnianymi tabliczkami */
 {const cx=19.7487,cy=25.975,gy=-.30,LX=2.445,WZ=2.75,HH=.50,T=.03,SY=.45,grp=new THREE.Group();grp.position.set(cx,gy-.05,-cy);grp.rotation.y=.00623;scene.add(grp);   /* prostokat 2,445 x 2,75 m: dluzszy (wschodni) bok przylega do opaski z kory przy wschodniej granicy (x ok. 20,98; obrot 0,36 st. wg skosu granicy), polnocny kraniec dokladnie 1,0 m od czola tunelu foliowego (czolo y 29,35 -> y 28,35; inspekt y 25,6-28,35); zagłębiony 5 cm w grunt */
  let sd=77;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647,rr=(a,b)=>a+(b-a)*rnd();
  const put=(par,g,m,x,y,z,rx=0,ry=0,rz=0)=>{const me=new THREE.Mesh(g,m);me.position.set(x,y,z);me.rotation.set(rx,ry,rz);me.castShadow=me.receiveShadow=true;par.add(me);statics.push(me);return me};
@@ -1526,37 +1526,68 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz])=>put(grp,new THREE.BoxGeometry(.065,HH,.065),pm,sx*(LX/2-.0275),HH/2,sz*(WZ/2-.0275)));   /* slupki narozne: wystaja 5 mm przed deski (bez wspolplaszczyznowych scian = bez migotania) */
  [-1,1].forEach(s=>{put(grp,new THREE.BoxGeometry(LX+.03,.02,.07),pm,0,HH+.01,s*(WZ/2-.02));put(grp,new THREE.BoxGeometry(.07,.02,WZ-.11),pm,s*(LX/2-.02),HH+.01,0)});   /* listwy gorne: ramka z wysunieciem 1,5 cm, narozniki bez nakladania (czolowe styki) */
  put(grp,new THREE.BoxGeometry(LX-2*T,SY,WZ-2*T),M(0x3a2a1c,{roughness:1}),0,SY/2,0);   /* ziemia */
- /* rosliny: dwa mesh instancjonowane (lodygi i bryly liscie/kwiaty) */
- const ST=[],BL=[],tipOf=(x,z,h,lx,lz)=>[x-Math.sin(lz)*h,SY+h*Math.cos(lz)*Math.cos(lx),z+Math.sin(lx)*h],
-  stem=(x,z,h,lx,lz,col,tk=1)=>{ST.push([x,z,h,lx,lz,col,tk]);return tipOf(x,z,h,lx,lz)},
-  blob=(x,y,z,sx,sy,sz,col,rx=0,ry=0,rz=0)=>BL.push([x,y,z,sx,sy,sz,col,rx,ry,rz]),
-  along=(x,z,h,lx,lz,t)=>{const tp=tipOf(x,z,h,lx,lz);return[x+(tp[0]-x)*t,SY+(tp[1]-SY)*t,z+(tp[2]-z)*t]},
-  ring=(px,pz,r)=>{const a=rnd()*6.283,d=Math.sqrt(rnd())*r;return[px+Math.cos(a)*d,pz+Math.sin(a)*d,a]};
- const mint=(px,pz)=>{for(let i=0;i<14;i++){const [x,z]=ring(px,pz,.14),h=rr(.2,.38),lx=rr(-.2,.2),lz=rr(-.2,.2);stem(x,z,h,lx,lz,jit(0x4f7a3a),1.1);
-   for(let k=0;k<6;k++){const p=along(x,z,h,lx,lz,.25+.13*k),a=rnd()*6.283;[0,1].forEach(q=>blob(p[0]+Math.cos(a+q*3.14)*.03,p[1],p[2]+Math.sin(a+q*3.14)*.03,.028,.01,.042,jit(0x3a8f3c),rr(-.4,.3),a+q*3.14,rr(-.3,.3)))}}},
-  lav=(px,pz)=>{for(let i=0;i<8;i++){const [x,z,a]=ring(px,pz,.1);blob(x,SY+.04,z,.075,.02,.1,jit(0x8e9e86),rr(-.5,.5),a,rr(-.5,.5))}
-   for(let i=0;i<12;i++){const [x,z]=ring(px,pz,.09),h=rr(.38,.55),lx=rr(-.16,.16),lz=rr(-.16,.16),tp=stem(x,z,h,lx,lz,jit(0x7d9a62));blob(tp[0],tp[1],tp[2],.013,.038,.013,jit(0x7a58c8));blob(tp[0]-Math.sin(lz)*(-.03),tp[1]-.035,tp[2],.012,.03,.012,jit(0x8c6bd6))}},
-  rosem=(px,pz)=>{for(let i=0;i<14;i++){const [x,z]=ring(px,pz,.1),h=rr(.35,.58),lx=rr(-.18,.18),lz=rr(-.18,.18);stem(x,z,h,lx,lz,jit(0x6b6a45));
-    for(let k=0;k<7;k++){const p=along(x,z,h,lx,lz,.3+.1*k);[-1,1].forEach(q=>blob(p[0]+q*.012,p[1],p[2]+rr(-.01,.01),.012,.04,.012,jit(0x3e5a39),rr(-.5,.5),0,q*.5))}
-    if(i%2==0){const tp=tipOf(x,z,h,lx,lz);blob(tp[0],tp[1]-.02,tp[2],.014,.014,.014,jit(0x6b8fd8))}}},
-  sage=(px,pz)=>{for(let i=0;i<24;i++){const [x,z,a]=ring(px,pz,.2),y=SY+.03+rnd()*.17;blob(x,y,z,.055,.012,.085,jit(0x93a58a),rr(-.7,.2),a,rr(-.3,.3))}
-   for(let i=0;i<3;i++){const [x,z]=ring(px,pz,.08),h=rr(.4,.5),tp=stem(x,z,h,rr(-.1,.1),rr(-.1,.1),jit(0x8a9a78));for(let k=0;k<4;k++)blob(tp[0],tp[1]-.012-k*.03,tp[2],.022,.016,.022,jit(0x7f6ccf))}},
-  chive=(px,pz)=>{for(let i=0;i<55;i++){const [x,z]=ring(px,pz,.14),tp=stem(x,z,rr(.18,.3),rr(-.25,.25),rr(-.25,.25),jit(0x4f9a3a),.8)}
-   for(let i=0;i<6;i++){const [x,z]=ring(px,pz,.1),tp=stem(x,z,rr(.3,.36),rr(-.1,.1),rr(-.1,.1),jit(0x5aa040),.9);blob(tp[0],tp[1],tp[2],.024,.024,.024,jit(0xb26bd6))}},
-  basil=(px,pz)=>{for(let i=0;i<3;i++){const [x,z]=ring(px,pz,.07),h=rr(.2,.28),lx=rr(-.08,.08),lz=rr(-.08,.08);stem(x,z,h,lx,lz,jit(0x5a9a3a),1.3);
-    for(let k=0;k<10;k++){const p=along(x,z,h,lx,lz,.2+.08*k),a=rnd()*6.283;[0,1].forEach(q=>blob(p[0]+Math.cos(a+q*3.14)*.035,p[1],p[2]+Math.sin(a+q*3.14)*.035,.045,.012,.06,jit(rnd()<.8?0x4fa83a:0x3d8a2e),rr(-.5,.4),a+q*3.14,rr(-.3,.3)))}}},
-  pars=(px,pz)=>{for(let i=0;i<18;i++){const [x,z]=ring(px,pz,.15),h=rr(.12,.24),lx=rr(-.4,.4),lz=rr(-.4,.4),tp=stem(x,z,h,lx,lz,jit(0x4a8a35),.7);
-    for(let k=0;k<3;k++)blob(tp[0]+rr(-.02,.02),tp[1]+rr(-.01,.02),tp[2]+rr(-.02,.02),.032,.026,.032,jit(0x2e7d2a),rr(-.4,.4),rnd()*6,rr(-.4,.4))}},
-  oreg=(px,pz)=>{for(let i=0;i<10;i++){const [x,z]=ring(px,pz,.12),h=rr(.15,.3),lx=rr(-.2,.2),lz=rr(-.2,.2),tp=stem(x,z,h,lx,lz,jit(0x6a8f45));
-    for(let k=0;k<6;k++){const p=along(x,z,h,lx,lz,.3+.12*k);[-1,1].forEach(q=>blob(p[0]+q*.015,p[1],p[2]+rr(-.01,.01),.02,.012,.02,jit(0x4f8a3f),0,rnd()*6,0))}
-    blob(tp[0],tp[1]+.005,tp[2],.022,.016,.022,jit(0xc88bb8))}},
-  thyme=(px,pz)=>{for(let i=0;i<44;i++){const [x,z]=ring(px,pz,.2);blob(x,SY+.015+rnd()*.035,z,.03,.012,.03,jit(0x5a7650),0,rnd()*6,0)}
-   for(let i=0;i<16;i++){const [x,z]=ring(px,pz,.18);blob(x,SY+.06+rnd()*.015,z,.01,.01,.01,jit(0xd68fb5))}};
- const PLN=[[lav,-1,-1,'Lawenda'],[rosem,0,-1,'Rozmaryn'],[sage,1,-1,'Szałwia'],[mint,-1,0,'Mięta'],[oreg,0,0,'Oregano'],[thyme,1,0,'Tymianek'],[chive,-1,1,'Szczypiorek'],[basil,0,1,'Bazylia'],[pars,1,1,'Pietruszka']];
- PLN.forEach(q=>{q[1]*=LX/3;q[2]*=WZ/3});
- PLN.forEach(([f,x,z])=>[-.2,.2].forEach(dx=>[-.22,.22].forEach(dz=>f(x+dx,z+dz))));
- {const g=new THREE.CylinderGeometry(.004,.0045,1,5);g.translate(0,.5,0);const im=new THREE.InstancedMesh(g,M(0xffffff,{roughness:.85}),ST.length),o=new THREE.Object3D();ST.forEach(([x,z,h,lx,lz,col,tk],i)=>{o.position.set(x,SY,z);o.rotation.set(lx,0,lz);o.scale.set(tk,h,tk);o.updateMatrix();im.setMatrixAt(i,o.matrix);im.setColorAt(i,col)});im.frustumCulled=false;im.castShadow=im.receiveShadow=true;grp.add(im)}
- {const g=new THREE.SphereGeometry(1,7,5),im=new THREE.InstancedMesh(g,M(0xffffff,{roughness:.8}),BL.length),o=new THREE.Object3D();BL.forEach(([x,y,z,sx,sy,sz,col,rx,ry,rz],i)=>{o.position.set(x,y,z);o.rotation.set(rx,ry,rz);o.scale.set(sx,sy,sz);o.updateMatrix();im.setMatrixAt(i,o.matrix);im.setColorAt(i,col)});im.frustumCulled=false;im.castShadow=im.receiveShadow=true;grp.add(im)}
+ /* rosliny: 5 gatunkow ziol (oregano, bazylia, kolendra, szalwia, mieta), wszystkie w stanie wegetatywnym - bez kwiatow. Ta sama technika co sadzonki w tunelu: lodygi jako ciagle rurki po krzywych Catmulla-Roma (zwezajace sie, rozgalezione rekurencyjnie), liscie jako instancje cienkich blaszek o wlasciwym dla gatunku ksztalcie (bazylia: szerokie jajowate lyzeczkowate; mieta: zmarszczone, piłkowane; szalwia: podluzne szaroziolone, pomarszczone; oregano: drobne jajowate; kolendra: rozeta trojdzielnych lisci przyziemnych i pierzaste liscie lodygowe), liscie naprzeciwlegle co 90 st. */
+const PLN=[[null,-.8,-.62,'Oregano'],[null,0,-.62,'Bazylia'],[null,.8,-.62,'Kolendra'],[null,-.45,.62,'Szałwia'],[null,.45,.62,'Mięta']];
+PLN.forEach(q=>{q[1]*=LX/2.445;q[2]*=WZ/2.75});
+ {const gb=SY,rs=(()=>{let q=53;return()=>(q=(q*16807)%2147483647)/2147483647})(),gs=()=>rs()+rs()+rs()-1.5,
+  vs=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],va=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],vm=(a,k)=>[a[0]*k,a[1]*k,a[2]*k],vn=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]},vc=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],vd=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],
+  crm=(P,sub)=>{const o=[],n=P.length;for(let i=0;i<n-1;i++){const p0=P[Math.max(0,i-1)],p1=P[i],p2=P[i+1],p3=P[Math.min(n-1,i+2)];for(let s=0;s<sub;s++){const t=s/sub,t2=t*t,t3=t2*t;o.push([0,1,2].map(k=>.5*(2*p1[k]+(-p0[k]+p2[k])*t+(2*p0[k]-5*p1[k]+4*p2[k]-p3[k])*t2+(-p0[k]+3*p1[k]-3*p2[k]+p3[k])*t3)))}}o.push(P[n-1]);return o},
+  G=()=>({p:[],i:[]}),SG={g:G(),r:G(),w:G(),b:G()},
+  tube=(gr,pts,rad)=>{const g=SG[gr],m=pts.length,base=g.p.length/3,RG=5,ax=vs(pts[m-1],pts[0]),al=ax.map(Math.abs),ref=al[1]<=al[0]&&al[1]<=al[2]?[0,1,0]:al[0]<=al[2]?[1,0,0]:[0,0,1];
+   for(let k=0;k<m;k++){const t=vn(vs(pts[Math.min(m-1,k+1)],pts[Math.max(0,k-1)])),u=vn(vc(t,ref)),v=vc(t,u),r=rad(k/(m-1)),p=pts[k];
+    for(let j=0;j<=RG;j++){const a=j/RG*6.2832,c=Math.cos(a)*r,s=Math.sin(a)*r;g.p.push(p[0]+c*u[0]+s*v[0],p[1]+c*u[1]+s*v[1],p[2]+c*u[2]+s*v[2])}}
+   for(let k=0;k<m-1;k++)for(let j=0;j<RG;j++){const a=base+k*(RG+1)+j,b=a+1,c=a+RG+1,d=c+1;g.i.push(a,c,b,b,c,d)}},
+  toGeo=g=>{const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(g.p,3));geo.setIndex(g.i);geo.computeVertexNormals();return geo},
+  /* blaszka: dlugosc wzdluz +Y, szerokosc wzdluz X, normalna +Z; prof(u) - profil szerokosci, fold - V-ksztalt, curl - opadanie koncowki; tf - przeksztalcenie punktu */
+  blade=(g,len,wid,prof,fold,curl,tf,nu,nv)=>{nu=nu||6;nv=nv||2;const b0=g.p.length/3,row=2*nv+1;
+   for(let a=0;a<=nu;a++){const u=a/nu,w=prof(u)*wid;for(let b=-nv;b<=nv;b++){const v=b/nv,q=tf([v*w,u*len,Math.abs(v)*w*fold-curl*u*u*len]);g.p.push(q[0],q[1],q[2])}}
+   for(let a=0;a<nu;a++)for(let b=0;b<2*nv;b++){const i=b0+a*row+b;g.i.push(i,i+1,i+row+1,i,i+row+1,i+row)}},
+  idf=q=>q,PI=Math.PI,SW=PI*(3-Math.sqrt(5)),
+  frameQ=0;
+  const frame=(p,d,s,roll,upref)=>{d=vn(d);const up=upref||[0,1,0];let n=va(up,vm(d,-vd(up,d)));if(Math.hypot(n[0],n[1],n[2])<.05)n=[0,0,1];n=vn(n);const x=vn(vc(d,n)),cr=Math.cos(roll),sr=Math.sin(roll);return[va(vm(x,cr),vm(n,sr)),d,va(vm(n,cr),vm(x,-sr)),p,s]},
+  cl=c=>Array.isArray(c)?new THREE.Color().setHSL(c[0],c[1],c[2]):new THREE.Color(c),
+  LV={b:[],m:[],s:[],o:[],c1:[],c2:[]},
+  rec=(A,p,d,s,roll,col,up)=>A.push({f:frame(p,d,s,roll,up),c:cl(col)});
+  const pg=a=>a[Math.floor(rs()*a.length)],
+  wob=(k,f)=>q=>[q[0],q[1],q[2]+k*Math.sin(q[0]*f)*Math.sin(q[1]*f*.7)],
+  /* geometrie lisci (dlugosc 1 wzdluz +Y, szerokosc wzdluz X) */
+  bLeaf=(()=>{const g=G();blade(g,1,.64,u=>Math.pow(Math.sin(PI*Math.pow(u,.6)),.8),.3,.4,idf,9,3);return toGeo(g)})(),
+  mLeaf=(()=>{const g=G();blade(g,1,.56,u=>Math.pow(Math.sin(PI*Math.pow(u,.68)),.85)*(1+.06*Math.sin(u*46)),.2,.3,wob(.012,70),12,3);return toGeo(g)})(),
+  sLeaf=(()=>{const g=G();blade(g,1,.4,u=>Math.pow(Math.sin(PI*Math.pow(u,.8)),.55),.12,.28,wob(.014,55),10,3);return toGeo(g)})(),
+  oLeaf=(()=>{const g=G();blade(g,1,.78,u=>Math.pow(Math.sin(PI*Math.pow(u,.62)),.8),.22,.3,idf,5,2);return toGeo(g)})(),
+  c1Leaf=(()=>{const g=G();blade(g,.3,.1,()=>1,0,.1,idf,2,1);[[0,.55,.58,0],[.75,.42,.5,.1],[-.75,.42,.5,.1]].forEach(([an,len,wid,off])=>{const c=Math.cos(an),s=Math.sin(an);blade(g,len,wid,u=>Math.pow(Math.sin(PI*Math.pow(u,.7)),.7)*(1+.1*Math.sin(u*28)),.2,.35,q=>[q[0]*c-q[1]*s,q[0]*s+q[1]*c+.28+off,q[2]],8,3)});return toGeo(g)})(),
+  c2Leaf=(()=>{const g=G();blade(g,1,.012,()=>1,0,.1,idf,3,1);[.12,.3,.5,.7].forEach((ry,i)=>[1,-1].forEach(sd=>[-.5,0,.5].forEach(an=>{const ph=sd*(1.0-.12*i)+an*.55,c=Math.cos(ph),s=Math.sin(ph),len=.2-.03*i;blade(g,len,.09,u=>Math.pow(Math.sin(PI*Math.pow(u,.85)),.7),.1,.2,q=>[q[0]*c-q[1]*s,q[0]*s+q[1]*c+ry,q[2]],4,1)})));
+   [-.5,0,.5].forEach(an=>{const c=Math.cos(an),s=Math.sin(an);blade(g,.17,.09,u=>Math.pow(Math.sin(PI*Math.pow(u,.85)),.7),.1,.2,q=>[q[0]*c-q[1]*s,q[0]*s+q[1]*c+.82,q[2]],4,1)});return toGeo(g)})(),
+  cl2=c=>Array.isArray(c)?new THREE.Color().setHSL(c[0],c[1],c[2]):new THREE.Color(c),
+  nb=(t)=>{let e1=[1,0,0];e1=vn(vs(e1,vm(t,vd(e1,t))));if(Math.hypot(e1[0],e1[1],e1[2])<.3)e1=[0,0,1];return[e1,vc(t,e1)]};
+  /* lodyga lisciasta: rurka po krzywej, wezly co c.step punktow z parami lisci naprzeciwleglymi (kazda para obrocona o ok. 90 st.), liscie pary koncowej, rekurencyjne rozgalezienia */
+  const leafy=(p,d,L,r0,lv,c)=>{const m=5,pts=[p];let q=p,dd=d;for(let k=0;k<m;k++){dd=vn(va(dd,[gs()*c.w,gs()*c.w*.4+c.up,gs()*c.w]));q=va(q,vm(dd,L/m));pts.push(q)}
+   const sp=crm(pts,3),n=sp.length,tg=i=>vn(vs(sp[Math.min(n-1,i+1)],sp[Math.max(0,i-1)]));tube(c.gr,sp,u=>Math.max(.0016,r0*(1-.6*u)));
+   let al=rs()*6.28;const leaf=(i,sz,out0,t)=>{const [e1,e2]=nb(t);for(let s=0;s<2;s++){const a=al+s*PI,out=vn(va(vm(e1,Math.cos(a)),vm(e2,Math.sin(a)))),pe=va(sp[i],vm(out,c.pet)),dir=vn(va(vm(out,1),va(vm(t,c.el),[0,-c.dr,0])));if(c.pet>.004)tube(c.gr,[sp[i],pe],()=>.0017);rec(LV[c.lt],pe,dir,[sz,sz,sz],(rs()-.5)*.5,pg(c.lc))}};
+   for(let i=Math.floor(n*c.l0);i<n-1;i+=c.step){const u=i/(n-1);al+=PI/2+(rs()-.5)*.3;leaf(i,c.size(u)*(.8+.4*rs())*(lv?.8:1),0,tg(i))}
+   {const t=tg(n-1);rec(LV[c.lt],sp[n-1],vn(va(t,[0,.1,0])),[c.size(1)*.7,c.size(1)*.7,c.size(1)*.7],rs()*6.28,pg(c.lc));al+=PI/2;leaf(n-1,c.size(1)*.85,0,t)}
+   if(lv<c.maxLv)for(let k=0;k<c.nch[lv];k++){const f=c.b0+(1-c.b0)*(k+rs()*.6)/c.nch[lv],i=Math.min(n-3,Math.max(1,Math.round(f*(n-1)))),t=tg(i),a2=k*2.4+rs()*1.5+lv,dr=vn(va(vm(t,c.bk),[Math.cos(a2)*.9,.5+.3*rs(),Math.sin(a2)*.9]));leafy(sp[i],dr,L*c.bl*(.75+.3*rs()),r0*.55,lv+1,c)}};
+  const GB=[[.27,.55,.30],[.26,.58,.33],[.28,.52,.28],[.25,.5,.3]],GM=[[.31,.42,.22],[.30,.46,.25],[.32,.40,.20]],GS=[[.22,.14,.52],[.21,.17,.55],[.23,.12,.48]],GO=[[.25,.40,.26],[.26,.44,.29],[.24,.38,.24]],GC=[[.24,.5,.32],[.25,.55,.35],[.26,.48,.30]],GC2=[[.26,.5,.34],[.27,.55,.38]];
+  const cfg={
+   b:{gr:'b',lt:'b',lc:GB,w:.18,up:.12,l0:.1,step:2,size:u=>.085-.05*u,pet:.014,el:.35,dr:.25,b0:.25,bk:.5,bl:.5,maxLv:1,nch:[4]},
+   m:{gr:'r',lt:'m',lc:GM,w:.25,up:.1,l0:.1,step:2,size:u=>.062-.025*u,pet:.006,el:.45,dr:.1,b0:.3,bk:.6,bl:.45,maxLv:1,nch:[2]},
+   s:{gr:'w',lt:'s',lc:GS,w:.3,up:.12,l0:.2,step:2,size:u=>.092-.035*u,pet:.012,el:.4,dr:.2,b0:.15,bk:.5,bl:.55,maxLv:2,nch:[3,1]},
+   o:{gr:'r',lt:'o',lc:GO,w:.35,up:.1,l0:.1,step:2,size:u=>.036-.012*u,pet:.003,el:.35,dr:.05,b0:.1,bk:.5,bl:.5,maxLv:2,nch:[3,2]}};
+  const basil=(x,z)=>leafy([x,gb,z],[rs()*.1-.05,1,rs()*.1-.05],.27+.1*rs(),.0055,0,cfg.b),
+   mint=(x,z)=>leafy([x,gb,z],vn([(rs()-.5)*.5,1,(rs()-.5)*.5]),.3+.12*rs(),.0035,0,cfg.m),
+   sage=(x,z)=>{for(let k=0;k<4;k++){const a=k*1.57+rs();leafy([x+Math.cos(a)*.03,gb,z+Math.sin(a)*.03],vn([Math.cos(a)*.35,1,Math.sin(a)*.35]),.24+.07*rs(),.0075,0,cfg.s)}},
+   oreg=(x,z)=>{for(let k=0;k<2;k++){const a=k*3.1+rs();leafy([x+Math.cos(a)*.02,gb,z+Math.sin(a)*.02],vn([Math.cos(a)*.5,1,Math.sin(a)*.5]),.2+.07*rs(),.0035,0,cfg.o)}},
+   cori=(x,z)=>{for(let k=0;k<7;k++){const a=k*SW+rs()*.3,up=.55+.4*rs(),L=.12+.08*rs(),dir=vn([Math.cos(a)*(1-up*.5),up,Math.sin(a)*(1-up*.5)]),pe=va([x,gb,z],vm(dir,L)),sz=.085+.03*rs();tube('g',crm([[x,gb,z],va([x,gb,z],vm(dir,L*.5)),pe],2),u=>.0028-.0012*u);rec(LV.c1,pe,vn(va(dir,[Math.cos(a)*.6,-.15,Math.sin(a)*.6])),[sz,sz,sz],(rs()-.5)*.4,pg(GC))}
+    for(let k=0;k<3;k++){const a=rs()*6.28,H=.2+.12*rs(),pts=[[x,gb,z],[x+Math.cos(a)*.015,gb+H*.5,z+Math.sin(a)*.015],[x+Math.cos(a)*.03,gb+H,z+Math.sin(a)*.03]],sp=crm(pts,4),n=sp.length;tube('g',sp,u=>.0028-.0014*u);let al=rs()*6.28;
+     for(let i=Math.floor(n*.25);i<n;i+=3){const u=i/(n-1),sz=.13-.06*u,pe=va(sp[i],[Math.cos(al)*.025,.005,Math.sin(al)*.025]);tube('g',[sp[i],pe],()=>.0012);rec(LV.c2,pe,vn([Math.cos(al),.7,Math.sin(al)]),[sz,sz,sz],rs()*6.28,pg(GC2));al+=SW*1.5}}};
+  const rg=(px,pz,r)=>{const a=rs()*6.28,d=Math.sqrt(rs())*r;return[px+Math.cos(a)*d,pz+Math.sin(a)*d]};
+  PLN.forEach(([f,px,pz,nm])=>{if(nm==='Oregano')for(let i=0;i<7;i++)oreg(...rg(px,pz,.27));else if(nm==='Bazylia')for(let i=0;i<9;i++)basil(...rg(px,pz,.26));else if(nm==='Kolendra')for(let i=0;i<9;i++)cori(...rg(px,pz,.26));else if(nm==='Szałwia')[[-.3,0],[.3,.04],[0,-.04]].forEach(([dx,dz])=>sage(px+dx*.9,pz+dz+rs()*.04));else for(let i=0;i<12;i++)mint(...rg(px,pz,.38))});
+  const mt=new THREE.Matrix4(),setM=(m,f)=>{const X=f[0],Y=f[1],Zz=f[2],p=f[3],s=f[4];m.set(X[0]*s[0],Y[0]*s[1],Zz[0]*s[2],p[0],X[1]*s[0],Y[1]*s[1],Zz[1]*s[2],p[1],X[2]*s[0],Y[2]*s[1],Zz[2]*s[2],p[2],0,0,0,1)},
+   inst=(geo,mat,A)=>{if(!A.length)return;const im=new THREE.InstancedMesh(geo,mat,A.length);A.forEach((a,i)=>{setM(mt,a.f);im.setMatrixAt(i,mt);im.setColorAt(i,a.c)});im.instanceMatrix.needsUpdate=true;im.instanceColor.needsUpdate=true;im.frustumCulled=false;im.castShadow=im.receiveShadow=true;im.userData.plant=1;grp.add(im)},
+   lm=M(0xffffff,{roughness:.6,side:THREE.DoubleSide}),lg=M(0xffffff,{roughness:.38,side:THREE.DoubleSide});
+  inst(bLeaf,lg,LV.b);inst(mLeaf,lm,LV.m);inst(sLeaf,lm,LV.s);inst(oLeaf,lm,LV.o);inst(c1Leaf,lg,LV.c1);inst(c2Leaf,lm,LV.c2);
+  [['g',0x5f8c3e,.75],['b',0x6aa043,.7],['r',0x7a6a46,.8],['w',0x8d7d62,.9]].forEach(([k,c,r])=>{if(!SG[k].p.length)return;const me=new THREE.Mesh(toGeo(SG[k]),M(c,{roughness:r,side:THREE.DoubleSide}));me.castShadow=me.receiveShadow=true;me.userData.plant=1;grp.add(me)});
+}
  PLN.forEach(([f,x,z,nm])=>{const c=document.createElement('canvas');c.width=160;c.height=56;const q=c.getContext('2d');q.fillStyle='#d9bd8f';q.fillRect(0,0,160,56);q.strokeStyle='rgba(90,60,30,.5)';q.lineWidth=3;q.strokeRect(1.5,1.5,157,53);q.fillStyle='#3a2612';q.font='bold 26px sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText(nm,80,29,148);
   const t=new THREE.CanvasTexture(c);t.anisotropy=4;const zz=Math.min(z+.42,WZ/2-.07);put(grp,new THREE.BoxGeometry(.012,.1,.006),pm,x,SY+.03,zz);put(grp,new THREE.BoxGeometry(.16,.056,.008),M(0xffffff,{map:t,roughness:.8}),x,SY+.1,zz+.005)});
 }
