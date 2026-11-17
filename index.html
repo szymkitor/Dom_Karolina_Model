@@ -128,7 +128,7 @@ body.mtool canvas{cursor:crosshair}
 .fab,.fab:hover{background:var(--lg-tint),var(--lg-bg);-webkit-backdrop-filter:var(--lg-f);backdrop-filter:var(--lg-f);border:1px solid var(--lg-bd);box-shadow:var(--lg-sh);color:#fff}
 .fab::before{content:"";position:absolute;left:13%;right:13%;top:2px;height:46%;border-radius:50% 50% 60% 60%/60% 60% 100% 100%;background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,0));opacity:.8;pointer-events:none}
 .fab svg{filter:drop-shadow(0 1px 3px rgba(10,25,45,.6))}
-.fab.sub.open{background:radial-gradient(120% 100% at 30% 0%,rgba(255,200,120,.65),rgba(255,130,60,.3) 65%),var(--lg-bg);border-color:rgba(255,215,160,.85)}
+.fab.sub.act,.fab.sub.open{background:radial-gradient(120% 100% at 30% 0%,rgba(255,200,120,.65),rgba(255,130,60,.3) 65%),var(--lg-bg);border-color:rgba(255,215,160,.85)}
 .fab.fm.open{background:radial-gradient(120% 100% at 30% 0%,rgba(215,225,235,.6),rgba(120,140,160,.3) 65%),var(--lg-bg);box-shadow:var(--lg-sh)}
 .fab.drag{box-shadow:0 18px 40px rgba(10,25,45,.38),inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 0 22px rgba(255,255,255,.2)}
 .ui{background:var(--lg-tint),var(--lgp-bg);-webkit-backdrop-filter:var(--lg-f);backdrop-filter:var(--lg-f);border:1px solid var(--lg-bd);box-shadow:0 16px 48px rgba(10,25,45,.32),0 2px 6px rgba(10,25,45,.16),inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -1.5px 2px rgba(255,255,255,.3),inset 0 0 26px rgba(255,255,255,.12)}
@@ -2386,7 +2386,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
    W.x=8.35;W.z=-1.5;W.yaw=Math.PI;W.pit=0;W.y=null;W.vx=W.vz=W.ph=W.am=W.fx=W.bob=W.sw=W.rl=W.bp=0;W.jx=W.jy=W.lx=W.ly=0;W.keys={};fitFov();W.on=true;document.body.classList.add('walking');place();try{getSelection().removeAllRanges()}catch(x){}window.__walkJoyApply();if(window.__walkMenu)window.__walkMenu(true);if(window.__fabLayout)window.__fabLayout();
    ht.classList.add('show');clearTimeout(hT);hT=setTimeout(()=>ht.classList.remove('show'),6000)}
   else{W.on=false;document.body.classList.remove('walking');window.__walkJoyReset();if(window.__walkMenu)window.__walkMenu(false);if(window.__fabLayout)window.__fabLayout();ht.classList.remove('show');cam.rotation.order='XYZ';cam.fov=S.fov;cam.near=S.near;cam.updateProjectionMatrix();cam.position.copy(S.p);ctl.target.copy(S.t);ctl.enabled=true;ctl.update()}
-  if(fb)fb.classList.toggle('open',W.on);dirty=true};
+  if(fb)fb.classList.toggle('act',W.on);dirty=true};
  ex.addEventListener('click',()=>window.__walkToggle(false))}
 
 (function loop(t){requestAnimationFrame(loop);
