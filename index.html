@@ -309,7 +309,7 @@ async function go(){
    if(o.transparent&&o.opacity<1){m.transparent=true;m.opacity=o.opacity}if(o.alphaTest){m.alphaTest=o.alphaTest}m.side=o.side}
   mats.set(o,m);return m};
  const vis=o=>{for(let p=o;p;p=p.parent)if(!p.visible)return false;return true};
- const buckets=new Map();let budget=4e5,stride=1;
+ const buckets=new Map();let budget=2.4e6,stride=1;
  const mkc=(om,ic)=>{const m0=mk(om);if(!m0||!ic)return m0;const k=om.uuid+'|'+ic.getHex();if(mats.has(k))return mats.get(k);const m=m0.clone();m.color.multiply(col(ic));mats.set(k,m);return m};   /* kolor instancji (setColorAt) - render go nie czyta, wiec liscie/kwiaty wychodzily biale: kazdy skwantowany kolor dostaje wlasny material */
  const addMesh=(mesh,mw,ic)=>{const g=mesh.geometry,pa=g&&g.attributes.position;if(!pa||pa.isInterleavedBufferAttribute)return;const fs=mesh.userData&&mesh.userData.lensDown?-1:1;   /* dolna soczewka kinkietu: normalna w dol (w modelu rastrowym obie leza w gore) */
   const arr=Array.isArray(mesh.material),mm=arr?mesh.material:[mesh.material],groups=arr&&g.groups.length?g.groups:[{start:0,count:Infinity,materialIndex:0}],na=g.attributes.normal,ua=g.attributes.uv,idx=g.index,cnt=idx?idx.count:pa.count,e=mw.elements,det=mw.determinant(),n=new O.Matrix3().getNormalMatrix(mw).elements,done=new Map();
@@ -324,7 +324,7 @@ async function go(){
  /* budowa BVH: rownomierne przerzedzenie instancji (liscie, trawa, ziola), jesli ich lacznie jest wiecej niz budzet trojkatow - inaczej BVH wisi w nieskonczonosc */
  {let tot=0;A.scene.traverse(o=>{if(o.isInstancedMesh&&vis(o)&&o.geometry){tot+=(o.geometry.index?o.geometry.index.count:o.geometry.attributes.position.count)/3*o.count}});stride=Math.max(1,Math.ceil(tot/budget))}
  A.scene.traverse(o=>{if(!o.isMesh||o.isSkinnedMesh||!o.geometry||!vis(o)||(o.userData&&o.userData.rtSkip))return;   /* rtSkip: lodygi ziol w inspekcie (ok. 200 tys. trojkatow, w renderze niewidoczne spod lisci) */
-  if(o.isInstancedMesh){const tri=(o.geometry.index?o.geometry.index.count:o.geometry.attributes.position.count)/3;if(budget<tri)return;for(let i=0;i<o.count&&budget>=tri;i+=stride){o.getMatrixAt(i,mt);im.multiplyMatrices(o.matrixWorld,mt);let ic=null;if(o.instanceColor){o.getColorAt(i,icc);const q=v=>Math.min(255,Math.round(Math.max(0,Math.min(1,v))*255/40)*40);ic=new O.Color().setRGB(q(icc.r)/255,q(icc.g)/255,q(icc.b)/255)}addMesh(o,im,ic);budget-=tri}}
+  if(o.isInstancedMesh){const tri=(o.geometry.index?o.geometry.index.count:o.geometry.attributes.position.count)/3;if(budget<tri)return;for(let i=0;i<o.count&&budget>=tri;i+=stride){o.getMatrixAt(i,mt);im.multiplyMatrices(o.matrixWorld,mt);let ic=null;if(o.instanceColor){o.getColorAt(i,icc);const q=v=>Math.min(255,Math.round(Math.max(0,Math.min(1,v))*255/20)*20);ic=new O.Color().setRGB(q(icc.r)/255,q(icc.g)/255,q(icc.b)/255)}addMesh(o,im,ic);budget-=tri}}
   else addMesh(o,o.matrixWorld)});
  buckets.forEach((b,m)=>{if(!b.i.length)return;const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(new Float32Array(b.p),3));g.setAttribute('normal',new T.BufferAttribute(new Float32Array(b.n),3));g.setAttribute('uv',new T.BufferAttribute(new Float32Array(b.u),2));g.setIndex(new T.BufferAttribute(new Uint32Array(b.i),1));sc.add(new T.Mesh(g,m))});
  buckets.clear();let tcount=0;sc.children.forEach(x=>{if(x.isMesh&&x.geometry.index)tcount+=x.geometry.index.count/3});
