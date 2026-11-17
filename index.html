@@ -2412,6 +2412,8 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
  ex.addEventListener('click',()=>window.__walkToggle(false))}
 
 (function loop(t){requestAnimationFrame(loop);
+ /* gdy otwarta jest nakladka renderu (ray tracing), caly raster, animacje i odtwarzanie czasu sa wstrzymane - inaczej co klatke rysowany jest ciezki widok pod nakladka i path tracer nie dostaje GPU (0 probek) */
+ if(document.getElementById('ptov').classList.contains('show')){dirty=true;if(playing){playing=false;document.getElementById('pl').textContent='▶';document.getElementById('spr').style.display='none'}lastG=0;return}
  if(window.RL){const R=window.RL;if(R.p!==R.t){const d=R.t-R.p;R.p=Math.abs(d)<.002?R.t:R.p+d*.05;R.apply();ren.shadowMap.needsUpdate=true;dirty=true}}
  const gdt=t&&lastG?Math.min(.1,(t-lastG)/1000):0;if(t)lastG=t;
  if(gate.position.x!==gT){const d=gT-gate.position.x,stp=.5*gdt;gate.position.x=Math.abs(d)<=stp?gT:gate.position.x+Math.sign(d)*stp;ren.shadowMap.needsUpdate=true;dirty=true}
