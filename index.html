@@ -584,7 +584,7 @@ const PL=[[-3,-7.5],[14.78,-7.5],[19.45,-2.65],[19.45,21.35],[21.9,21.35],[21.8,
  [-1,1].forEach(d=>add(new THREE.BoxGeometry(L,.004,.014),fr,cxm,-.2975,pzz+d*.072,false));   /* ramy boczne (kątowniki) */
  [-1,1].forEach(d=>add(new THREE.BoxGeometry(.014,.004,.158),fr,cxm+d*(L/2-.007),-.2975,pzz,false));   /* ramy koncowe */
  for(let i=1;i<=3;i++)add(new THREE.BoxGeometry(.012,.0035,.13),fr,.91+L*i/4,-.2974,pzz,false);   /* poprzeczki dociskowe co ok. 1,4 m */}
-/* kostka omija stopy slupow i cokol muru (elementy sie nie przenikaja) */flat([[.91,-5],[.91,-7.1],[1.33,-7.1],[1.33,-7.5],[5.93,-7.5],[5.93,-7.1],[6.41,-7.1],[6.41,-5]],-.30,0xbab5ab);flat([[8.53,-3.5],[8.53,-7.1],[8.73,-7.1],[8.73,-7.5],[9.95,-7.5],[9.95,-7.1],[10.15,-7.1],[10.15,-3.5]],-.30,0xbab5ab);[[1.33,5.93],[8.73,9.95]].forEach(([x0,x1])=>{const g=new THREE.BufferGeometry(),P=[[x0,-7.5,-.30],[x1,-7.5,-.30],[x1,-8.0,-.30],[x0,-8.0,-.30]];g.setAttribute('position',new THREE.Float32BufferAttribute(P.flatMap(p=>[p[0],p[2],-p[1]]),3));g.setAttribute('uv',new THREE.Float32BufferAttribute(P.flatMap(p=>[p[0],p[1]]),2));g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();add(g,pvD,0,0,0,false)});flat([[7.25,-3.5],[10.19,-3.5],[10.19,-3.3],[12.1,-3.3],[12.1,-.36],[10.05,-.36],[10.05,-.8],[7.25,-.8]],-.30,0xbab5ab);   /* kostka przycieta do obrysu tarasu przed domem (taras x 7,25-10,05, y -0,4..2,5 + stopien do y -0,8) */flat([[7.25,-5.8],[8.53,-5.8],[8.53,-3.5],[7.25,-3.5]],-.30,0xbab5ab);   /* poszerzenie chodnika od furtki (M5d, M5b, skraj M5a/M5c): zachodnia krawedz w linii x=7,21 jak chodnik w M6c/M6d */
+/* kostka omija stopy slupow i cokol muru (elementy sie nie przenikaja) */flat([[.91,-5],[.91,-7.1],[1.33,-7.1],[1.33,-7.5],[5.93,-7.5],[5.93,-7.1],[6.41,-7.1],[6.41,-5]],-.30,0xbab5ab);flat([[8.53,-3.5],[8.53,-7.1],[8.73,-7.1],[8.73,-7.5],[9.95,-7.5],[9.95,-7.1],[10.15,-7.1],[10.15,-3.5]],-.30,0xbab5ab);[[1.33,5.93],[8.73,9.95]].forEach(([x0,x1])=>{const g=new THREE.BufferGeometry(),P=[[x0,-7.5,-.30],[x1,-7.5,-.30],[x1,-8.0,-.30],[x0,-8.0,-.30]];g.setAttribute('position',new THREE.Float32BufferAttribute(P.flatMap(p=>[p[0],p[2],-p[1]]),3));g.setAttribute('uv',new THREE.Float32BufferAttribute(P.flatMap(p=>[p[0],p[1]]),2));g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();add(g,pvD,0,0,0,false)});flat([[7.25,-3.5],[10.19,-3.5],[10.19,-3.3],[12.1,-3.3],[12.1,-.36],[10.05,-.36],[10.05,-.8],[7.25,-.8]],-.30,0xbab5ab);   /* kostka przycieta do obrysu tarasu przed domem (taras x 7,25-10,05, y -0,4..2,5 + stopien do y -0,8) */flat([[7.25,-5.4],[8.53,-5.4],[8.53,-3.5],[7.25,-3.5]],-.30,0xbab5ab);   /* poszerzenie chodnika od furtki (M5d, M5b, skraj M5a/M5c): zachodnia krawedz w linii x=7,21 jak chodnik w M6c/M6d */
 /* boki nawierzchni frontowych (podjazd, ścieżka do furtki, chodnik) schodzą do gruntu - bez pustych szczelin pod płytami */
 {const sk=new THREE.MeshStandardMaterial({color:0xb4b0a7,roughness:.95,side:THREE.DoubleSide}),B=-.46,vq=(x0,y0,x1,y1,ta,tb)=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute([x0,ta,-y0,x1,tb,-y1,x1,B,-y1,x0,B,-y0],3));g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();add(g,sk,0,0,0,false)};
  [1.33,5.93,8.73,9.95].forEach(x=>vq(x,-7.5,x,-8.0,-.30,-.30));vq(1.33,-8.0,5.93,-8.0,-.30,-.30);vq(8.73,-8.0,9.95,-8.0,-.30,-.30)}
@@ -867,10 +867,10 @@ function fwall(x0,y0,x1,y1,sa,sb){const P0=[x0,y0],P1=[x1,y1],SQ=(x,y)=>({c:[x,y
   /* sciezka zwirowa z plytami: od tarasu tylnego prosto do y 2,0, dalej LUKIEM (dwa kubiczne luki Beziera: lewy i prawy brzeg) w dol i w lewo, do ukosnej krawedzi kostki: stala szerokosc 1,28 m, koniec doczolowo (prostopadle do ukosu) przy waskim krawezniku kostki */
   const cb3=(P,t)=>{const u=1-t;return[u*u*u*P[0][0]+3*u*u*t*P[1][0]+3*u*t*t*P[2][0]+t*t*t*P[3][0],u*u*u*P[0][1]+3*u*u*t*P[1][1]+3*u*t*t*P[2][1]+t*t*t*P[3][1]]},
    dL=Math.hypot(ra[0]-13.05,ra[1]),dd=[(ra[0]-13.05)/dL,ra[1]/dL],TT=[dd[1],-dd[0]],EE=[13.05+dd[0]*1.9,dd[1]*1.9],   /* dd: kierunek ukosnej krawedzi kostki; TT: do niej prostopadle (sciezka dochodzi doczolowo); EE: srodek konca sciezki na ukosie */
-   PC=[[16.08,2.0],[16.08,.6],[EE[0]-TT[0]*1.2,EE[1]-TT[1]*1.2],EE],HW2=.64,NS=60,lft=[],rgt=[];   /* os luku (Bezier) i dwa brzegi w stalej odleglosci 0,64 m = stala szerokosc 1,28 m */
+   PC=[[16.04,2.0],[16.04,.6],[EE[0]-TT[0]*1.2,EE[1]-TT[1]*1.2],EE],HW2=.64,NS=60,lft=[],rgt=[];   /* os luku (Bezier) i dwa brzegi w stalej odleglosci 0,64 m = stala szerokosc 1,28 m */
   for(let i=0;i<=NS;i++){const t=i/NS,c=cb3(PC,t),a0=cb3(PC,Math.max(0,t-.002)),a1=cb3(PC,Math.min(1,t+.002)),tl=Math.hypot(a1[0]-a0[0],a1[1]-a0[1]),nx=-(a1[1]-a0[1])/tl,ny=(a1[0]-a0[0])/tl;lft.push([c[0]-nx*HW2,c[1]-ny*HW2]);rgt.push([c[0]+nx*HW2,c[1]+ny*HW2])}
   const zw=(pt,sk)=>{const gg=new THREE.ShapeGeometry(new THREE.Shape(pt.map(p=>new THREE.Vector2(p[0],p[1]))));gg.rotateX(-Math.PI/2);add(gg,gm2,0,-.295,0,false);if(sk)pt.skip=sk;GRVP.push(pt)};
-  zw([[15.44,2.0],[16.72,2.0],[16.72,8.05],[15.44,8.05]],[0,2]);
+  zw([[15.40,2.0],[16.68,2.0],[16.68,8.05],[15.40,8.05]],[0,2]);
   {const cp=[...lft,...rgt.slice().reverse()];zw(cp,[cp.length-1])}
   const pc=document.createElement('canvas');pc.width=pc.height=256;const p2=pc.getContext('2d');p2.fillStyle='#6b6a67';p2.fillRect(0,0,256,256);
   for(let i=0;i<22;i++){const cx=rg()*256,cy=rg()*256,rr=30+rg()*80,gd=p2.createRadialGradient(cx,cy,0,cx,cy,rr);gd.addColorStop(0,rg()<.5?'rgba(130,129,125,.28)':'rgba(70,69,66,.3)');gd.addColorStop(1,'rgba(100,99,95,0)');p2.fillStyle=gd;p2.fillRect(cx-rr,cy-rr,2*rr,2*rr)}
@@ -878,7 +878,7 @@ function fwall(x0,y0,x1,y1,sa,sb){const P0=[x0,y0],P1=[x1,y1],SQ=(x,y)=>({c:[x,y
   for(let i=0;i<14;i++){p2.fillStyle='rgba(20,20,18,.35)';p2.beginPath();p2.arc(rg()*256,rg()*256,.8+rg()*1.4,0,6.3);p2.fill()}   /* pory betonu */
   const pt2=new THREE.CanvasTexture(pc);pt2.anisotropy=8;const plM=M(0xffffff,{map:pt2,roughness:.92});
   const plate=(x,y,w,d)=>add(new THREE.BoxGeometry(w,.04,d),plM,x,-.285,-y);
-  for(let k=3;k<11;k++)plate(16.08,.35+.7*k+.25,1,.5);   /* prosta czesc: plyty 1,0 x 0,5 m co 0,7 m */
+  for(let k=3;k<11;k++)plate(16.04,.35+.7*k+.25,1,.5);   /* prosta czesc: plyty 1,0 x 0,5 m co 0,7 m */
   {const cl=lft.map((q,i)=>[(q[0]+rgt[i][0])/2,(q[1]+rgt[i][1])/2]),cum=[0];for(let i=1;i<cl.length;i++)cum.push(cum[i-1]+Math.hypot(cl[i][0]-cl[i-1][0],cl[i][1]-cl[i-1][1]));
    const T0=cum[cum.length-1]-.34,n=Math.max(1,Math.round(T0/.7));for(let q=0;q<=n;q++){const sd=T0*q/n;let i=1;while(i<cl.length-1&&cum[i]<sd)i++;const f=(sd-cum[i-1])/(cum[i]-cum[i-1]),x=cl[i-1][0]+(cl[i][0]-cl[i-1][0])*f,y=cl[i-1][1]+(cl[i][1]-cl[i-1][1])*f,tx=cl[i][0]-cl[i-1][0],ty=cl[i][1]-cl[i-1][1],th=Math.atan2(tx,-ty),la=q===n,m=la?plate(EE[0]-TT[0]*.34,EE[1]-TT[1]*.34,1,.5):plate(x,y,1,.5);m.rotation.y=la?Math.atan2(dd[1],dd[0]):th}}}   /* plyty po luku: dluzszy bok (1,0 m) prostopadle do kierunku sciezki, co ok. 0,7 m wzdluz osi luku, ostatnia rownolegla do krawedzi kostki (ukosu), ok. 9 cm od krawieznika */   /* plyty prostokatne 1,0 x 0,5 m co 0,76 m, miedzy nimi zwir */
  // opaska żwirowa przy ścianach stykających się z trawnikiem
@@ -1513,7 +1513,7 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
    im.setColorAt(i,rnd()<.45?cl.setHSL(.2+rnd()*.03,.16+.1*rnd(),.55+.12*rnd()):cl.setHSL(.24+rnd()*.04,.3+.15*rnd(),.30+.12*rnd()))});
   im.position.set(px,ys,-cy);im.frustumCulled=false;im.castShadow=im.receiveShadow=true;im.userData.plant=1;scene.add(im)}}
 /* inspekt ogrodowy z ziolami (Q15c, Q15d, Q14a, Q14b: x 18-21, y 22,5-25,5): prosta prostokatna drewniana skrzynia 2,445 x 2,75 m, wys. 45 cm nad gruntem, bez pokryw i skosow; 9 gatunkow ziol w polach 3 x 3 (po 1 x 1 m, w kazdym 4 rosliny) z drewnianymi tabliczkami: lawenda, rozmaryn, szalwia / mieta, oregano, tymianek / szczypiorek, bazylia, pietruszka */
-{const cx=19.7425,cy=26.975,gy=-.30,LX=2.445,WZ=2.75,HH=.50,T=.03,SY=.45,grp=new THREE.Group();grp.position.set(cx,gy-.05,-cy);grp.rotation.y=.00623;scene.add(grp);   /* prostokat 2,445 x 2,75 m: dluzszy (wschodni) bok przylega do opaski z kory przy wschodniej granicy (x ok. 20,98; obrot 0,36 st. wg skosu granicy), polnocny kraniec dokladnie 1,0 m od czola tunelu foliowego (czolo y 29,35 -> y 28,35; inspekt y 25,6-28,35); zagłębiony 5 cm w grunt */
+{const cx=19.7487,cy=25.975,gy=-.30,LX=2.445,WZ=2.75,HH=.50,T=.03,SY=.45,grp=new THREE.Group();grp.position.set(cx,gy-.05,-cy);grp.rotation.y=.00623;scene.add(grp);   /* prostokat 2,445 x 2,75 m: dluzszy (wschodni) bok przylega do opaski z kory przy wschodniej granicy (x ok. 20,98; obrot 0,36 st. wg skosu granicy), polnocny kraniec dokladnie 1,0 m od czola tunelu foliowego (czolo y 29,35 -> y 28,35; inspekt y 25,6-28,35); zagłębiony 5 cm w grunt */
  let sd=77;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647,rr=(a,b)=>a+(b-a)*rnd();
  const put=(par,g,m,x,y,z,rx=0,ry=0,rz=0)=>{const me=new THREE.Mesh(g,m);me.position.set(x,y,z);me.rotation.set(rx,ry,rz);me.castShadow=me.receiveShadow=true;par.add(me);statics.push(me);return me};
  const jit=(hex,k=1)=>{const c=new THREE.Color(hex),h={};c.getHSL(h);return c.setHSL(h.h+rr(-.015,.015)*k,Math.min(1,h.s*rr(.88,1.1)),Math.min(.9,h.l*rr(.86,1.14)))};
@@ -1573,42 +1573,91 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
  add(new THREE.BoxGeometry(2*a,.02,L),M(0x26272a,{roughness:1}),cx,gy+.01,-(Ys+L/2));   // ciemna podłoga (folia/agrowłóknina), bez tekstury
  const sm=M(0x3b2a1c,{roughness:1});[-.9,.9].forEach(d=>add(new THREE.BoxGeometry(.9,.12,L-.4),sm,cx+d,gy+.03,-(Ys+L/2)));
 
- /* dorodne sadzonki w dwóch grządkach (4 rzędy): ogórki na sznurkach (x-1,1 m), pomidory przy palikach (x-0,7 m), papryka słodka i jalapeño (x+0,7 m), bakłażany (x+1,1 m); liście, łodygi, paliki i owoce jako instancje (kolory na instancję) */
- {const gb=gy+.09,rs=(()=>{let q=11;return()=>(q=(q*16807)%2147483647)/2147483647})(),LF=[],FR=[],SM=[],CL=h=>new THREE.Color(h),
-  pk=(arr)=>arr[Math.floor(rs()*arr.length)],
-  lf=(x,y,z,len,wid,yaw,tilt,c)=>LF.push([x+Math.cos(yaw)*len*.85,y,z-Math.sin(yaw)*len*.85,len,wid,yaw,tilt,c]),
-  fr=(x,y,z,rx,ry,rz,c)=>FR.push([x,y,z,rx,ry,rz,c]),
-  sm=(x0,y0,z0,x1,y1,z1,r,c)=>SM.push([x0,y0,z0,x1,y1,z1,r,c]),
-  GRN=[0x3f7d2a,0x478a2f,0x376f25,0x4f9435],
-  tomato=(x,z)=>{const h=1.2+rs()*.3,lx=(rs()-.5)*.1,sx=y=>x+lx*y/h;sm(x,gb,z,sx(h),gb+h,z,.011,0x5f8c3c);sm(x+.08,gb-.04,z,x+.08,gb+1.55,z,.009,0xb58b55);
-   for(let y=.18;y<h;y+=.1){const y0=rs()*6.28;for(let k=0;k<2;k++){const an=y0+k*Math.PI,L=.16+.1*rs(),ex=sx(y)+Math.cos(an)*L*.65,ez=z-Math.sin(an)*L*.65;sm(sx(y),gb+y,z,ex,gb+y+.05,ez,.005,0x5f8c3c);
-     [-.55,0,.55].forEach(d=>lf(ex,gb+y+.05,ez,.075+.03*rs(),.04,an+d,-.3,pk(GRN)));lf(ex,gb+y+.06,ez,.1,.05,an,-.15,pk(GRN))}}
-   [.3,.55,.8,1.05].forEach((ty,i)=>{if(ty>h-.05)return;const an=rs()*6.28,px=sx(ty)+Math.cos(an)*.1,pz=z-Math.sin(an)*.1;sm(sx(ty),gb+ty,z,px,gb+ty-.02,pz,.004,0x5f8c3c);
-    for(let n=0;n<4;n++){const r=.033+.012*rs(),c=i<2?pk([0xcf2a1c,0xd63a1f,0xc7241a]):i==2?pk([0xd9541f,0xcf2a1c,0x9fb83a]):0x76ab3c;fr(px+(rs()-.5)*.07,gb+ty-.03-n*.012-rs()*.03,pz+(rs()-.5)*.07,r,r*.9,r,c)}})},
-  cucumber=(x,z,dx)=>{const h=1.3;sm(x,gb,z,x+dx*.18,gb+h,z,.009,0x5b8a38);sm(x+dx*.2,gb+h,z,x+dx*.3,gb+h+.35,z,.0025,0xe8e4d0);sm(x,gb,z,x+dx*.08,gb+h+.35,z,.0025,0xe8e4d0);
-   for(let y=.12;y<h;y+=.12){const an=(Math.floor(y/.12)%2?0:Math.PI)+(rs()-.5)*1.2+(dx>0?Math.PI*0:0),px=x+dx*.18*y/h;sm(px,gb+y,z,px+Math.cos(an)*.07,gb+y+.02,z-Math.sin(an)*.07,.0035,0x5b8a38);lf(px+Math.cos(an)*.07,gb+y+.02,z-Math.sin(an)*.07,.085+.04*rs(),.1,an,-.25,pk([0x3b8226,0x44922d,0x357a22]))}
-   for(let n=0;n<5;n++){const y=.4+rs()*.65,px=x+dx*.18*y/h+(rs()-.5)*.08,pz=z+(rs()-.5)*.1;fr(px,gb+y-.11,pz,.022,.1+.03*rs(),.022,pk([0x3d7a28,0x4a8a2c,0x6aa84f]))}
-   for(let n=0;n<3;n++)fr(x+dx*.18*.7+(rs()-.5)*.1,gb+.5+rs()*.7,z+(rs()-.5)*.12,.016,.012,.016,0xf2c81d)},
-  eggplant=(x,z)=>{const h=.8;sm(x,gb,z,x,gb+h,z,.016,0x5a6b3c);sm(x,gb+.4,z,x+.12,gb+.75,z+.05,.01,0x5a6b3c);sm(x,gb+.4,z,x-.12,gb+.72,z-.05,.01,0x5a6b3c);
-   for(let n=0;n<16;n++){const y=.12+rs()*(h-.1),an=rs()*6.28,sx=x+(y>.4?(rs()<.5?.1:-.1)*(y-.4)/.35:0);lf(sx,gb+y,z,.1+.04*rs(),.075,an,-.3,pk([0x5e8c4e,0x55824a,0x4d7a44]))}
-   [[.09,.1],[-.1,.04],[.02,-.1]].forEach(([ox,oz],i)=>{const y=.38+i*.1;fr(x+ox,gb+y,z+oz,.043,.085,.043,pk([0x2c0f3a,0x34123f,0x24092f]));fr(x+ox,gb+y+.085,z+oz,.03,.014,.03,0x5a7a3a)})},
-  pepper=(x,z,i)=>{const h=.6;sm(x,gb,z,x,gb+h,z,.012,0x5a7a3a);sm(x,gb+.3,z,x+.1,gb+.55,z+.04,.008,0x5a7a3a);sm(x,gb+.3,z,x-.1,gb+.55,z-.04,.008,0x5a7a3a);
-   for(let n=0;n<22;n++){const y=.1+rs()*.5,an=rs()*6.28;lf(x+(y>.3?(rs()<.5?.08:-.08):0),gb+y,z,.055+.02*rs(),.035,an,-.25,pk([0x3f8a2d,0x48963a,0x3a7d2b]))}
-   const cs=[0xc9221a,0xe8b920,0x4f9a2c,0xe07a1c];for(let n=0;n<4;n++){const y=.25+rs()*.28;fr(x+(rs()-.5)*.2,gb+y,z+(rs()-.5)*.14,.04,.055,.04,cs[(i+n)%4])}},
-  jalap=(x,z)=>{const h=.55;sm(x,gb,z,x,gb+h,z,.011,0x5a7a3a);sm(x,gb+.28,z,x+.09,gb+.5,z,.007,0x5a7a3a);sm(x,gb+.28,z,x-.09,gb+.5,z,.007,0x5a7a3a);
-   for(let n=0;n<18;n++){const y=.1+rs()*.45,an=rs()*6.28;lf(x+(y>.28?(rs()<.5?.07:-.07):0),gb+y,z,.05+.02*rs(),.032,an,-.25,pk([0x3b8a2f,0x449535,0x357f2a]))}
-   for(let n=0;n<9;n++){const y=.2+rs()*.3;fr(x+(rs()-.5)*.2,gb+y,z+(rs()-.5)*.14,.016,.042,.016,n==3||n==7?0xb8241a:pk([0x2d7a27,0x286f22,0x3a8a2c]))}};
+ /* sadzonki w tunelu (4 rzędy w dwóch grządkach): ogórki na sznurkach (x-1,1 m), pomidory przy palikach (x-0,7 m), papryka słodka i jalapeño (x+0,7 m), bakłażany (x+1,1 m). Łodygi jako ciągłe rurki po krzywych Catmulla-Roma (zwężające się), liście jako instancje cienkich blaszek (pomidor: liść złożony z listków, ogórek: pięciokątny, bakłażan: owalny, papryki: lancetowate), owoce jako bryły obrotowe o właściwych kształtach (pomidor z kielichem, ogórek, bakłażan, papryka kostropata, jalapeño), kwiaty gwiazdkowe */
+ {const gb=gy+.09,rs=(()=>{let q=29;return()=>(q=(q*16807)%2147483647)/2147483647})(),gs=()=>rs()+rs()+rs()-1.5,
+  vs=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],va=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],vm=(a,k)=>[a[0]*k,a[1]*k,a[2]*k],vn=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]},vc=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],vd=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],
+  crm=(P,sub)=>{const o=[],n=P.length;for(let i=0;i<n-1;i++){const p0=P[Math.max(0,i-1)],p1=P[i],p2=P[i+1],p3=P[Math.min(n-1,i+2)];for(let s=0;s<sub;s++){const t=s/sub,t2=t*t,t3=t2*t;o.push([0,1,2].map(k=>.5*(2*p1[k]+(-p0[k]+p2[k])*t+(2*p0[k]-5*p1[k]+4*p2[k]-p3[k])*t2+(-p0[k]+3*p1[k]-3*p2[k]+p3[k])*t3)))}}o.push(P[n-1]);return o},
+  G=()=>({p:[],i:[]}),SG={g:G(),e:G(),w:G(),s:G()},
+  tube=(gr,pts,rad)=>{const g=SG[gr],m=pts.length,base=g.p.length/3,RG=5,ax=vs(pts[m-1],pts[0]),al=ax.map(Math.abs),ref=al[1]<=al[0]&&al[1]<=al[2]?[0,1,0]:al[0]<=al[2]?[1,0,0]:[0,0,1];
+   for(let k=0;k<m;k++){const t=vn(vs(pts[Math.min(m-1,k+1)],pts[Math.max(0,k-1)])),u=vn(vc(t,ref)),v=vc(t,u),r=rad(k/(m-1)),p=pts[k];
+    for(let j=0;j<=RG;j++){const a=j/RG*6.2832,c=Math.cos(a)*r,s=Math.sin(a)*r;g.p.push(p[0]+c*u[0]+s*v[0],p[1]+c*u[1]+s*v[1],p[2]+c*u[2]+s*v[2])}}
+   for(let k=0;k<m-1;k++)for(let j=0;j<RG;j++){const a=base+k*(RG+1)+j,b=a+1,c=a+RG+1,d=c+1;g.i.push(a,c,b,b,c,d)}},
+  toGeo=g=>{const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(g.p,3));geo.setIndex(g.i);geo.computeVertexNormals();return geo},
+  /* blaszka: dlugosc wzdluz +Y, szerokosc wzdluz X, normalna +Z; prof(u) - profil szerokosci, fold - V-ksztalt, curl - opadanie koncowki; tf - przeksztalcenie punktu */
+  blade=(g,len,wid,prof,fold,curl,tf,nu,nv)=>{nu=nu||6;nv=nv||2;const b0=g.p.length/3,row=2*nv+1;
+   for(let a=0;a<=nu;a++){const u=a/nu,w=prof(u)*wid;for(let b=-nv;b<=nv;b++){const v=b/nv,q=tf([v*w,u*len,Math.abs(v)*w*fold-curl*u*u*len]);g.p.push(q[0],q[1],q[2])}}
+   for(let a=0;a<nu;a++)for(let b=0;b<2*nv;b++){const i=b0+a*row+b;g.i.push(i,i+1,i+row+1,i,i+row+1,i+row)}},
+  idf=q=>q,PI=Math.PI,
+  PTom=u=>Math.sin(PI*Math.pow(u,.8))*(1+.16*Math.sin(u*19)),PEgg=u=>Math.pow(Math.sin(PI*Math.pow(u,.7)),.8)*(1+.08*Math.sin(u*13)),PPep=u=>Math.pow(Math.sin(PI*Math.pow(u,.75)),.9)*(1-.2*u),PSep=u=>Math.sin(PI*Math.pow(u,.7)),
+  /* liść złożony pomidora: oś + 4 pary listków + listek końcowy (jednostkowa długość) */
+  tomLeaf=(()=>{const g=G();blade(g,1,.014,()=>1,0,.12,idf,3,1);
+   [[.1,.13,.07,1.3],[.26,.27,.14,1.1],[.44,.26,.13,.95],[.58,.22,.1,.8]].forEach(([ry,len,wid,ph])=>[1,-1].forEach(sd=>{const c=Math.cos(ph*sd),s=Math.sin(ph*sd);blade(g,len,wid,PTom,.28,.3,q=>[q[0]*c-q[1]*s,q[0]*s+q[1]*c+ry,q[2]],6,2)}));
+   blade(g,.4,.19,PTom,.28,.3,q=>[q[0],q[1]+.6,q[2]],7,2);return toGeo(g)})(),
+  /* liść ogórka: wachlarz 5-kątny o promieniu 1, podstawa w początku układu */
+  cucLeaf=(()=>{const g=G(),NK=4,NJ=14;for(let k=0;k<=NK;k++){const rr=k/NK;for(let j=0;j<=NJ;j++){const th=-1.75+3.5*j/NJ,R=rr*(.82+.18*Math.cos(th*2.5)),x=Math.sin(th)*R,y=Math.cos(th)*R-.1*rr;g.p.push(x,y,Math.abs(x)*.18-.35*R*R)}}
+   for(let k=0;k<NK;k++)for(let j=0;j<NJ;j++){const i=k*(NJ+1)+j;g.i.push(i,i+1,i+NJ+2,i,i+NJ+2,i+NJ+1)}return toGeo(g)})(),
+  eggLeaf=(()=>{const g=G();blade(g,1,.5,PEgg,.14,.35,idf,8,3);return toGeo(g)})(),
+  pepLeaf=(()=>{const g=G();blade(g,1,.4,PPep,.12,.3,idf,5,2);return toGeo(g)})(),
+  /* gwiazdka z 5 płatków/działek: leży w płaszczyźnie XZ (oś Y = oś owocu/kwiatu), dr - pochylenie ku +Y */
+  star=(len,wid,dr,pr)=>{const g=G();for(let k=0;k<5;k++){const ph=k*1.2566,c=Math.cos(ph),s=Math.sin(ph);blade(g,len,wid,pr,0,0,q=>[q[1]*c-q[0]*s,q[1]*dr+q[2],q[1]*s+q[0]*c],4,1)}return toGeo(g)},
+  calyx=star(.5,.13,.3,PSep),flower=star(.5,.3,-.25,u=>Math.sin(PI*Math.pow(u,.6))),
+  /* bryła obrotowa wzdłuż +Y (promień max .5), nu pierścieni, nr punktów, mod - modulacja promienia (kąt, u), bend - wygięcie */
+  lathe=(pr,mod,bend)=>{const nu=14,nr=12,P=[],I=[];for(let a=0;a<=nu;a++){const u=a/nu,r=pr(u);for(let b=0;b<=nr;b++){const th=b/nr*6.2832,m=mod?mod(th,u):1;P.push(Math.cos(th)*r*m,u,Math.sin(th)*r*m+bend*u*u)}}
+   for(let a=0;a<nu;a++)for(let b=0;b<nr;b++){const i=a*(nr+1)+b;I.push(i,i+nr+1,i+1,i+1,i+nr+1,i+nr+2)}return toGeo({p:P,i:I})},
+  gTom=lathe(u=>.5*Math.pow(Math.sin(PI*u),.7),(t)=>1+.025*Math.cos(5*t),0),gCuc=lathe(u=>.5*Math.pow(Math.sin(PI*u),.32)*(1-.12*u),(t,u)=>1+.05*Math.cos(6*t)*Math.sin(PI*u),.1),
+  gEgg=lathe(u=>.5*Math.pow(Math.sin(PI*Math.pow(u,1.5)),.8),null,.04),gPep=lathe(u=>.5*Math.pow(Math.sin(PI*Math.pow(u,.8)),.6)*(1-.14*u),t=>1+.09*Math.cos(3*t),0),gJal=lathe(u=>.5*Math.pow(Math.sin(PI*Math.pow(u,.5)),.7)*(1-.35*u),t=>1+.05*Math.cos(4*t),.22),
+  frame=(p,d,s,roll,upref)=>{d=vn(d);const up=upref||[0,1,0];let n=va(up,vm(d,-vd(up,d)));if(Math.hypot(n[0],n[1],n[2])<.05)n=[0,0,1];n=vn(n);const x=vn(vc(d,n)),cr=Math.cos(roll),sr=Math.sin(roll);return[va(vm(x,cr),vm(n,sr)),d,va(vm(n,cr),vm(x,-sr)),p,s]},
+  cl=c=>Array.isArray(c)?new THREE.Color().setHSL(c[0],c[1],c[2]):new THREE.Color(c),
+  LV={t:[],c:[],e:[],p:[],j:[]},FRU={t:[],c:[],e:[],p:[],j:[]},CAL=[],FLW=[],
+  rec=(A,p,d,s,roll,col,up)=>A.push({f:frame(p,d,s,roll,up),c:cl(col)}),
+  hang=()=>vn([(rs()-.5)*.35,-1,(rs()-.5)*.35]),
+  GRN=[[.25,.42,.27],[.26,.45,.30],[.24,.40,.25],[.27,.5,.33]],pg=a=>a[Math.floor(rs()*a.length)],
+  SW=Math.PI*(3-Math.sqrt(5));
+  /* ---------- pomidor: pęd wijący się przy palikach, liście złożone, grona (dolne czerwone, wyższe pomarańczowe i zielone), kwiaty na szczycie ---------- */
+  const tomato=(x,z)=>{const h=1.35+rs()*.3,sx=x+.06,pts=[];for(let k=0;k<=8;k++){const u=k/8;pts.push([x+(sx-x)*.3*u+Math.sin(u*8+x)*.016,gb+u*h,z+Math.cos(u*8+x)*.014])}
+   const sp=crm(pts,3),N=sp.length;tube('g',sp,u=>.0115-.0065*u);tube('w',[[sx,gb-.03,z],[sx,gb+h+.3,z]],()=>.0085);
+   [.25,.6,.95,1.3].forEach(y=>{if(y<h)tube('s',[[x+.004,gb+y,z+.012],[sx+.012,gb+y+.01,z+.006],[x-.012,gb+y+.02,z+.006]],()=>.0018)});
+   let al=rs()*6.28;const at=y=>sp[Math.min(N-1,Math.round(y/h*(N-1)))];
+   for(let y=.3;y<h-.06;y+=.115){al+=SW;const p=at(y),out=vn([Math.cos(al),.22,Math.sin(al)]),pe=va(p,vm(out,.07)),sz=.3-.12*(y/h)+.05*rs();tube('g',[p,va(p,vm(out,.035)),pe],()=>.0035);rec(LV.t,pe,va(vm(out,1),[0,.12,0]),[sz,sz,sz],(rs()-.5)*.6,pg(GRN))}
+   let ti=0;for(let ty=.3;ty<h-.22;ty+=.25,ti++){al+=SW*1.3;const p=at(ty),out=vn([Math.cos(al),.1,Math.sin(al)]),L=.15,P=[p,va(p,vm(out,L*.4)),va(va(p,vm(out,L*.8)),[0,.03,0]),va(va(p,vm(out,L)),[0,-.015,0])],pc=crm(P,3);tube('g',pc,u=>.0032-.0012*u);
+    const nf=ti<3?4:3;for(let n=0;n<nf;n++){const q=pc[Math.round((.5+.5*n/nf)*(pc.length-1))],rr=.03+.012*rs()+(ti>2?-.006:0),top=va(q,[(rs()-.5)*.03,-.012-rs()*.015,(rs()-.5)*.03]);tube('g',[q,top],()=>.0018);
+     const col=ti<2?pg([0xc9271a,0xd23520,0xbe2218]):ti==2?pg([0xdb5a1d,0xe07a1f,0xcf3a1c,0x9fbd3c]):pg([0x7ab33d,0x6fa535,0x8bbd48]),d=hang();rec(FRU.t,top,d,[2*rr,2*rr*.9,2*rr],rs()*6.28,col);rec(CAL,top,d,[1.7*rr,1.7*rr,1.7*rr],rs()*6.28,[.25,.45,.3])}}
+   for(let n=0;n<5;n++){const p=at(h-.1-rs()*.15),a2=rs()*6.28,q=va(p,[Math.cos(a2)*.07,.03,Math.sin(a2)*.07]);tube('g',[p,q],()=>.002);rec(FLW,q,[Math.cos(a2)*.6,-.6,Math.sin(a2)*.6],[.05,.05,.05],rs()*6.28,0xf4d21a)}};
+  /* ---------- ogórek: pęd po sznurku ku łukowi tunelu, wąsy, duże liście na długich ogonkach, wiszące owoce z kwiatem na końcu, kwiaty ---------- */
+  const cucumber=(x,z,sg)=>{const h=1.4,pts=[[x,gb,z],[x+sg*.03,gb+h*.3,z+.02],[x+sg*.06,gb+h*.6,z-.015],[x+sg*.09,gb+h*.85,z+.01],[x+sg*.1,gb+h,z]],sp=crm(pts,4),N=sp.length;
+   tube('g',sp,u=>.008-.004*u);tube('s',[[x+sg*.015,gb+.02,z+.012],[x+sg*.1,gb+h+.25,z+.012]],()=>.0018);
+   const at=y=>sp[Math.min(N-1,Math.round(y/h*(N-1)))];let al=rs()*6.28;
+   for(let y=.14;y<h-.04;y+=.13){al+=SW;const p=at(y),out=vn([Math.cos(al)*(sg>0?.4:1)+sg*.15,.3,Math.sin(al)]),pe=va(p,vm(out,.13+.04*rs())),sz=.1+.05*rs()*(1-y/h*.4);
+    tube('g',crm([p,va(p,vm(out,.06)),va(pe,[0,.012,0]),pe],2),()=>.0028);rec(LV.c,pe,vn(va(out,[0,-.1,0])),[sz,sz,sz],(rs()-.5)*.5,pg([[.27,.5,.27],[.28,.52,.30],[.26,.48,.25]]));
+    if(rs()<.55){const ti=[];for(let k=0;k<=8;k++){const a=k*.9;ti.push(va(p,[Math.cos(al+1.6)*.04*k/8+Math.cos(a)*.008,.01*k+.03,Math.sin(al+1.6)*.04*k/8+Math.sin(a)*.008]))}tube('s',crm(ti,2),()=>.0011)}}
+   for(let n=0;n<5;n++){const y=.45+rs()*.7,p=at(y),a2=rs()*6.28,top=va(p,[Math.cos(a2)*.04,-.01,Math.sin(a2)*.04]),Lf=.16+.13*rs(),rr=.02+.006*rs(),d=hang();tube('g',[p,top],()=>.0022);
+    rec(FRU.c,top,d,[2*rr,Lf,2*rr],rs()*6.28,pg([0x2f6b22,0x3a7a28,0x2b6120,0x4a8a2c]));if(Lf<.22)rec(FLW,va(top,vm(d,Lf)),d,[.034,.034,.034],0,0xf2c81d)}
+   for(let n=0;n<4;n++){const y=.5+rs()*.85,p=at(y),a2=rs()*6.28,q=va(p,[Math.cos(a2)*.09,.02,Math.sin(a2)*.09]);tube('g',[p,q],()=>.002);rec(FLW,q,[Math.cos(a2)*.7,-.5,Math.sin(a2)*.7],[.07,.07,.07],rs()*6.28,0xf2c81d)}};
+  /* ---------- krzaczaste: papryka słodka, jalapeño, bakłażan (rozgałęzienia rekurencyjnie, liście parami, owoce zwisające z węzłów) ---------- */
+  const shoot=(p,d,L,r0,lv,c)=>{const m=4,pts=[p];let q=p,dd=d;for(let k=0;k<m;k++){dd=vn(va(dd,[gs()*c.w,gs()*c.w*.5+c.up,gs()*c.w]));q=va(q,vm(dd,L/m));pts.push(q)}
+   const sp=crm(pts,3),n=sp.length,tg=i=>vn(vs(sp[Math.min(n-1,i+1)],sp[Math.max(0,i-1)]));tube(c.gr,sp,u=>Math.max(.0022,r0*(1-.72*u)));
+   for(let i=Math.floor(n*c.l0);i<n;i+=c.step){const t=tg(i),al=i*SW+rs()*.8;for(let k=0;k<c.pairs;k++){const an=al+k*PI*2/c.pairs,out=vn(va(vm(t,.4),[Math.cos(an),.3+.2*rs(),Math.sin(an)])),sz=c.ls*(.7+.5*rs()),pe=va(sp[i],vm(out,c.pet));tube(c.gr,[sp[i],pe],()=>.0026);rec(LV[c.lt],pe,vn(va(out,[0,-.2,0])),[sz*.5,sz,sz*.5],(rs()-.5)*.6,pg(c.lc))}}
+   if(lv>=c.maxLv-1){const nf=lv==c.maxLv?c.nf:Math.max(0,c.nf-1);for(let f=0;f<nf;f++){const i=Math.min(n-2,Math.max(2,Math.round(n*(.45+.5*rs())))),q0=sp[i],a2=rs()*6.28,top=va(q0,[Math.cos(a2)*.025,-.02,Math.sin(a2)*.025]);tube(c.gr,[q0,top],()=>.0026);c.fruit(top,hang())}
+    if(c.fl)for(let f=0;f<2;f++){const q0=sp[n-1-Math.floor(rs()*3)],a2=rs()*6.28;rec(FLW,va(q0,[Math.cos(a2)*.03,.01,Math.sin(a2)*.03]),[Math.cos(a2)*.5,-.6,Math.sin(a2)*.5],[c.fl[1],c.fl[1],c.fl[1]],rs()*6.28,c.fl[0])}}
+   if(lv<c.maxLv)for(let k=0;k<c.nch[lv];k++){const f=lv==0?.32+.2*k:.4+.45*(k+rs()*.6)/c.nch[lv],i=Math.min(n-2,Math.max(1,Math.round(f*(n-1)))),t=tg(i),a2=k*2.4+rs()*1.5+lv,dr=vn(va(vm(t,.5),[Math.cos(a2)*.9,.6+.3*rs(),Math.sin(a2)*.9]));shoot(sp[i],dr,L*(lv==0?.8:.6)*(.8+.3*rs()),r0*(lv==0?.6:.5),lv+1,c)}};
+  const pepCols=[0x4f9a2c,0xc9221a,0xe8b920,0xe07a1c,0x4f9a2c,0xc9221a],cfgP={gr:'e',w:.5,up:.1,l0:.35,step:3,pairs:2,ls:.1,pet:.025,lt:'p',lc:[[.26,.5,.3],[.27,.52,.33],[.25,.46,.28]],maxLv:2,nch:[3,2],nf:1,fl:[0xf4f4ea,.03],
+   fruit:(top,d)=>{const L=.095+.022*rs(),W2=.072+.012*rs(),col=pg(pepCols);rec(FRU.p,top,d,[W2,L,W2],rs()*6.28,col);rec(CAL,top,d,[.06,.06,.06],rs()*6.28,[.25,.45,.3])}},
+   jalCols=[0x2d7a27,0x286f22,0x3a8a2c,0x2d7a27,0x4f8f2c,0xb8241a],cfgJ={gr:'e',w:.5,up:.1,l0:.35,step:3,pairs:2,ls:.075,pet:.02,lt:'j',lc:[[.27,.5,.28],[.26,.52,.3],[.28,.46,.26]],maxLv:2,nch:[3,2],nf:2,fl:[0xf4f4ea,.025],
+   fruit:(top,d)=>{const L=.07+.03*rs(),W2=.03+.005*rs();rec(FRU.j,top,d,[W2,L,W2],rs()*6.28,pg(jalCols));rec(CAL,top,d,[.034,.034,.034],rs()*6.28,[.25,.45,.3])}},
+   cfgE={gr:'e',w:.4,up:.12,l0:.3,step:2,pairs:1,ls:.23,pet:.07,lt:'e',lc:[[.27,.28,.33],[.28,.3,.36],[.26,.26,.31]],maxLv:2,nch:[2,2],nf:1,fl:[0x9a7acb,.055],
+   fruit:(top,d)=>{const L=.17+.06*rs(),W2=.09+.012*rs();rec(FRU.e,top,d,[W2,L,W2],rs()*6.28,[.76+.02*rs(),.5,.12+.04*rs()]);rec(CAL,top,d,[.1,.1,.1],rs()*6.28,[.25,.35,.32])}};
   const Z=t=>-(Ys+t);
   for(let t=.7;t<=6.5;t+=.95)cucumber(cx-1.1,Z(t),1);
   for(let t=.6;t<=6.4;t+=.72)tomato(cx-.7,Z(t));
-  for(let t=.6,i=0;t<=3.7;t+=.6,i++)pepper(cx+.7,Z(t),i);
-  for(let t=4.2;t<=6.3;t+=.5)jalap(cx+.7,Z(t));
-  for(let t=.7;t<=6.5;t+=.95)eggplant(cx+1.1,Z(t));
-  const OB=new THREE.Object3D(),UP=new THREE.Vector3(0,1,0),V=new THREE.Vector3();
-  const mk2=(geo,rg,arr,fn)=>{const im=new THREE.InstancedMesh(geo,M(0xffffff,{roughness:rg}),arr.length);arr.forEach((q,i)=>{fn(q);im.setMatrixAt(i,OB.matrix);im.setColorAt(i,CL(q[q.length-1]))});im.instanceMatrix.needsUpdate=true;im.instanceColor.needsUpdate=true;im.frustumCulled=false;im.castShadow=im.receiveShadow=true;im.userData.plant=1;scene.add(im)};
-  mk2(new THREE.SphereGeometry(1,6,4),.65,LF,q=>{OB.position.set(q[0],q[1],q[2]);OB.quaternion.identity();OB.rotation.set(0,q[5],q[6],'YXZ');OB.scale.set(q[3],.014,q[4]);OB.updateMatrix()});
-  mk2(new THREE.SphereGeometry(1,10,8),.35,FR,q=>{OB.position.set(q[0],q[1],q[2]);OB.rotation.set(0,0,0);OB.scale.set(q[3],q[4],q[5]);OB.updateMatrix()});
-  mk2(new THREE.CylinderGeometry(1,1,1,5),.7,SM,q=>{V.set(q[3]-q[0],q[4]-q[1],q[5]-q[2]);const l=V.length()||1e-3;OB.position.set((q[0]+q[3])/2,(q[1]+q[4])/2,(q[2]+q[5])/2);OB.quaternion.setFromUnitVectors(UP,V.normalize());OB.scale.set(q[6],l,q[6]);OB.updateMatrix()})}}
+  for(let t=.6;t<=3.7;t+=.6)shoot([cx+.7+(rs()-.5)*.04,gb,Z(t)],[0,1,0],.42+.1*rs(),.011,0,cfgP);
+  for(let t=4.2;t<=6.3;t+=.5)shoot([cx+.7+(rs()-.5)*.04,gb,Z(t)],[0,1,0],.4+.1*rs(),.01,0,cfgJ);
+  for(let t=.7;t<=6.5;t+=.95)shoot([cx+1.1,gb,Z(t)],[0,1,0],.55+.12*rs(),.016,0,cfgE);
+  const mt=new THREE.Matrix4(),setM=(m,f)=>{const X=f[0],Y=f[1],Zz=f[2],p=f[3],s=f[4];m.set(X[0]*s[0],Y[0]*s[1],Zz[0]*s[2],p[0],X[1]*s[0],Y[1]*s[1],Zz[1]*s[2],p[1],X[2]*s[0],Y[2]*s[1],Zz[2]*s[2],p[2],0,0,0,1)},
+   inst=(geo,mat,A)=>{if(!A.length)return;const im=new THREE.InstancedMesh(geo,mat,A.length);A.forEach((a,i)=>{setM(mt,a.f);im.setMatrixAt(i,mt);im.setColorAt(i,a.c)});im.instanceMatrix.needsUpdate=true;im.instanceColor.needsUpdate=true;im.frustumCulled=false;im.castShadow=im.receiveShadow=true;im.userData.plant=1;scene.add(im)},
+   lm=M(0xffffff,{roughness:.6,side:THREE.DoubleSide}),fm2=M(0xffffff,{roughness:.32,side:THREE.DoubleSide}),fe=M(0xffffff,{roughness:.22,side:THREE.DoubleSide});
+  inst(tomLeaf,lm,LV.t);inst(cucLeaf,lm,LV.c);inst(eggLeaf,lm,LV.e);inst(pepLeaf,lm,LV.p);inst(pepLeaf,lm,LV.j);
+  inst(gTom,fm2,FRU.t);inst(gCuc,fm2,FRU.c);inst(gEgg,fe,FRU.e);inst(gPep,fm2,FRU.p);inst(gJal,fm2,FRU.j);inst(calyx,lm,CAL);inst(flower,lm,FLW);
+  [['g',0x5f8c3e,.75],['e',0x667a40,.75],['w',0xb08a55,.85],['s',0xe6dfc8,.9]].forEach(([k,c,r])=>{if(!SG[k].p.length)return;const me=new THREE.Mesh(toGeo(SG[k]),M(c,{roughness:r,side:THREE.DoubleSide}));me.castShadow=me.receiveShadow=true;me.userData.plant=1;scene.add(me)})}}
 // sąsiednie działki: odbicie obrysu względem lewego boku (A–G) i prawego, krótszego boku (E–F); ogrodzenie panelowe dookoła, bez części frontowych
 {const refl=(pts,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],L2=dx*dx+dy*dy;return pts.map(p=>{const t=((p[0]-a[0])*dx+(p[1]-a[1])*dy)/L2,fx=a[0]+t*dx,fy=a[1]+t*dy;return[2*fx-p[0],2*fy-p[1]]})},PLL=refl(PL,PL[0],PL[6]),PLR=refl(PL,PL[4],PL[5]);
  const cs=(p,q,a,b)=>{let t0=0,t1=1;const dx=q[0]-p[0];if(Math.abs(dx)<1e-9){if(p[0]<a||p[0]>b)return null}else{let ta=(a-p[0])/dx,tb=(b-p[0])/dx;if(ta>tb)[ta,tb]=[tb,ta];t0=Math.max(t0,ta);t1=Math.min(t1,tb);if(t0>=t1)return null}return[[p[0]+(q[0]-p[0])*t0,p[1]+(q[1]-p[1])*t0],[p[0]+(q[0]-p[0])*t1,p[1]+(q[1]-p[1])*t1]]};
@@ -1650,10 +1699,10 @@ function kerbRun(P,rs,re,o){o=o||{};const n=P.length,hw=o.hw||.075,H=o.H||.10,BT
    [1.33-.075,5.93+.075,8.73-.075,9.95+.075].forEach(x=>KR.push([[[x,-7.5],[x,-8.0]],0,0]));[2.55-.075,4.15+.075].forEach(t=>KR.push([[[bx+ux*t,by+uy*t],[bx+ux*t+uy*.5,by+uy*t-ux*.5]],0,0]))}   // przerwa w krawężniku: wejście do wiaty
   const fy=RS[8][1];KR.push([[[RS[9][0],fy],[1.33,fy]],0,0]);KR.push([[[5.93,fy],[8.73,fy]],0,0]);   /* krawezniki drogowe: konce proste, prowadzone az do styku z kostka (naroza kostki 1,38 / 5,88 / 8,87 / 9,99) */KR.forEach(([P,a,b])=>kerbRun(P,a,b));{const kg=new THREE.BufferGeometry();kg.setAttribute('position',new THREE.Float32BufferAttribute(KLP,3));const kl=new THREE.LineSegments(kg,new THREE.LineBasicMaterial({color:0x10151a}));kl.visible=false;kl.userData.ln=1;kl.frustumCulled=false;scene.add(kl);LNX.push(kl)}}}   // ślepa uliczka: jezdnia 0,5 m od granic działek, pas trawnika pomiędzy   // ślepa uliczka: od drogi głównej do końca (R13), ze skosami przy obu działkach
 /* kostka pod automatem bramy (jak podjazd i sciezka, poziom -0,30) laczaca podjazd ze sciezka do furtki; wszystkie granice kostki/chodnika z trawnikiem i zwirem: obrzeza betonowe 8x30x100 cm (2 cm nad kostka), po bokach pochylni ta sama listwa o zmiennej wysokosci (nad kostka 2 cm, nad terenem do 36 cm); naroza ciete na ucios */
-{flat([[6.33,-7.1],[8.53,-7.1],[8.53,-5.8],[6.41,-5.8],[6.41,-7.1]],-.30,0xbab5ab);
+{flat([[6.33,-7.1],[8.53,-7.1],[8.53,-5.4],[6.41,-5.4],[6.41,-7.1]],-.30,0xbab5ab);   /* przejscie miedzy podjazdem a chodnikiem do furtki: swiatlo 1,2 m od krawedzi automatu bramy (y -6,61) do krawezznika (y -5,4); wczesniej tylko ok. 0,8 m */
  const OL=[],K=(P,o)=>kerbRun(P,false,false,Object.assign({hw:.04,H:.02,BT:-.18,C:.006,RD0:-.30,LY:-.334,lp:OL},o||{}));
  const bx=14.78,by=-7.5,Ln=Math.hypot(19.45-bx,-2.65-by),ux=(19.45-bx)/Ln,uy=(-2.65-by)/Ln,nx=-uy,ny=ux,Q=(t,s)=>[bx+ux*t+nx*s,by+uy*t+ny*s],
- RBn=[Q(3.35,2.025),Q(3.35,3.025),[16.08,-1.9],[16.08,8.05]],
+ RBn=[Q(3.35,2.025),Q(3.35,3.025),[16.04,-1.9],[16.04,8.05]],
  offP=(P,d)=>{const n=P.length,nl=[];for(let i=0;i<n-1;i++){const dx=P[i+1][0]-P[i][0],dy=P[i+1][1]-P[i][1],l=Math.hypot(dx,dy);nl.push([-dy/l,dx/l])}return P.map((p,i)=>{const a=nl[Math.max(0,i-1)],b=nl[Math.min(n-2,i)],k=1/(1+a[0]*b[0]+a[1]*b[1]);return[p[0]+(a[0]+b[0])*k*d,p[1]+(a[1]+b[1])*k*d]})},
  WL=offP(RBn,.64),ER=offP(RBn,-.64);WL[0]=Q(2.51,2.025);ER[0]=Q(4.19,2.025);WL[1]=[WL[1][0]-ux*.2,WL[1][1]-uy*.2];ER[1]=[ER[1][0]+ux*.2,ER[1][1]+uy*.2];   /* krawezniki chodnika od ogrodu: czolem do slupow wiaty */
     /* krawezniki chodnika od ulicy: czolem do slupow */
@@ -1665,7 +1714,7 @@ function kerbRun(P,rs,re,o){o=o||{};const n=P.length,hw=o.hw||.075,H=o.H||.10,BT
  /* waskie krawezniki po bokach wjazdu i furtki: od lica cokolu slupow (y -7,75) prosto do boku krawezników drogi (y -8,0); czola proste */
  K([[.87,-7.1],[.87,-5.0]]);K([[.87,-5.0],[.87,0]],{RD1:-.25,bot:-.48});   /* podjazd: lewa strona (plaska + pochylnia) */
  K([[6.45,0],[6.45,-5.0]],{RD0:-.25,RD1:-.30,bot:-.48});                    /* podjazd: prawa strona (pochylnia) */
- K([[6.45,-5.0],[6.45,-5.84],[7.21,-5.84],[7.21,-.5]]);   /* waski pas trawnika miedzy podjazdem a poszerzonym chodnikiem */
+ K([[6.45,-5.0],[6.45,-5.4],[7.21,-5.4],[7.21,-.5]]);   /* waski pas trawnika miedzy podjazdem a poszerzonym chodnikiem */
  const og=new THREE.BufferGeometry();og.setAttribute('position',new THREE.Float32BufferAttribute(OL,3));const ol=new THREE.LineSegments(og,new THREE.LineBasicMaterial({color:0x10151a}));ol.visible=false;ol.userData.ln=1;ol.frustumCulled=false;scene.add(ol);LNX.push(ol)}
 /* slupy swiatlowodowe: smukle, stozkowe slupy stalowe (grafit, ocynk) o wysokosci 5,2 m nad terenem, fi 14 -> 9 cm; na pasie trawnika miedzy ulica a ogrodzeniem: wylacznie wzdluz ulicy glownej (x od -11,2 do 28,8, w granicach trawnika), bez skretu w slepa uliczke; rozstaw max 15 m (norma: do ok. 40 m); jeden slup (x=-1,2) obok zlacza pomiarowego; wiazka ADSS z lekkim zwisem; od slupa przy zlaczu odejscie do domu pod okapem na lewo od lewego kinkietu */
 {const sl=M(0x4a5056,{roughness:.55,metalness:.55}),dk=M(0x2b2f33,{roughness:.5,metalness:.5}),cb=M(0x1b1d20,{roughness:.55,metalness:.2}),wh=M(0xe6e6e2,{roughness:.6}),
@@ -2213,6 +2262,8 @@ return out}
    const iT=inn.map(p=>V(p[0],TOP,-p[1])),oT=out.map(p=>V(p[0],TOP,-p[1])),iB=inn.map(p=>V(p[0],BOT,-p[1])),oB=out.map(p=>V(p[0],BOT,-p[1])),segs=closed?m:m-1;
    for(let k=0;k<segs;k++){const k2=(k+1)%m;quad(iT[k],iT[k2],oT[k2],oT[k]);quad(iT[k],iB[k],iB[k2],iT[k2]);quad(oT[k],oT[k2],oB[k2],oB[k]);quad(iT[k],oT[k],oB[k],iB[k])}
    if(!closed){const l=m-1;quad(iT[l],oT[l],oB[l],iB[l])}})});
+ /* jedna wspolna wstega miedzy opaska zwirowa domu a zwirem chodnika z plytami (x 15,40, y 2,0-8,05): oba zwiry stykaja sie, wiec algorytm nie dawal zadnej (wczesniej: dwie wstegi z 4 cm szpara trawnika) */
+ {const y0=2.0,y1=8.05,xa=15.4,xb=15.4+W,iT=[V(xa,TOP,-y0),V(xa,TOP,-y1)],oT=[V(xb,TOP,-y0),V(xb,TOP,-y1)],iB=[V(xa,BOT,-y0),V(xa,BOT,-y1)],oB=[V(xb,BOT,-y0),V(xb,BOT,-y1)];quad(iT[0],iT[1],oT[1],oT[0]);quad(iT[0],iB[0],iB[1],iT[1]);quad(oT[0],oT[1],oB[1],oB[0]);quad(iT[0],oT[0],oB[0],iB[0]);quad(iT[1],oT[1],oB[1],iB[1])}
  if(idx.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();add(g,M(0x0b0c0d,{roughness:.55,side:THREE.DoubleSide}),0,0,0,false)}}
 batchStatics();
 const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
@@ -2223,7 +2274,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
  dseg=(x,y,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],L=dx*dx+dy*dy,t=L?Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/L)):0;return Math.hypot(x-a[0]-dx*t,y-a[1]-dy*t)},
  dpoly=(x,y,P)=>{let m=1e9;for(let i=0;i<P.length;i++)m=Math.min(m,dseg(x,y,P[i],P[(i+1)%P.length]));return m},
  drect=(x,y,r)=>Math.hypot(Math.max(r[0]-x,0,x-r[2]),Math.max(r[1]-y,0,y-r[3])),inr=(x,y,r)=>x>=r[0]&&x<=r[2]&&y>=r[1]&&y<=r[3],
- RECT=[[17.8,29.3,17.9,36.4],[20.8,29.3,20.9,36.4],[17.8,36.3,20.9,36.4],[17.8,29.3,18.85,29.4],[19.85,29.3,20.9,29.4],[18.52,25.6,20.965,28.35],
+ RECT=[[17.8,29.3,17.9,36.4],[20.8,29.3,20.9,36.4],[17.8,36.3,20.9,36.4],[17.8,29.3,18.85,29.4],[19.85,29.3,20.9,29.4],[18.526,24.6,20.971,27.35],
   [9.27,.13,9.67,.53],[14.37,12.77,14.77,13.17],[11.4,11.7,14.0,13.4],[9.8,16.4,10.45,18.15]],CIR=[[15.75,33.75,1.62],[17.5,36.38,.14]];let CAR=null;
  const blocked=(x,y)=>{if(!pip(x,y,PLY)||dpoly(x,y,PLY)<PR+.05)return true;for(const P of (window.FOOT||[]))if(pip(x,y,P)||dpoly(x,y,P)<PR)return true;
   for(const r of RECT)if(drect(x,y,r)<PR)return true;for(const c of CIR)if(Math.hypot(x-c[0],y-c[1])<c[2]+PR)return true;if(CAR&&drect(x,y,CAR)<PR)return true;return false},
