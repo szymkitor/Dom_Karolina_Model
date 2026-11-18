@@ -142,6 +142,8 @@ body.mtool canvas{cursor:crosshair}
 #cmp{background:var(--lg-tint),var(--lg-bg) !important;border:1px solid var(--lg-bd) !important;box-shadow:var(--lg-sh);-webkit-backdrop-filter:var(--lg-f);backdrop-filter:var(--lg-f);color:#fff;cursor:pointer;overflow:hidden;text-shadow:0 1px 6px rgba(10,25,45,.6);-webkit-tap-highlight-color:transparent;transition:transform .12s}#cmp:active{transform:scale(.94)}
 #cmp::before{content:"";position:absolute;left:13%;right:13%;top:2px;height:46%;border-radius:50% 50% 60% 60%/60% 60% 100% 100%;background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,0));opacity:.8;pointer-events:none}
 #cma{position:relative;z-index:1}
+#wkj,#wkl,#wkx,#wkh,#wkm{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+body.walking{touch-action:none;-webkit-text-size-adjust:100%}
 #wkj,#wkl,#wkx,#wkh{display:none}
 body.walking #wkj,body.walking #wkl{display:block}body.walking #wkx{display:block}body.walking #wkh.show{display:block}
 #wkj,#wkl{position:fixed;left:calc(22px + env(safe-area-inset-left,0px));bottom:calc(74px + env(safe-area-inset-bottom,0px));width:112px;height:112px;border-radius:50%;z-index:40;touch-action:none;user-select:none;-webkit-user-select:none;background:var(--lg-tint),var(--lg-bg);border:1px solid var(--lg-bd);box-shadow:var(--lg-sh);-webkit-backdrop-filter:var(--lg-f);backdrop-filter:var(--lg-f)}
@@ -2562,6 +2564,14 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
   const end=e=>{if(e.pointerId!==pid)return;pid=null;clr();if(drag){drag=null;const r=jb.getBoundingClientRect();JP[id]=[r.left/document.documentElement.clientWidth,r.top/innerHeight];JS();return}W[kx]=W[ky]=0;kn.style.transform=''};jb.addEventListener('pointerup',end);jb.addEventListener('pointercancel',end);
   jb.addEventListener('contextmenu',e=>e.preventDefault());return jb};
  document.body.prepend(ex,mkJ('wkj','jx','jy'),mkJ('wkl','lx','ly'),mn,ht);
+ /* iOS/telefon: przytrzymanie palca na joysticku nie moze uruchamiac lupy/menu kontekstowego, a dwa palce naraz (oba joysticki) nie moga robic zoomu ani powiekszenia strony */
+ {const wk=()=>document.body.classList.contains('walking'),own=t=>!!(t&&t.closest&&t.closest('#wkj,#wkl'));
+  ['gesturestart','gesturechange','gestureend'].forEach(n=>document.addEventListener(n,e=>{if(wk())e.preventDefault()},{passive:false}));
+  document.addEventListener('touchstart',e=>{if(wk()&&(e.touches.length>1||own(e.target)))e.preventDefault()},{passive:false});
+  document.addEventListener('touchmove',e=>{if(wk()&&(e.touches.length>1||own(e.target)||e.target===ren.domElement))e.preventDefault()},{passive:false});
+  document.addEventListener('dblclick',e=>{if(wk())e.preventDefault()},{passive:false});
+  const mv=document.querySelector('meta[name=viewport]'),mv0=mv?mv.content:'';
+  if(mv)new MutationObserver(()=>{mv.content=wk()?mv0.replace(/,?\s*(maximum-scale|user-scalable|minimum-scale)=[^,]*/g,'')+',maximum-scale=1,minimum-scale=1,user-scalable=no':mv0}).observe(document.body,{attributes:true,attributeFilter:['class']})}
  let S=null,lid=null,lx=0,ly=0,hT=0;
  const cv=ren.domElement;
  cv.addEventListener('pointerdown',e=>{if(!W.on||lid!==null)return;lid=e.pointerId;lx=e.clientX;ly=e.clientY;try{cv.setPointerCapture(lid)}catch(x){}});
