@@ -220,7 +220,7 @@ const ins=(()=>{const d=document.createElement('div');d.style.cssText='position:
 const W=()=>document.documentElement.clientWidth,H=()=>Math.min(document.documentElement.clientHeight,innerHeight,(window.visualViewport&&visualViewport.height)||1e9);
 let mx=0,my=0,menu=false,cur=-1;const TP=subs.map(()=>[0,0]);
 /* menu radialne: bąbelki podrzędne układają się na łuku (lub kilku łukach) wokół głównego, w stronę wnętrza ekranu */
-const blk=()=>{const r=[];if(document.body.classList.contains('walking'))['wkj','wkl'].forEach(id=>{const e=document.getElementById(id);if(e&&e.offsetWidth){const b=e.getBoundingClientRect();r.push([b.left,b.top,b.right,b.bottom])}});return r};
+const blk=()=>{const r=[];if(document.body.classList.contains('walking'))['wkj','wkl','wkx'].forEach(id=>{const e=document.getElementById(id);if(e&&e.offsetWidth){const b=e.getBoundingClientRect();r.push([b.left,b.top,b.right,b.bottom])}});return r};
 function arcOf(cx,cy,R){const w=W(),h=H(),m=SS/2+8,bk=blk(),bm=SS/2+6,x0=ins.l+m,x1=w-ins.r-m,y0=ins.t+m,y1=h-ins.b-m,N=72,st=Math.PI*2/N,ok=[];for(let i=0;i<N;i++){const a=i*st,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);ok.push(x>=x0&&x<=x1&&y>=y0&&y<=y1&&!bk.some(b=>x>b[0]-bm&&x<b[2]+bm&&y>b[1]-bm&&y<b[3]+bm))}
  if(ok.every(v=>v))return{start:-Math.PI/2,len:st*(N-1)};let best={start:0,len:0};
  for(let s=0;s<N;s++){if(!ok[s]||ok[(s-1+N)%N])continue;let L=0;while(L<N&&ok[(s+L)%N])L++;if((L-1)*st>best.len)best={start:s*st,len:(L-1)*st}}return best}
