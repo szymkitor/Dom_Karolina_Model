@@ -869,11 +869,11 @@ function fwall(x0,y0,x1,y1,sa,sb){const P0=[x0,y0],P1=[x1,y1],SQ=(x,y)=>({c:[x,y
   const gt2=new THREE.CanvasTexture(gc);gt2.wrapS=gt2.wrapT=THREE.RepeatWrapping;gt2.anisotropy=8;const gm2=M(0xffffff,{map:gt2,roughness:1});gm2.userData.lnTex='grv';
   /* sciezka zwirowa z plytami: od tarasu tylnego prosto do y 2,0, dalej LUKIEM (dwa kubiczne luki Beziera: lewy i prawy brzeg) w dol i w lewo, do ukosnej krawedzi kostki: stala szerokosc 1,28 m, koniec doczolowo (prostopadle do ukosu) przy waskim krawezniku kostki */
   const cb3=(P,t)=>{const u=1-t;return[u*u*u*P[0][0]+3*u*u*t*P[1][0]+3*u*t*t*P[2][0]+t*t*t*P[3][0],u*u*u*P[0][1]+3*u*u*t*P[1][1]+3*u*t*t*P[2][1]+t*t*t*P[3][1]]},
-   dL=Math.hypot(ra[0]-13.05,ra[1]),dd=[(ra[0]-13.05)/dL,ra[1]/dL],TT=[dd[1],-dd[0]],EE=[13.05+dd[0]*1.9,dd[1]*1.9],   /* dd: kierunek ukosnej krawedzi kostki; TT: do niej prostopadle (sciezka dochodzi doczolowo); EE: srodek konca sciezki na ukosie */
-   PC=[[16.04,2.0],[16.04,.1],[EE[0]-TT[0]*1.65,EE[1]-TT[1]*1.65],EE],HW2=.64,NS=60,lft=[],rgt=[];   /* os luku (Bezier) i dwa brzegi w stalej odleglosci 0,64 m = stala szerokosc 1,28 m */
+   dL=Math.hypot(ra[0]-13.05,ra[1]),dd=[(ra[0]-13.05)/dL,ra[1]/dL],TT=[dd[1],-dd[0]],EE=[13.05+dd[0]*1.3,dd[1]*1.3],   /* dd: kierunek ukosnej krawedzi kostki; TT: do niej prostopadle (sciezka dochodzi doczolowo); EE: srodek konca sciezki na ukosie */
+   PC=[[16.04,2.7],[16.04,1.2],[EE[0]-TT[0]*1.6,EE[1]-TT[1]*1.6],EE],HW2=.64,NS=60,lft=[],rgt=[];   /* os luku (Bezier) i dwa brzegi w stalej odleglosci 0,64 m = stala szerokosc 1,28 m */
   for(let i=0;i<=NS;i++){const t=i/NS,c=cb3(PC,t),a0=cb3(PC,Math.max(0,t-.002)),a1=cb3(PC,Math.min(1,t+.002)),tl=Math.hypot(a1[0]-a0[0],a1[1]-a0[1]),nx=-(a1[1]-a0[1])/tl,ny=(a1[0]-a0[0])/tl;lft.push([c[0]-nx*HW2,c[1]-ny*HW2]);rgt.push([c[0]+nx*HW2,c[1]+ny*HW2])}
   const zw=(pt,sk)=>{const gg=new THREE.ShapeGeometry(new THREE.Shape(pt.map(p=>new THREE.Vector2(p[0],p[1]))));gg.rotateX(-Math.PI/2);add(gg,gm2,0,-.295,0,false);if(sk)pt.skip=sk;GRVP.push(pt)};
-  zw([[15.40,2.0],[16.68,2.0],[16.68,8.05],[15.40,8.05]],[0,2]);
+  zw([[15.40,2.7],[16.68,2.7],[16.68,8.05],[15.40,8.05]],[0,2]);
   {const cp=[...lft,...rgt.slice().reverse()];zw(cp,[cp.length-1])}
   const pc=document.createElement('canvas');pc.width=pc.height=256;const p2=pc.getContext('2d');p2.fillStyle='#6b6a67';p2.fillRect(0,0,256,256);
   for(let i=0;i<22;i++){const cx=rg()*256,cy=rg()*256,rr=30+rg()*80,gd=p2.createRadialGradient(cx,cy,0,cx,cy,rr);gd.addColorStop(0,rg()<.5?'rgba(130,129,125,.28)':'rgba(70,69,66,.3)');gd.addColorStop(1,'rgba(100,99,95,0)');p2.fillStyle=gd;p2.fillRect(cx-rr,cy-rr,2*rr,2*rr)}
@@ -881,7 +881,7 @@ function fwall(x0,y0,x1,y1,sa,sb){const P0=[x0,y0],P1=[x1,y1],SQ=(x,y)=>({c:[x,y
   for(let i=0;i<14;i++){p2.fillStyle='rgba(20,20,18,.35)';p2.beginPath();p2.arc(rg()*256,rg()*256,.8+rg()*1.4,0,6.3);p2.fill()}   /* pory betonu */
   const pt2=new THREE.CanvasTexture(pc);pt2.anisotropy=8;const plM=M(0xffffff,{map:pt2,roughness:.92});
   const plate=(x,y,w,d)=>add(new THREE.BoxGeometry(w,.04,d),plM,x,-.285,-y);
-  for(let k=3;k<11;k++)plate(16.04,.35+.7*k+.25,1,.5);   /* prosta czesc: plyty 1,0 x 0,5 m co 0,7 m */
+  for(let k=4;k<11;k++)plate(16.04,.35+.7*k+.25,1,.5);   /* prosta czesc: plyty 1,0 x 0,5 m co 0,7 m */
   {const cl=lft.map((q,i)=>[(q[0]+rgt[i][0])/2,(q[1]+rgt[i][1])/2]),cum=[0];for(let i=1;i<cl.length;i++)cum.push(cum[i-1]+Math.hypot(cl[i][0]-cl[i-1][0],cl[i][1]-cl[i-1][1]));
    const T0=cum[cum.length-1]-.34,n=Math.max(1,Math.round(T0/.7));for(let q=0;q<=n;q++){const sd=T0*q/n;let i=1;while(i<cl.length-1&&cum[i]<sd)i++;const f=(sd-cum[i-1])/(cum[i]-cum[i-1]),x=cl[i-1][0]+(cl[i][0]-cl[i-1][0])*f,y=cl[i-1][1]+(cl[i][1]-cl[i-1][1])*f,tx=cl[i][0]-cl[i-1][0],ty=cl[i][1]-cl[i-1][1],th=Math.atan2(tx,-ty),la=q===n,m=la?plate(EE[0]-TT[0]*.34,EE[1]-TT[1]*.34,1,.5):plate(x,y,1,.5);m.rotation.y=la?Math.atan2(dd[1],dd[0]):th}}}   /* plyty po luku: dluzszy bok (1,0 m) prostopadle do kierunku sciezki, co ok. 0,7 m wzdluz osi luku, ostatnia rownolegla do krawedzi kostki (ukosu), ok. 9 cm od krawieznika */   /* plyty prostokatne 1,0 x 0,5 m co 0,76 m, miedzy nimi zwir */
  // opaska żwirowa przy ścianach stykających się z trawnikiem
