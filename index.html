@@ -193,7 +193,7 @@ body.walking canvas{touch-action:none}
   <h4>Szopa</h4><div class="chips"><button id="l8">Wnętrze</button><button id="l6">Światło zewnętrzne</button></div>
   <h4>Wiata śmietnikowa</h4><div class="chips"><button id="l9">Wnętrze</button></div>
   <h4>Tunel foliowy</h4><div class="chips"><button id="l10">Żarówka</button></div>
-  <h4>Ogród</h4><div class="chips"><button id="l11">Lampa kula</button></div>
+  <h4>Ogród</h4><div class="chips"><button id="l11">Lampa kula – narożnik</button><button id="l12">Lampa kula – podjazd</button></div>
   <h4>Dom</h4><div class="chips"><button id="l2">Wejście</button><button id="l3">Światło tarasowe</button><button id="l5f">Kinkiety – front</button><button id="l5s">Kinkiety – boczne</button><button id="l5t">Kinkiety – taras</button><button id="l7">Pompa ciepła</button><button id="l4">Nad garażem</button><button id="l1">Trawnik</button></div></section></div>
 <div class="ui hid" id="pn_elem">
  <div class="hd"><div class="tt">Elementy</div><div class="st">Brama, roleta, pergola</div></div>
@@ -486,7 +486,7 @@ function lnSet(on){if(on===LN.on)return;if(on){lnBuild();LN.sw=[];LN.hid=[];if(w
    if(o.isMesh){const m=o.material;if(o.isInstancedMesh||o.userData.plant||(m&&m.userData&&m.userData.plant)||(m&&!Array.isArray(m)&&m.blending===THREE.AdditiveBlending)){if(o.visible){o.visible=false;LN.hid.push(o)}}else{LN.sw.push([o,m]);o.material=lnMat(m)}}
    else if((o.isPoints||o.isSprite||o===gridMesh)&&o.visible){o.visible=false;LN.hid.push(o)}});LN.ls.forEach(l=>l.visible=true);LN.hs.forEach(l=>l.visible=true);LNX.forEach(l=>l.visible=true)}
  else{LN.ls.forEach(l=>l.visible=false);LN.hs.forEach(l=>l.visible=false);LNX.forEach(l=>l.visible=false);LN.sw.forEach(([o,m])=>o.material=m);LN.hid.forEach(o=>o.visible=true);LN.sw=[];LN.hid=[];ren.shadowMap.needsUpdate=true;shReq=true}
- LN.on=on;['lm','l1','l2','l3','l4','l5f','l5s','l5t','l6','l7','l8','l9','l10','l11','tm','dy','pl','ptgo','camv'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=on});if(on){playing=false;document.getElementById('pl').textContent='▶';document.getElementById('spr').style.display='none'}dirty=true}
+ LN.on=on;['lm','l1','l2','l3','l4','l5f','l5s','l5t','l6','l7','l8','l9','l10','l11','l12','tm','dy','pl','ptgo','camv'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=on});if(on){playing=false;document.getElementById('pl').textContent='▶';document.getElementById('spr').style.display='none'}dirty=true}
 function drawFrame(){applyProj();if(window.__mtUpd)window.__mtUpd();if(!LN.on){ren.render(scene,cam);return}
  ren.shadowMap.needsUpdate=false;const bg=scene.background,sv=bg&&bg.clone?bg.clone():null;if(sv)bg.set(0xffffff);ren.render(scene,cam);if(sv)bg.copy(sv)}
 document.getElementById('orth').onclick=e=>{const o=!ORTHO;setProj(o);e.currentTarget.classList.toggle('on',o)};
@@ -1938,11 +1938,11 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
  const gm=new THREE.Mesh(new THREE.BoxGeometry(.012,.5,.68),new THREE.MeshBasicMaterial({color:0x141a20}));gm.position.set(sx+.016,sy,sz);gm.userData.cOn=0xffdf9e;gm.userData.cOff=0x141a20;scene.add(gm);
  addLight('l8',gm,new THREE.SpotLight(0xffd9a0,1.5,5,.9,.8,1),new THREE.Vector3(sx+.08,sy,sz),new THREE.Vector3(sx+3,sy-1.3,sz))}
 /* lampa ogrodowa kula (opalowy dyfuzor PE/PMMA fi 60 cm na niskiej czarnej podstawie fi 20 cm x 3 cm, E27): w naroznik trawnika miedzy zewnetrzna krawedzia chodnika z plytami a ukosem kostki (wierzcholek 14,57; -1,49), po 0,8 m od obu krawedzi, srodek (15,70; -1,47); wlacznik: chip l11 (Ogrod) */
-{const lx=15.7,ly=-1.47,gy=-.30,bk=new THREE.MeshStandardMaterial({color:0x17181a,roughness:.6,metalness:.2}),gm=new THREE.Mesh(new THREE.SphereGeometry(.3,48,32),new THREE.MeshBasicMaterial({color:0xcfd3d6}));gm.userData.cOn=0xf0ede6;gm.userData.cOff=0xcfd3d6;
+[['l11',15.7,-1.47],['l12',6.83,-4.9]].forEach(([lid,lx,ly])=>{const gy=-.30,bk=new THREE.MeshStandardMaterial({color:0x17181a,roughness:.6,metalness:.2}),gm=new THREE.Mesh(new THREE.SphereGeometry(.3,48,32),new THREE.MeshBasicMaterial({color:0xcfd3d6}));gm.userData.cOn=0xf0ede6;gm.userData.cOff=0xcfd3d6;
  const b1=new THREE.Mesh(new THREE.CylinderGeometry(.1,.106,.03,40),bk),b2=new THREE.Mesh(new THREE.CylinderGeometry(.085,.1,.012,40),bk);b1.position.set(lx,gy+.015,-ly);b2.position.set(lx,gy+.036,-ly);b1.castShadow=b2.castShadow=true;
  gm.position.set(lx,gy+.315,-ly);scene.add(b1,b2,gm);
  const pt=new THREE.PointLight(0xfff0d8,1.2,9,1.5);pt.position.set(lx,gy+.315,-ly);scene.add(pt);
- const l=lights.l11={on:false,spots:[pt],lenses:[gm]}}
+ lights[lid]={on:false,spots:[pt],lenses:[gm]}});   /* l12: druga kula na dolnym koncu waskiego pasa trawnika miedzy podjazdem a poszerzonym chodnikiem, srodek (6,83; -4,90), ok. 0,5 m od krawezznika w y -5,4 */
 // slupek ogrodowy z 3 zintegrowanymi gniazdkami (P18b, ok. 12 cm od pasa kory przy tylnej granicy), kabel do pompy filtrującej basenu (po ziemi i dalej przy dole ściany basenu) oraz kabel do tylnej ściany tunelu foliowego: wyłącznik na ścianie i żarówka w połowie długości tunelu (chip l10)
 {const px=17.5,pz=-36.38,nx=0,nz=1,th=Math.atan2(nx,nz),CX=15.75,CY=33.75,gy=-.30,dk=M(0x2b2e33,{roughness:.55,metalness:.35}),wh=M(0xd9dcde,{roughness:.5}),bk=M(0x111214,{roughness:.7}),
  g=new THREE.Group();g.position.set(px,gy+.03,pz);g.rotation.y=th;scene.add(g);
@@ -1986,7 +1986,7 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
   const gm=new THREE.MeshBasicMaterial({color:0xcfd6d9});gm.userData={cOn:0xfff3d0,cOff:0xcfd6d9};const bu=new THREE.Mesh(new THREE.SphereGeometry(.05,16,12),gm);bu.position.copy(W(cx,gy+1.85,Ym));scene.add(bu);
   const nk=new THREE.Mesh(new THREE.CylinderGeometry(.018,.03,.05,12),gm);nk.position.copy(W(cx,gy+1.905,Ym));scene.add(nk);
   const pt=new THREE.PointLight(0xffd9a0,2.0,5,1.5);pt.position.copy(W(cx,gy+1.83,Ym));scene.add(pt);lights.l10={on:false,spots:[pt],lenses:[bu,nk,bt]}}}
-['l1','l2','l3','l4','l6','l7','l8','l9','l10','l11'].forEach(id=>{$(id).onclick=()=>setL(id,!lights[id].on)});
+['l1','l2','l3','l4','l6','l7','l8','l9','l10','l11','l12'].forEach(id=>{$(id).onclick=()=>setL(id,!lights[id].on)});
 // scalenie statycznych obiektów o tym samym materiale w jeden obiekt: geometria bez zmian, wielokrotnie mniej wywołań rysowania (przezroczyste, wielomateriałowe i ruchome zostają osobno)
 function batchStatics(){scene.updateMatrixWorld(true);
  const mkey=m=>(m.isMeshStandardMaterial&&!m.envMap&&!m.transparent&&m.emissive.getHex()===0&&m.emissiveIntensity===1)?'S'+m.color.getHex()+'|'+m.roughness+'|'+m.metalness+'|'+(m.map?m.map.uuid:'')+'|'+m.side+'|'+m.alphaTest:m.uuid,G=new Map();
@@ -2136,7 +2136,7 @@ hoseHook(0,.66,-1.05,-Math.PI/2);hoseHook(1,.66,-20.3,-Math.PI/2);
   m(plate,blk,0,0,.007);m(body,blk,0,0,.014);{const ll=new THREE.LineSegments(sgL,sgLM);ll.position.set(0,0,.014);ll.visible=false;ll.userData.ln=1;g.add(ll);LNX.push(ll)}m(cap,blk,0,.1,.014);m(cap,blk,0,-.1,.014);m(lg,SG[k].lens,0,.1008,.014);m(lg,SG[k].lens,0,-.1008,.014).userData.lensDown=1;m(wash,SG[k].glow,0,0,.004).renderOrder=4;
   g.position.set(x,y,z);g.rotation.y=yaw;g.scale.setScalar(1.4);g.userData.sconce=k;scene.add(g);g.traverse(o=>{if(o.isMesh&&o.material!==SG[k].glow)statics.push(o)})};
  sc(.58,1.568,0,0,'f');sc(6.73,1.568,0,0,'f');sc(10.06,1.568,-2.5,0,'f');sc(14.9,1.568,-3.6,Math.PI/2,'s');sc(14.9,1.568,-6.6,Math.PI/2,'s');sc(9.8,1.568,-13.665,Math.PI/2,'t');sc(9.8,1.568,-17.28,Math.PI/2,'t')}
-const LL=['l1','l2','l3','l4','l6','l7','l8','l9','l10','l11'];
+const LL=['l1','l2','l3','l4','l6','l7','l8','l9','l10','l11','l12'];
 function syncM(){const any=LL.some(id=>lights[id]&&lights[id].on)||(SG&&SCK.some(k=>SG[k].on));$("lm").classList.toggle('on',any);if(window.__fabSync)__fabSync(any)}
 updSc();SCK.forEach(k=>{$(SCI[k]).onclick=()=>{SG[k].on=!SG[k].on;$(SCI[k]).classList.toggle('on',SG[k].on);updSc();syncM()}});
 LL.forEach(id=>setL(id,false));SCK.forEach(k=>SG[k].on=false);updSc();syncM();
