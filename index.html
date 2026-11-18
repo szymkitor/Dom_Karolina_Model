@@ -1439,7 +1439,7 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
  Pt.forEach((p,i)=>{const h=2.05+Math.random()*.3;d2.position.set(p[0],-.34,-p[1]);d2.scale.set(.9+Math.random()*.15,h,.9+Math.random()*.15);d2.rotation.y=Math.random()*6;d2.updateMatrix();im2.setMatrixAt(i,d2.matrix);im2.setColorAt(i,c2.setHSL(.27+Math.random()*.07,.45+Math.random()*.15,.30+Math.random()*.08))});
  im2.frustumCulled=false;im2.castShadow=im2.receiveShadow=true;scene.add(im2)}
 /* drzewko magnolii (O5c), posadzone w gruncie na trawniku miedzy kostka (kraweznik y -3,3), murowanym frontem (y -7,5), skosem wiaty smietnikowej i chodnikiem do wiaty: pien ok. 1 m, 4-5 konarow, galazki, duze lisciaste (ciemnozielone) i ok. 200 kwiatow (kremowo-rozowych); korona jest przycinana do wolnej przestrzeni - zadna galazka, lisc ani kwiat nie wchodzi nad kostke, mur ogrodzenia, siatke przy skosie ani wiate */
-{const cx=11.5,cy=-5.6,y0=-.30,rnd=(()=>{let s=91;return()=>(s=(s*16807)%2147483647)/2147483647})(),gs=()=>rnd()+rnd()+rnd()-1.5,
+{const cx=11.75,cy=-5.6,y0=-.30,rnd=(()=>{let s=91;return()=>(s=(s*16807)%2147483647)/2147483647})(),gs=()=>rnd()+rnd()+rnd()-1.5,
  vs=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],va=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],vm=(a,k)=>[a[0]*k,a[1]*k,a[2]*k],vn=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]},vc=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
  const SX=14.78,SY=-7.5,SL=Math.hypot(19.45-SX,-2.65-SY),SUX=(19.45-SX)/SL,SUY=(-2.65-SY)/SL;
  const ok=p=>{const wx=cx+p[0],wy=cy-p[2],t=(wx-SX)*SUX+(wy-SY)*SUY,s=-(wx-SX)*SUY+(wy-SY)*SUX;return wy<-3.55&&wx>10.7&&wy>-7.1&&s>.5&&t<2.2};   /* wolna przestrzen: poza kostka/kraweznikiem, murem, siatka przy skosie i pasem wiaty */
