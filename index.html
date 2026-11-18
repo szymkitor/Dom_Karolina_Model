@@ -2078,7 +2078,8 @@ function flood(id,x,y,z,yaw){const dk=M(0x2a2d31,{roughness:.5,metalness:.6}),g=
  g.position.set(x,y,z);g.rotation.y=yaw;scene.add(g);
  const sy=Math.sin(yaw),cy=Math.cos(yaw),f=new THREE.Vector3(sy*Math.cos(th),-Math.sin(th),cy*Math.cos(th)),p0=new THREE.Vector3(x+sy*.06,y,z+cy*.06).addScaledVector(f,.07);
  addLight(id,lens,new THREE.SpotLight(0xfff0d6,2.4,16,.85,.55,1),p0,p0.clone().addScaledVector(f,6))}
-flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2.12,-34.5,0);   // halogen nad drzwiami szopy
+flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2.12,-34.5,0);
+/* halogen l4 (front, na podjazd) rzuca cien: auto zaslania kostke/podjazd takze przy swietle sztucznym (reflektor wczesniej bez castShadow) */{const sp=lights.l4.spots[0];sp.castShadow=true;sp.shadow.mapSize.set(1024,1024);sp.shadow.camera.near=.25;sp.shadow.camera.far=18;sp.shadow.bias=-.0008;sp.shadow.normalBias=.02}   // halogen nad drzwiami szopy
 
 [['l7',.55,9.85],['l3',11.4,12.55,2.39],['l3',12.7,12.55,2.39],['l3',14.0,12.55,2.39]].forEach(([id,x,Y,H=E])=>{const tr=new THREE.Mesh(new THREE.CylinderGeometry(.095,.095,.008,24),M(0xdfe2e4,{roughness:.5,metalness:.4})),ln=new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.008,24),new THREE.MeshBasicMaterial({color:0xfff1cf}));
  tr.position.set(x,H-.004,-Y);ln.position.set(x,H-.011,-Y);scene.add(tr,ln);
@@ -2105,7 +2106,7 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
  const gm=new THREE.Mesh(new THREE.BoxGeometry(.012,.5,.68),new THREE.MeshBasicMaterial({color:0x141a20}));gm.position.set(sx+.016,sy,sz);gm.userData.cOn=0xffdf9e;gm.userData.cOff=0x141a20;scene.add(gm);
  addLight('l8',gm,new THREE.SpotLight(0xffd9a0,1.5,5,.9,.8,1),new THREE.Vector3(sx+.08,sy,sz),new THREE.Vector3(sx+3,sy-1.3,sz))}
 /* lampa ogrodowa kula (opalowy dyfuzor PE/PMMA fi 60 cm na niskiej czarnej podstawie fi 20 cm x 3 cm, E27): w naroznik trawnika miedzy zewnetrzna krawedzia chodnika z plytami a ukosem kostki (wierzcholek 14,57; -1,49), po 0,8 m od obu krawedzi, srodek (15,70; -1,47); wlacznik: chip l11 (Ogrod) */
-[['l11',15.7,-1.47],['l12',6.83,-4.9],['l13',12.0,-3.6]].forEach(([lid,lx,ly])=>{const gy=-.30,bk=new THREE.MeshStandardMaterial({color:0x17181a,roughness:.6,metalness:.2}),gm=new THREE.Mesh(new THREE.SphereGeometry(.3,48,32),new THREE.MeshBasicMaterial({color:0xcfd3d6}));gm.userData.cOn=0xf0ede6;gm.userData.cOff=0xcfd3d6;
+[['l11',15.7,-1.47],['l12',6.83,-4.9],['l13',10.82,-2.90]].forEach(([lid,lx,ly])=>{const gy=-.30,bk=new THREE.MeshStandardMaterial({color:0x17181a,roughness:.6,metalness:.2}),gm=new THREE.Mesh(new THREE.SphereGeometry(.3,48,32),new THREE.MeshBasicMaterial({color:0xcfd3d6}));gm.userData.cOn=0xf0ede6;gm.userData.cOff=0xcfd3d6;
  const b1=new THREE.Mesh(new THREE.CylinderGeometry(.1,.106,.03,40),bk),b2=new THREE.Mesh(new THREE.CylinderGeometry(.085,.1,.012,40),bk);b1.position.set(lx,gy+.015,-ly);b2.position.set(lx,gy+.036,-ly);b1.castShadow=b2.castShadow=true;
  gm.position.set(lx,gy+.315,-ly);scene.add(b1,b2,gm);
  const pt=new THREE.PointLight(0xfff0d8,1.2,9,1.5);pt.position.set(lx,gy+.315,-ly);scene.add(pt);
