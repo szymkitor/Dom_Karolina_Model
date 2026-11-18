@@ -2523,7 +2523,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
  gap=(x,y)=>{if(y>-8.4&&y<-6.8){const g=gate.position.x;if(g>=1.7&&x>=1.62&&x<=Math.min(5.65,.7+g))return true;const F=window.FK;if(F&&Math.abs(F.p)>.9&&x>=9.0&&x<=9.68)return true}
   if(window.SD&&SD.f&&SD.f.p>.55){const q=WT(x,y);return q[0]>=2.65&&q[0]<=4.05&&q[1]>=-1&&q[1]<=.45}return false},
  outOk=(x,y)=>{if(x>-11.6&&x<31.6&&y>-15.3&&window.RDW&&pip(x,y,RDW))return true;return dpoly(x,y,PLY)<.7&&(y<-6.9||(x>14.7&&y<21.6))},
- blocked=(x,y)=>{const q=WT(x,y);if(y>-8.2&&y<-6.5&&!gap(x,y))for(const r of FW)if(drect(x,y,r)<PR)return true;if(q[0]>-.5&&q[0]<7.3&&q[1]>-.6&&q[1]<1.2&&!gap(x,y))for(const r of SK)if(drect(q[0],q[1],r)<PR)return true;if(q[0]>1&&q[0]<5.7&&q[1]>-.5&&q[1]<2.5)for(const r of wiWalls())if(drect(q[0],q[1],r)<PR)return true;
+ blocked=(x,y)=>{const q=WT(x,y);for(const L of [[15.7,-1.47],[6.83,-4.9],[10.82,-2.90]])if(Math.hypot(x-L[0],y-L[1])<.3+PR)return true;   /* lampy-kule fi 60 cm (l11, l12, l13) */if(y>-8.2&&y<-6.5&&!gap(x,y))for(const r of FW)if(drect(x,y,r)<PR)return true;if(q[0]>-.5&&q[0]<7.3&&q[1]>-.6&&q[1]<1.2&&!gap(x,y))for(const r of SK)if(drect(q[0],q[1],r)<PR)return true;if(q[0]>1&&q[0]<5.7&&q[1]>-.5&&q[1]<2.5)for(const r of wiWalls())if(drect(q[0],q[1],r)<PR)return true;
   if(!gap(x,y)){if(dpoly(x,y,PLY)<PR+.05)return true;if(!pip(x,y,PLY)&&!outOk(x,y))return true}
   for(const P of (window.FOOT||[]))if(!P.wiata&&(pip(x,y,P)||dpoly(x,y,P)<PR))return true;
   for(const r of RECT)if(drect(x,y,r)<PR)return true;for(const c of CIR)if(Math.hypot(x-c[0],y-c[1])<c[2]+PR)return true;if(CAR&&drect(x,y,CAR)<PR)return true;return false},
