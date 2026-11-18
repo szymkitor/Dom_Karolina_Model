@@ -1551,8 +1551,10 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
 {const y0=-.30,PE=window.__PE,rnd=(()=>{let s=4242;return()=>(s=(s*16807)%2147483647)/2147483647})(),gs=()=>rnd()+rnd()+rnd()-1.5,TAU=6.2832,
  vs=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],va=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],vm=(a,k)=>[a[0]*k,a[1]*k,a[2]*k],vl=a=>Math.hypot(a[0],a[1],a[2]),vn=a=>{const l=vl(a)||1;return[a[0]/l,a[1]/l,a[2]/l]},vc=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
  /* wielobok ogrodu: lewy bok x 10,17, gora y 2,0 (zwir), dol y -0,57 (wewn. lico kraweznika), prawa strona - wewnetrzna krawedz chodnika odsunieta o 3 cm (bez przenikania ze zwirem) */
- const mid=Math.floor(PE[0].length/2),inner=PE[0][mid][0]<PE[1][mid][0]?0:1,IE=PE[inner],OE=PE[1-inner],edge=IE.map((p,i)=>{const q=OE[i],d=[p[0]-q[0],p[1]-q[1]],l=Math.hypot(d[0],d[1])||1;return[p[0]+d[0]/l*.03,p[1]+d[1]/l*.03]});
- const up=edge.slice().reverse().filter(p=>p[1]>-.5),poly=[[10.17,-.57],[up[0][0]-.02,-.57]].concat(up).concat([[10.17,2.0]]);
+ const mid=Math.floor(PE[0].length/2),inner=PE[0][mid][0]<PE[1][mid][0]?0:1,edge=PE[inner].map(p=>[p[0],p[1]]);
+ /* krawedz chodnika od konca (przy krawezniku) do poczatku (zwir); przeciecie z linia lica kraweznika y -0,57 */
+ const up0=edge.slice().reverse();let ix=0;for(let i=0;i<up0.length-1;i++)if(up0[i][1]<=-.57&&up0[i+1][1]>-.57){const t=(-.57-up0[i][1])/(up0[i+1][1]-up0[i][1]);ix=[up0[i][0]+(up0[i+1][0]-up0[i][0])*t,-.57];up0.splice(0,i+1,ix);break}
+ const poly=[[10.05,-.57],[ix[0],-.57]].concat(up0.slice(1)).concat([[10.05,2.0]]);
  const pin=(x,y)=>{let c=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];if((a[1]>y)!=(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])c=!c}return c},
   dseg=(x,y,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/(dx*dx+dy*dy||1)));return Math.hypot(x-a[0]-dx*t,y-a[1]-dy*t)},
   dpoly=(x,y)=>{let m=9;for(let i=0;i<poly.length;i++)m=Math.min(m,dseg(x,y,poly[i],poly[(i+1)%poly.length]));return m};
@@ -1625,13 +1627,14 @@ window.colCut=poly=>{const bx=14.78,by=-7.5,L=Math.hypot(19.45-bx,-2.65-by),ux=(
  const S={lav:[],sal:[],hos:[],spi:[],lam:[],glo:[],con:[],blu:[],jun:[],sto:[],std:[]};
  /* UKLAD [gatunek, x, y, skala]; od frontu (kostka, y -0,57) do sciany (zwir, y 2,0): rosliny coraz wyzsze, ale <= 0,8 m (parapet 0,9 m nad gruntem) */
  const L=[
-  ['con',10.62,1.55,1],['spi',11.7,1.62,1.05],['spi',13.85,1.65,1],['con',14.75,1.5,.92],
-  ['sal',11.05,1.12,1],['sal',12.55,1.28,1.05],['sal',13.25,1.05,1],['sal',14.35,1.12,1],
-  ['hos',10.95,.55,1],['hos',13.0,.62,1.05],['hos',14.15,.45,.95],
-  ['lav',11.9,.92,1.05],['lav',12.4,.52,1.1],['lav',13.7,.38,1.05],['lav',11.45,.12,1],['lav',12.9,.05,1.1],['lav',13.55,-.3,.95],['lav',12.1,.22,.95],['lav',13.35,.18,1],
-  ['std',10.65,.2,1],['glo',11.6,.6,1],['blu',12.75,.28,1],['glo',13.55,.9,1],
-  ['lam',10.9,-.2,1],['lam',12.2,-.25,1],['lam',13.1,-.3,1],['lam',13.9,.02,1],['jun',14.3,.78,1],['jun',11.65,-.18,.9],
-  ['sto',12.65,.82,1],['sto',13.3,.33,.8],['sto',11.0,.85,.7]];
+  ['con',10.65,1.62,1],['spi',11.5,1.5,1],['sal',12.25,1.62,1],['con',12.95,1.62,1],['spi',13.85,1.5,1],['jun',14.65,1.35,.95],
+  ['hos',10.85,.92,1],['lav',11.5,.82,1],['lav',12.1,.9,1],['sal',12.75,.95,1],['hos',13.4,.88,1],['lav',14.0,.8,1],
+  ['std',10.65,.38,1],['glo',11.3,.28,1],['lav',11.95,.28,1],['blu',12.6,.35,1],['lav',13.25,.28,1],['glo',13.85,.25,1],
+  ['lam',10.85,-.2,1],['lam',12.0,.58,1],['lam',13.0,.58,1],['lav',12.25,-.2,1],['lav',13.4,-.25,.95],
+  ['sto',10.3,-.3,1],['sto',11.55,-.3,1],['sto',10.3,1.15,1],['sto',12.85,-.15,1],['sto',14.45,.6,1],['sto',13.3,1.35,1]];
+ const RAD={con:.27,spi:.42,sal:.28,hos:.3,lav:.3,lam:.3,glo:.26,blu:.27,jun:.38,std:.25,sto:.2};
+ /* kontrola rozstawu: pary roslin (poza jasnota - okrywa) nie powinny wchodzic na siebie bardziej niz o ok. 25% sumy promieni */
+ const ov=[];for(let i=0;i<L.length;i++)for(let j2=i+1;j2<L.length;j2++){const A=L[i],B=L[j2];if(A[0]=='lam'||B[0]=='lam')continue;const d=Math.hypot(A[1]-B[1],A[2]-B[2]),rr=(RAD[A[0]]*A[3]+RAD[B[0]]*B[3]);if(d<.75*rr)ov.push([A[0],B[0],+d.toFixed(2),+rr.toFixed(2)])}window.__garOv=ov;
  const bad=[];L.forEach(([k,x,y,s])=>{if(!pin(x,y)||dpoly(x,y)<.22)bad.push([k,x,y])});window.__garBad=bad;
  L.forEach(([k,x,y,s])=>{if(!pin(x,y)||dpoly(x,y)<.12)return;S[k].push([x,y0-.005,-y,rnd()*TAU,s*(.9+.2*rnd()),[rnd(),rnd(),rnd()]])});
  {const[gl,gf]=lav();inst(gl,plantM(0xffffff,{roughness:.7}),S.lav,[.24,.12,.50,.06,.12,.1]);inst(gf,plantM(0xffffff,{roughness:.55}),S.lav,[.74,.40,.52,.03,.2,.14])}
