@@ -2532,7 +2532,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
   if(x>=.87&&x<=6.45&&y>=-5&&y<=0)return -.30+.05*(y+5)/5;return -.30},
  ex=document.createElement('button'),ht=document.createElement('div');
  ex.id='wkx';ex.textContent='Wyjdź ze spaceru';ht.id='wkh';const DT=ht.textContent='Lewy joystick: chodzenie · prawy joystick lub przeciąganie po ekranie: rozglądanie';
- const JP=(()=>{try{return JSON.parse(localStorage.getItem('walkJ')||'{}')}catch(e){return{}}})(),JS=id=>{try{localStorage.setItem('walkJ',JSON.stringify(JP))}catch(e){}},
+ const JP=(()=>{try{return JSON.parse(localStorage.getItem('walkJ2')||'{}')}catch(e){return{}}})(),JS=id=>{try{localStorage.setItem('walkJ2',JSON.stringify(JP))}catch(e){}},
   mn=document.createElement('div'),MI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></svg>',CK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   let mT=null,mFor=null,EDIT=null;mn.id='wkm';mn.innerHTML=MI;
   const clampJ=(id,l,t)=>{const e=document.getElementById(id),w=e.offsetWidth,h=e.offsetHeight,vw=document.documentElement.clientWidth,vh=innerHeight;return[Math.max(6,Math.min(vw-w-6,l)),Math.max(6,Math.min(vh-h-6,t))]},
