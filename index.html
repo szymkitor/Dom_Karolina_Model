@@ -2158,10 +2158,10 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
   const nk=new THREE.Mesh(new THREE.CylinderGeometry(.018,.03,.05,12),gm);nk.position.copy(W(cx,gy+1.905,Ym));scene.add(nk);
   const pt=new THREE.PointLight(0xffd9a0,2.0,5,1.5);pt.position.copy(W(cx,gy+1.83,Ym));scene.add(pt);lights.l10={on:false,spots:[pt],lenses:[bu,nk,bt]}}}
 /* cienie od sztucznych swiatel: kazde swiatlo z cieniem dolacza do shadera tekstury i zmienne (varying), a przelaczenie liczby cieni przekompilowuje materialy - za duzo cieni naraz = wolne wlaczanie swiatel albo bledy shadera na telefonach. Dlatego naraz cien rzuca tylko kilka WLACZONYCH swiatel (wg priorytetu), budzet zalezy od karty */
-{const gl=ren.getContext(),MV=(gl&&gl.getParameter&&gl.getParameter(gl.MAX_VARYING_VECTORS))||15,MT=(ren.capabilities&&ren.capabilities.maxTextures)||16,MAXC=Math.max(2,Math.min(4,MV-10,MT-9));
+{const gl=ren.getContext(),MV=(gl&&gl.getParameter&&gl.getParameter(gl.MAX_VARYING_VECTORS))||15,MT=(ren.capabilities&&ren.capabilities.maxTextures)||16,MAXC=Math.max(3,Math.min(6,MV-8,MT-8));
  const cfg=(l,sz,nr)=>{l.shadow.mapSize.set(sz,sz);if(l.isSpotLight){l.shadow.camera.near=nr;l.shadow.camera.far=18;l.shadow.bias=-.0008;l.shadow.normalBias=.02}else{l.shadow.camera.near=.12;l.shadow.camera.far=9;l.shadow.bias=-.002}return l};
  const SHD={l4:[cfg(lights.l4.spots[0],1024,.25)],l3:lights.l3.spots.map(l=>cfg(l,512,.1)),l12:[cfg(lights.l12.spots[0],512)],l1:[cfg(lights.l1.spots[0],1024,.25)],l6:[cfg(lights.l6.spots[0],1024,.25)],l11:[cfg(lights.l11.spots[0],512)],l13:[cfg(lights.l13.spots[0],512)],l9:lights.l9.spots};
- const ORD=['l4','l3','l12','l1','l6','l11','l13','l9'];
+ const ORD=['l12','l13','l11','l4','l3','l1','l6','l9'];
  window.shAssign=()=>{let n=0;ORD.forEach(id=>{const ls=SHD[id],want=lights[id].on&&n+ls.length<=MAXC;ls.forEach(l=>{if(l.castShadow!==want)l.castShadow=want});if(want)n+=ls.length})};shAssign()}
 ['l1','l2','l3','l4','l6','l7','l8','l9','l10','l11','l12','l13'].forEach(id=>{$(id).onclick=()=>setL(id,!lights[id].on)});
 // scalenie statycznych obiektów o tym samym materiale w jeden obiekt: geometria bez zmian, wielokrotnie mniej wywołań rysowania (przezroczyste, wielomateriałowe i ruchome zostają osobno)
