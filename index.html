@@ -2259,21 +2259,21 @@ hoseHook(0,.66,-1.05,-Math.PI/2);hoseHook(1,.66,-20.3,-Math.PI/2);
  [-.072,.072].forEach(x=>{const sc=new THREE.Mesh(new THREE.CylinderGeometry(.004,.004,.004,10),mt);sc.rotation.x=Math.PI/2;sc.position.set(x,0,.036);g.add(sc)});
  g.position.set(px,py,pz);g.rotation.y=yaw;scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})};
  dsock(14.9,.05,-3.0,Math.PI/2);dsock(10.57,.35,-11.3,Math.PI);dsock(9.8,.35,-13.665,Math.PI/2);dsock(9.8,.35,-17.28,Math.PI/2);dsock(9.5,.05,-21.35,Math.PI);dsock(0,.05,-1.6,-Math.PI/2)}   /* sciana zachodnia (lico x 0), 40 cm na lewo (patrzac z zewnatrz: +y) od wieszaka na waz (y 1,05, szer. 30 cm), J7b, 35 cm nad gruntem jak pozostale */   /* sciana polnocna (lico y 21,35, normalna +y = swiat -z => obrot 180 st.); ostatnie: przy rogu od strony podworka, N14c */
-// punkt zasilania pompy ciepla (K10): rozlacznik serwisowy 3P 25 A w hermetycznej obudowie IP65 na scianie zachodniej (x 1), nad pompa (y 9,55, srodek 1,35 m), z plombowalna raczka obrotowa, tabliczka opisowa i peszel Ø21 mm schodzacy do gornej plyty jednostki (kabel od wewnatrz przez przepust w gornej czesci obudowy)
+// punkt zasilania pompy ciepla (K10): rozlacznik serwisowy 3P 25 A, obudowa IP65 ok. 12 x 12 x 8,5 cm, na scianie zachodniej (x 1) z boku pompy (y 10,74; srodek 1,0 m), poza zasiegiem pracy wentylatora i z dala od okna; peszel Ø21 mm prowadzony po scianie w dol i w bok, potem w poprzek szczeliny miedzy sciana a pompa do tylnej plyty jednostki (y 10,38, wys. 0,5 m), na obejmach
 {const g=new THREE.Group(),shell=M(0xcfd2d5,{roughness:.5}),yel=M(0xf2c200,{roughness:.5}),red=M(0xc8201f,{roughness:.45}),blk=M(0x151618,{roughness:.7}),mt=M(0x8f9296,{roughness:.4,metalness:.6}),
  b=(w,h,d,x,y,z,m)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);q.position.set(x,y,z);q.castShadow=true;g.add(q);return q},
  cy=(r,l,x,y,z,m,rx,rz)=>{const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r,l,14),m);q.position.set(x,y,z);q.rotation.x=rx||0;q.rotation.z=rz||0;q.castShadow=true;g.add(q);return q},
  sp=(r,x,y,z,m)=>{const q=new THREE.Mesh(new THREE.SphereGeometry(r,10,8),m);q.position.set(x,y,z);g.add(q)};
- const YC=1.35;
- b(.30,.22,.115,0,YC,.0575,shell);b(.288,.208,.012,0,YC,.121,shell);   /* korpus + pokrywa */
- [[-.13,.09],[.13,.09],[-.13,-.09],[.13,-.09]].forEach(([x,y])=>cy(.006,.006,x,YC+y,.129,mt,Math.PI/2));   /* sruby pokrywy */
- cy(.042,.008,0,YC+.01,.131,yel,Math.PI/2);b(.075,.024,.022,0,YC+.01,.146,red);cy(.012,.02,0,YC+.01,.138,red,Math.PI/2);   /* tarcza i raczka (pozycja OFF/ON, otwor na klodke) */
- const lc=document.createElement('canvas');lc.width=256;lc.height=40;{const q=lc.getContext('2d');q.fillStyle='#f2f2ee';q.fillRect(0,0,256,40);q.fillStyle='#16181b';q.font='bold 19px system-ui,sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText('POMPA CIEPŁA  3~400 V',128,21)}
- const lp=new THREE.Mesh(new THREE.PlaneGeometry(.2,.031),new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(lc),roughness:.6}));lp.position.set(0,YC-.075,.1275);g.add(lp);   /* tabliczka */
- cy(.016,.03,0,YC-.125,.0575,blk);cy(.016,.03,0,YC+.125,.0575,blk);   /* dlawnice: dol (peszel), gora (kabel z wnetrza) */
- cy(.0105,.28,0,1.10,.0575,blk);sp(.0125,0,.96,.0575,blk);cy(.0105,.2125,0,.96,.164,blk,Math.PI/2);sp(.0125,0,.96,.27,blk);cy(.0105,.05,0,.938,.27,blk);cy(.018,.012,0,.917,.27,mt);   /* peszel: w dol, w poprzek nad pompa, w dol do gornej plyty jednostki */
- b(.03,.012,.0575,0,1.10,.0285,mt);   /* obejma przytwierdzajaca peszel do sciany */
- g.position.set(1,0,-9.55);g.rotation.y=-Math.PI/2;scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})}
+ const YC=1.0,ZC=.0425,YH=.5,XB=.36,ZU=.30;
+ b(.12,.12,.073,0,YC,.0365,shell);b(.114,.114,.012,0,YC,.079,shell);   /* korpus + pokrywa */
+ [[-.05,.05],[.05,.05],[-.05,-.05],[.05,-.05]].forEach(([x,y])=>cy(.0045,.005,x,YC+y,.086,mt,Math.PI/2));
+ cy(.033,.007,0,YC+.012,.0875,yel,Math.PI/2);b(.062,.02,.018,0,YC+.012,.1,red);cy(.01,.016,0,YC+.012,.095,red,Math.PI/2);   /* tarcza i raczka */
+ const lc=document.createElement('canvas');lc.width=256;lc.height=48;{const q=lc.getContext('2d');q.fillStyle='#f2f2ee';q.fillRect(0,0,256,48);q.fillStyle='#16181b';q.font='bold 24px system-ui,sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText('POMPA CIEPŁA 3~400 V',128,25)}
+ const lp=new THREE.Mesh(new THREE.PlaneGeometry(.095,.018),new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(lc),roughness:.6}));lp.position.set(0,YC-.045,.0855);g.add(lp);
+ cy(.014,.026,0,YC-.073,ZC,blk);cy(.014,.026,0,YC+.073,ZC,blk);   /* dlawnice: dol (peszel), gora (kabel z wnetrza) */
+ cy(.0105,YC-.06-YH,0,(YC-.06+YH)/2,ZC,blk);sp(.0125,0,YH,ZC,blk);cy(.0105,XB,XB/2,YH,ZC,blk,0,Math.PI/2);sp(.0125,XB,YH,ZC,blk);cy(.0105,ZU-ZC-.01,XB,YH,(ZC+ZU-.01)/2,blk,Math.PI/2);cy(.017,.014,XB,YH,ZU-.007,mt,Math.PI/2);   /* peszel: w dol po scianie, w bok, w poprzek do tylnej plyty pompy */
+ b(.03,.012,ZC,0,.72,ZC/2,mt);b(.03,.012,ZC,0,.56,ZC/2,mt);b(.012,.03,ZC,.18,YH,ZC/2,mt);b(.012,.03,ZC,.30,YH,ZC/2,mt);b(.03,.012,.2,XB,YH,.0425+.1,mt).visible=false;   /* obejmy do sciany */
+ g.position.set(1,0,-10.74);g.rotation.y=-Math.PI/2;scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})}
 // drugie gniazdo siłowe CEE 16 A / 400 V (jak wyżej: 5-biegunowe, czerwone, IP44, natynkowe) na ścianie wschodniej szopy, tej z oknem: 0,33 m od krawędzi okna w stronę rogu (z = -36,45), na wys. 1,0 m
 {const g=new THREE.Group(),rd=M(0xc1272d,{roughness:.5}),bk=M(0x1c1d20,{roughness:.6}),mt=M(0xd9dcdf,{roughness:.4,metalness:.6}),bx=(w,h,d,x,y,z,m,rx)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);q.position.set(x,y,z);q.rotation.x=rx||0;q.castShadow=true;g.add(q)};
  bx(.1,.17,.045,0,0,.0225,rd);const sk=new THREE.Mesh(new THREE.CylinderGeometry(.043,.043,.05,20),rd);sk.rotation.x=Math.PI/2-.6;sk.position.set(0,-.01,.07);sk.castShadow=true;g.add(sk);
