@@ -178,7 +178,8 @@ body.walking canvas{touch-action:none}
   <div class="sw" style="margin-top:14px"><div>Rzut ortogonalny<small>bez perspektywy, do rysunku technicznego</small></div><button id="orth" class="swb" aria-label="Rzut ortogonalny"></button></div>
   <div class="sw"><div>Tryb liniowy<small>bez tekstur i kolorów, same linie konstrukcyjne</small></div><button id="lnm" class="swb" aria-label="Tryb liniowy"></button></div>
   <button id="snp">Zapisz bieżący widok jako PNG</button></section>
- <section><h3>Siatka</h3><div class="sw"><div>Siatka pomocnicza<small>komórki 3×3 m · kolumny I–S · wiersze 4–20</small></div><button id="gr" aria-label="Siatka pomocnicza"></button></div></section></div>
+ <section><h3>Siatka</h3><div class="sw"><div>Siatka pomocnicza<small>komórki 3×3 m · kolumny I–S · wiersze 4–20</small></div><button id="gr" aria-label="Siatka pomocnicza"></button></div>
+  <div class="sw"><div>Granice działki<small>żółta, podświetlana lina po granicy działki; w trybie pomiaru każdy odcinek można zaznaczyć i mierzyć do niego odległość</small></div><button id="plt" class="swb" aria-label="Granice działki"></button></div></section></div>
 <div class="ui hid" id="pn_cctv">
  <div class="hd"><div class="tt">Podgląd kamer</div><div class="st">Obraz z kamer kopułkowych pod podbitką · sterowanie góra / dół / lewo / prawo</div></div>
  <section><h3>Kamery</h3><div class="sw"><div>Pole widzenia kamer<small>przezroczyste jasnoniebieskie bryły (ostrosłupy ścięte) o kącie 100° × 67,6° i zasięgu 15 m, śledzą ustawienie kamer</small></div><button id="camv" class="swb" aria-label="Pole widzenia kamer"></button></div>
@@ -2176,6 +2177,21 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
  const ORD=['l4','l13','l11','l3','l1','l6','l9'];   /* l12 (kula przy podjezdzie) bez cienia: na podjezdzie cien auta tylko od halogenu l4 */
  window.shAssign=()=>{let n=0;ORD.forEach(id=>{const ls=SHD[id],want=lights[id].on&&n+ls.length<=MAXC;ls.forEach(l=>{if(l.castShadow!==want)l.castShadow=want});if(want)n+=ls.length})};shAssign()}
 ['l1','l2','l3','l4','l6','l7','l8','l9','l10','l11','l12','l13'].forEach(id=>{$(id).onclick=()=>setL(id,!lights[id].on)});
+/* granice dzialki (wg planu: PL): zolta podswietlana lina tuz nad gruntem + niewidzialne walce do zaznaczania w trybie pomiaru (userData.plotEdge = dokladny odcinek granicy, mierzony jak krawedz) */
+const PLT=(()=>{const g=new THREE.Group(),Y=-.27,W=(p)=>new THREE.Vector3(p[0],Y,-p[1]);
+ const tc=document.createElement('canvas');tc.width=64;tc.height=64;{const q=tc.getContext('2d');q.fillStyle='#ffd21a';q.fillRect(0,0,64,64);q.strokeStyle='#fff3a0';q.lineWidth=9;for(let i=-64;i<128;i+=16){q.beginPath();q.moveTo(i,0);q.lineTo(i+64,64);q.stroke()}q.strokeStyle='#d99a00';q.lineWidth=3;for(let i=-64;i<128;i+=16){q.beginPath();q.moveTo(i+8,0);q.lineTo(i+72,64);q.stroke()}}
+ const tex=new THREE.CanvasTexture(tc);tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+ const rope=new THREE.MeshBasicMaterial({map:tex,color:0xffffff}),glow=new THREE.MeshBasicMaterial({color:0xffc400,transparent:true,opacity:.26,blending:THREE.AdditiveBlending,depthWrite:false}),glow2=new THREE.MeshBasicMaterial({color:0xffe27a,transparent:true,opacity:.14,blending:THREE.AdditiveBlending,depthWrite:false});
+ const mk=(geo,m)=>{const me=new THREE.Mesh(geo,m);me.userData.mt=1;me.userData.rtSkip=1;me.castShadow=me.receiveShadow=false;me.frustumCulled=false;return me};
+ for(let i=0;i<PL.length;i++){const A=PL[i],B=PL[(i+1)%PL.length],a=W(A),b=W(B),d=b.clone().sub(a),L=d.length(),qt=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),d.clone().normalize()),mid=a.clone().add(b).multiplyScalar(.5);
+  const cg=new THREE.CylinderGeometry(.02,.02,L,10,1,true),uv=cg.attributes.uv;for(let k=0;k<uv.count;k++)uv.setXY(k,uv.getX(k)*3,uv.getY(k)*L/.12);
+  const ro=mk(cg,rope);ro.position.copy(mid);ro.quaternion.copy(qt);ro.renderOrder=6;g.add(ro);
+  const g1=mk(new THREE.CylinderGeometry(.08,.08,L,12,1,true),glow);g1.position.copy(mid);g1.quaternion.copy(qt);g1.renderOrder=7;g.add(g1);
+  const g2=mk(new THREE.CylinderGeometry(.2,.2,L,12,1,true),glow2);g2.position.copy(mid);g2.quaternion.copy(qt);g2.renderOrder=7;g.add(g2);
+  const px=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,L,6),new THREE.MeshBasicMaterial({visible:false}));px.position.copy(mid);px.quaternion.copy(qt);px.userData.mt=1;px.userData.rtSkip=1;px.userData.plotEdge=[[a.x,a.y,a.z],[b.x,b.y,b.z]];px.frustumCulled=false;g.add(px)}
+ PL.forEach(P=>{const v=W(P),s1=mk(new THREE.SphereGeometry(.03,12,8),new THREE.MeshBasicMaterial({color:0xffd21a})),s2=mk(new THREE.SphereGeometry(.13,14,10),glow);s1.position.copy(v);s2.position.copy(v);s2.renderOrder=7;g.add(s1,s2)});
+ g.visible=false;scene.add(g);return g})();
+document.getElementById('plt').onclick=e=>{PLT.visible=!PLT.visible;e.currentTarget.classList.toggle('on',PLT.visible);dirty=true};
 // scalenie statycznych obiektów o tym samym materiale w jeden obiekt: geometria bez zmian, wielokrotnie mniej wywołań rysowania (przezroczyste, wielomateriałowe i ruchome zostają osobno)
 function batchStatics(){scene.updateMatrixWorld(true);
  const mkey=m=>(m.isMeshStandardMaterial&&!m.envMap&&!m.transparent&&m.emissive.getHex()===0&&m.emissiveIntensity===1)?'S'+m.color.getHex()+'|'+m.roughness+'|'+m.metalness+'|'+(m.map?m.map.uuid:'')+'|'+m.side+'|'+m.alphaTest:m.uuid,G=new Map();
@@ -2817,10 +2833,10 @@ const MTC=(()=>{
  const ray=new THREE.Raycaster();
  function pick(cx,cy){const r=ren.domElement.getBoundingClientRect(),x=(cx-r.left)/r.width*2-1,y=-((cy-r.top)/r.height)*2+1;cam.updateMatrixWorld();const p0=new THREE.Vector3(x,y,-1).unproject(cam),p1=new THREE.Vector3(x,y,1).unproject(cam);
   ray.set(p0,p1.sub(p0).normalize());ray.camera=cam;ray.near=0;ray.far=1e4;const list=[];
-  scene.traverse(o=>{if(!o.isMesh||!o.visible||o.isInstancedMesh||o.userData.mt||o.userData.ln||o.userData.hl||!o.geometry||!o.geometry.attributes.position)return;for(let p=o.parent;p;p=p.parent)if(!p.visible||p.userData.mt||p.userData.hl)return;
+  scene.traverse(o=>{if(!o.isMesh||!o.visible||o.isInstancedMesh||(o.userData.mt&&!o.userData.plotEdge)||o.userData.ln||o.userData.hl||!o.geometry||!o.geometry.attributes.position)return;for(let p=o.parent;p;p=p.parent)if(!p.visible||p.userData.mt||p.userData.hl)return;
    const ms=Array.isArray(o.material)?o.material:[o.material];if(ms.every(q=>!q||(q.userData&&q.userData.plant)||q.blending===THREE.AdditiveBlending||(q.transparent&&q.opacity<.5)))return;list.push(o)});
   const hs=ray.intersectObjects(list,false);return hs.length?{h:hs[0],dir:ray.ray.direction.clone()}:null}
- function analyzeHit(h,dir,mode){const mesh=h.object,g=mesh.geometry;mesh.updateMatrixWorld(true);const W=worldPos(mesh),M=MTC.mk(W,g.index?g.index.array:null),hp=[h.point.x,h.point.y,h.point.z];
+ function analyzeHit(h,dir,mode){const mesh=h.object,g=mesh.geometry;if(mesh.userData.plotEdge){if(st.kind==='area')return{err:'To jest linia granicy działki – do pola wskaż powierzchnię.'};const pe=mesh.userData.plotEdge;return{kind:'edge',a:pe[0].slice(),b:pe[1].slice(),plot:1}}mesh.updateMatrixWorld(true);const W=worldPos(mesh),M=MTC.mk(W,g.index?g.index.array:null),hp=[h.point.x,h.point.y,h.point.z];
   if(mode==='obj'){const o=MTC.comp(M,h.faceIndex);if(o.err)return o;o.pt=hp;return o}
   const s=MTC.analyze(M,h.faceIndex,hp,mode==='edge');if(s.err)return s;
   if(mode==='edge'){const o=MTC.pickEdge(s.outline,hp);if(!o)return{err:'Nie znaleziono krawędzi w tym miejscu.'};return{kind:'edge',a:o.a,b:o.b}}
