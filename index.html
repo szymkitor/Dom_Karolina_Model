@@ -758,8 +758,8 @@ const glassM=new THREE.MeshStandardMaterial({color:0x242b31,roughness:.06,metaln
  const g=new THREE.Group();g.position.set(x0,h0,-y0);scene.add(g);
  const pm=M(0x8b9096,{roughness:.45,metalness:.05}),dk=M(0x2e3135,{roughness:.6,metalness:.3}),hole=new THREE.MeshBasicMaterial({color:0x08090a});
  const put=(geo,m,px,py,pz,sl)=>{const me=new THREE.Mesh(geo,m);if(sl){me.position.set(nx*py,ny*py,nz*py);me.quaternion.copy(q)}else me.position.set(px,py,pz);me.castShadow=me.receiveShadow=true;g.add(me);statics.push(me);return me};
- put(new THREE.BoxGeometry(.4,.012,.4),dk,0,.006,0,true);                       /* plyta obrobki (blacha), wzdluz spadku */
- put(new THREE.CylinderGeometry(.07,.13,.13,28),dk,0,.075,0,true);               /* stozkowy kominek przejscia dachowego */
+ put(new THREE.BoxGeometry(.4,.012,.4),dk,0,.012,0,true);                       /* plyta obrobki (blacha), wzdluz spadku */
+ put(new THREE.CylinderGeometry(.064,.15,.3,28),dk,0,.04,0);                    /* stozkowy kominek przejscia dachowego: os PIONOWA (wspolosiowo z rura), podstawa schowana pod plyta/poszyciem na calym obwodzie mimo spadku */
  put(new THREE.CylinderGeometry(.055,.055,.64,28),pm,0,.27,0);                    /* rura Ø110 */
  put(new THREE.CylinderGeometry(.064,.064,.06,28),pm,0,.42,0);                    /* mufa (kielich) */
  put(new THREE.CylinderGeometry(.056,.056,.012,28),pm,0,.585,0);                  /* obrzeze wylotu */
