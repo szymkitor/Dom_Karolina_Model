@@ -2110,14 +2110,16 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
  gr.position.set(x,H,-Y);scene.add(gr);
  addLight('l2',ln,new THREE.SpotLight(0xffe2b4,1.8,7,1.15,.7,1),new THREE.Vector3(x,H-.08,-Y),new THREE.Vector3(x,H-3.4,-Y))}
 // światło w środku wiaty śmietnikowej (t=3,35 m, s=0,9 m od ściany frontowej, pod dachem; cień od ścian) i w szopie (ciemne okno w odkrytej ścianie wschodniej, z światłem po włączeniu)
-{const bx=14.75,by=-7.5,Lw=Math.hypot(19.478-bx,-2.772-by),ux=(19.478-bx)/Lw,uy=(-2.772-by)/Lw,wx=bx+ux*3.35-uy*.9,wy=by+uy*3.35+ux*.9,yy=G0+2.2;
- const tr=new THREE.Mesh(new THREE.CylinderGeometry(.11,.11,.03,24),M(0xdfe2e4,{roughness:.5,metalness:.4})),ln=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,.01,24),new THREE.MeshBasicMaterial({color:0xfff1cf}));
- tr.position.set(wx,yy-.015,-wy);ln.position.set(wx,yy-.033,-wy);scene.add(tr,ln);
+{const bx=14.75,by=-7.5,Lw=Math.hypot(19.478-bx,-2.772-by),ux=(19.478-bx)/Lw,uy=(-2.772-by)/Lw,wx=bx+ux*3.35-uy*1.0,wy=by+uy*3.35+ux*1.0,yy=G0+2.2;   /* oprawa hermetyczna (kopula) przykrecona od spodu do profilu podluznego ramy dachu (s 1,0 = srodek swiatla miedzy scianami), pod skrzyzowaniem z poprzecznymi (t 3,35) */
+ const mt_=M(0x6d7379,{roughness:.45,metalness:.7}),tr=new THREE.Mesh(new THREE.CylinderGeometry(.085,.085,.016,28),mt_),ln=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,.004,24),new THREE.MeshBasicMaterial({color:0xfff1cf}));
+ tr.position.set(wx,yy-.008,-wy);ln.position.set(wx,yy-.022,-wy);scene.add(tr,ln);   /* plyta montazowa 17 cm dolaczona do spodu profilu (gora plyty = dol profilu), 4 sruby, kopula nizej */
+ [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(([a,b])=>{const sc_=new THREE.Mesh(new THREE.CylinderGeometry(.008,.008,.006,6),M(0xb8bcc0,{metalness:.8,roughness:.35}));sc_.position.set(wx+a*.058*ux-b*.058*uy,yy-.019,-(wy+a*.058*uy+b*.058*ux));scene.add(sc_)});
+ {const rg_=new THREE.Mesh(new THREE.CylinderGeometry(.078,.078,.012,28),mt_);rg_.position.set(wx,yy-.022,-wy);scene.add(rg_)}
  const spw=new THREE.SpotLight(0xffe2b4,1.7,4.2,1.1,.8,1);spw.castShadow=true;spw.shadow.mapSize.set(512,512);spw.shadow.camera.near=.05;spw.shadow.camera.far=4.5;spw.shadow.bias=-.003;
  addLight('l9',ln,spw,new THREE.Vector3(wx,yy-.06,-wy),new THREE.Vector3(wx,G0,-wy));
  // żarówka (widoczna przez kraty) + światło rozproszone na boki: punktowe, z cieniem od ścian, oświetla pręty pod dachem od wewnątrz
- {const bm=new THREE.MeshBasicMaterial({color:0xfff1cf});bm.userData={cOn:0xfff6dc,cOff:0x7d868c};const bu=new THREE.Mesh(new THREE.SphereGeometry(.05,14,10),bm);bu.position.set(wx,yy-.16,-wy);scene.add(bu);lights.l9.lenses.push(bu);
-  const pt=new THREE.PointLight(0xffd9a0,2.2,3.6,1.5);pt.position.set(wx,yy-.2,-wy);pt.castShadow=true;pt.shadow.mapSize.set(256,256);pt.shadow.camera.near=.05;pt.shadow.camera.far=4;pt.shadow.bias=-.0015;scene.add(pt);lights.l9.spots.push(pt)}}
+ {const bm=new THREE.MeshBasicMaterial({color:0xfff1cf});bm.userData={cOn:0xfff6dc,cOff:0x7d868c};const bu=new THREE.Mesh(new THREE.SphereGeometry(.072,24,12,0,Math.PI*2,Math.PI/2,Math.PI/2),bm);bm.side=THREE.DoubleSide;bu.position.set(wx,yy-.028,-wy);scene.add(bu);lights.l9.lenses.push(bu);
+  const pt=new THREE.PointLight(0xffd9a0,2.2,3.6,1.5);pt.position.set(wx,yy-.11,-wy);pt.castShadow=true;pt.shadow.mapSize.set(256,256);pt.shadow.camera.near=.05;pt.shadow.camera.far=4;pt.shadow.bias=-.0015;scene.add(pt);lights.l9.spots.push(pt)}}
 {const sx=1.1,sz=-35.7,sy=G0+1.4,fm=M(0x2a2d31,{roughness:.6,metalness:.3}),fr=(w,h,d,py,pz)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),fm);q.position.set(sx+w/2,py,pz);q.castShadow=true;scene.add(q);statics.push(q)};
  fr(.03,.05,.78,sy+.265,sz);fr(.03,.05,.78,sy-.265,sz);fr(.03,.58,.05,sy,sz-.365);fr(.03,.58,.05,sy,sz+.365);fr(.02,.5,.025,sy,sz);fr(.06,.03,.84,sy-.30,sz);
  const gm=new THREE.Mesh(new THREE.BoxGeometry(.012,.5,.68),new THREE.MeshBasicMaterial({color:0x141a20}));gm.position.set(sx+.016,sy,sz);gm.userData.cOn=0xffdf9e;gm.userData.cOff=0x141a20;scene.add(gm);
