@@ -2249,15 +2249,16 @@ hoseHook(0,.66,-1.05,-Math.PI/2);hoseHook(1,.66,-20.3,-Math.PI/2);
  [[0,.011],[-.016,.003],[.016,.003],[-.016,-.011],[.016,-.011]].forEach(([a,b])=>{const p=new THREE.Mesh(new THREE.CylinderGeometry(.0035,.0035,.008,8),mt);p.rotation.x=Math.PI/2-.6;p.position.set(a,-.027+b*Math.cos(.6)+.0,.0965+b*Math.sin(.6)*0);g.add(p)});
  bx(.065,.012,.03,0,.065,.06,bk,-.5);const gl=new THREE.Mesh(new THREE.CylinderGeometry(.014,.014,.04,10),bk);gl.position.set(0,-.1,.02);g.add(gl);
  g.position.set(1,1,-11.02);g.rotation.y=-Math.PI/2;scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})}
-// podwojne gniazdo natynkowe (2 x 230 V, poziome, czarne, IP44 z klapkami) na wschodniej scianie domu, na granicy P7a/P8c (y = 3,0), 0,35 m nad gruntem
-{const g=new THREE.Group(),bk=M(0x17181a,{roughness:.5}),lid=M(0x202225,{roughness:.45}),mt=M(0x8f9296,{roughness:.4,metalness:.6}),bx=(w,h,d,x,y,z,m)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);q.position.set(x,y,z);q.castShadow=true;g.add(q);return q};
+// podwojne gniazda natynkowe (2 x 230 V, poziome, czarne, IP44 z klapkami): sciana wschodnia na granicy P7a/P8c (0,35 m nad gruntem), sciana polnocna przy N10 (x 10,57, 0,35 m nad tarasem) oraz po jednym pod kinkietami tarasu tylnego (x 9,8; y 13,665 i 17,28; 0,35 m nad tarasem)
+{const dsock=(px,py,pz,yaw)=>{const g=new THREE.Group(),bk=M(0x17181a,{roughness:.5}),lid=M(0x202225,{roughness:.45}),mt=M(0x8f9296,{roughness:.4,metalness:.6}),bx=(w,h,d,x,y,z,m)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);q.position.set(x,y,z);q.castShadow=true;g.add(q);return q};
  bx(.165,.085,.034,0,0,.017,bk);   /* korpus natynkowy 2-krotny, poziomy */
  [-.0385,.0385].forEach(x=>{bx(.066,.066,.014,x,-.002,.041,bk);bx(.062,.058,.012,x,-.004,.05,lid);   /* pierscien i klapka (zamknieta) */
   const h=new THREE.Mesh(new THREE.CylinderGeometry(.003,.003,.05,8),mt);h.rotation.z=Math.PI/2;h.position.set(x,.027,.057);g.add(h);   /* zawias u gory */
   bx(.02,.008,.008,x,-.036,.056,lid);   /* zatrzask klapki */
   const gk=new THREE.Mesh(new THREE.TorusGeometry(.032,.002,6,24),M(0x0c0c0d,{roughness:.8}));gk.position.set(x,-.002,.0475);g.add(gk)});   /* uszczelka */
  [-.072,.072].forEach(x=>{const sc=new THREE.Mesh(new THREE.CylinderGeometry(.004,.004,.004,10),mt);sc.rotation.x=Math.PI/2;sc.position.set(x,0,.036);g.add(sc)});
- g.position.set(14.9,.05,-3.0);g.rotation.y=Math.PI/2;scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})}
+ g.position.set(px,py,pz);g.rotation.y=yaw;scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})};
+ dsock(14.9,.05,-3.0,Math.PI/2);dsock(10.57,.35,-11.3,0);dsock(9.8,.35,-13.665,Math.PI/2);dsock(9.8,.35,-17.28,Math.PI/2)}
 // drugie gniazdo siłowe CEE 16 A / 400 V (jak wyżej: 5-biegunowe, czerwone, IP44, natynkowe) na ścianie wschodniej szopy, tej z oknem: 0,33 m od krawędzi okna w stronę rogu (z = -36,45), na wys. 1,0 m
 {const g=new THREE.Group(),rd=M(0xc1272d,{roughness:.5}),bk=M(0x1c1d20,{roughness:.6}),mt=M(0xd9dcdf,{roughness:.4,metalness:.6}),bx=(w,h,d,x,y,z,m,rx)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);q.position.set(x,y,z);q.rotation.x=rx||0;q.castShadow=true;g.add(q)};
  bx(.1,.17,.045,0,0,.0225,rd);const sk=new THREE.Mesh(new THREE.CylinderGeometry(.043,.043,.05,20),rd);sk.rotation.x=Math.PI/2-.6;sk.position.set(0,-.01,.07);sk.castShadow=true;g.add(sk);
