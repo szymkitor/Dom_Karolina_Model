@@ -2259,7 +2259,7 @@ hoseHook(0,.66,-1.05,-Math.PI/2);hoseHook(1,.66,-20.3,-Math.PI/2);
  [-.072,.072].forEach(x=>{const sc=new THREE.Mesh(new THREE.CylinderGeometry(.004,.004,.004,10),mt);sc.rotation.x=Math.PI/2;sc.position.set(x,0,.036);g.add(sc)});
  g.position.set(px,py,pz);g.rotation.y=yaw;scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})};
  dsock(14.9,.05,-3.0,Math.PI/2);dsock(10.57,.35,-11.3,Math.PI);dsock(9.8,.35,-13.665,Math.PI/2);dsock(9.8,.35,-17.28,Math.PI/2);dsock(9.5,.05,-21.35,Math.PI);dsock(0,.05,-1.6,-Math.PI/2)}   /* sciana zachodnia (lico x 0), 40 cm na lewo (patrzac z zewnatrz: +y) od wieszaka na waz (y 1,05, szer. 30 cm), J7b, 35 cm nad gruntem jak pozostale */   /* sciana polnocna (lico y 21,35, normalna +y = swiat -z => obrot 180 st.); ostatnie: przy rogu od strony podworka, N14c */
-// punkt zasilania pompy ciepla (K10): rozlacznik serwisowy 3P 25 A, obudowa IP65 ok. 12 x 12 x 8,5 cm, na krotkim zalamaniu sciany (kotlownia, y 8,8) na wprost pompy (x 0,4385, srodek 1,0 m); peszel Ø21 mm w dol po scianie i prosto do koncowej (poludniowej) plyty jednostki na wys. 0,5 m, na obejmach
+// punkt zasilania pompy ciepla (K10): rozlacznik serwisowy 2P (L+N, rozwarcie min. 3 mm wg DTR), obudowa IP65; Prima 8GT jest 1-fazowa 230 V ok. 12 x 12 x 8,5 cm, na krotkim zalamaniu sciany (kotlownia, y 8,8) na wprost pompy (x 0,4385, srodek 1,0 m); peszel Ø21 mm w dol po scianie i prosto do koncowej (poludniowej) plyty jednostki na wys. 0,5 m, na obejmach
 {const g=new THREE.Group(),shell=M(0xcfd2d5,{roughness:.5}),yel=M(0xf2c200,{roughness:.5}),red=M(0xc8201f,{roughness:.45}),blk=M(0x151618,{roughness:.7}),mt=M(0x8f9296,{roughness:.4,metalness:.6}),
  b=(w,h,d,x,y,z,m)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);q.position.set(x,y,z);q.castShadow=true;g.add(q);return q},
  cy=(r,l,x,y,z,m,rx,rz)=>{const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r,l,14),m);q.position.set(x,y,z);q.rotation.x=rx||0;q.rotation.z=rz||0;q.castShadow=true;g.add(q);return q},
@@ -2268,7 +2268,7 @@ hoseHook(0,.66,-1.05,-Math.PI/2);hoseHook(1,.66,-20.3,-Math.PI/2);
  b(.12,.12,.073,0,YC,.0365,shell);b(.114,.114,.012,0,YC,.079,shell);   /* korpus + pokrywa */
  [[-.05,.05],[.05,.05],[-.05,-.05],[.05,-.05]].forEach(([x,y])=>cy(.0045,.005,x,YC+y,.086,mt,Math.PI/2));
  cy(.033,.007,0,YC+.012,.0875,yel,Math.PI/2);b(.062,.02,.018,0,YC+.012,.1,red);cy(.01,.016,0,YC+.012,.095,red,Math.PI/2);   /* tarcza i raczka */
- const lc=document.createElement('canvas');lc.width=256;lc.height=48;{const q=lc.getContext('2d');q.fillStyle='#f2f2ee';q.fillRect(0,0,256,48);q.fillStyle='#16181b';q.font='bold 24px system-ui,sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText('POMPA CIEPŁA 3~400 V',128,25)}
+ const lc=document.createElement('canvas');lc.width=256;lc.height=48;{const q=lc.getContext('2d');q.fillStyle='#f2f2ee';q.fillRect(0,0,256,48);q.fillStyle='#16181b';q.font='bold 24px system-ui,sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillText('POMPA CIEPŁA 1~230 V',128,25)}
  const lp=new THREE.Mesh(new THREE.PlaneGeometry(.095,.018),new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(lc),roughness:.6}));lp.position.set(0,YC-.045,.0855);g.add(lp);
  cy(.014,.026,0,YC-.073,ZC,blk);cy(.014,.026,0,YC+.073,ZC,blk);   /* dlawnice: dol (peszel), gora (kabel z wnetrza) */
  cy(.0105,YC-.06-YH,0,(YC-.06+YH)/2,ZC,blk);sp(.0125,0,YH,ZC,blk);cy(.0105,ZU-ZC-.01,XB,YH,(ZC+ZU-.01)/2,blk,Math.PI/2);cy(.017,.014,XB,YH,ZU-.007,mt,Math.PI/2);   /* peszel: w dol po scianie, w bok, w poprzek do tylnej plyty pompy */
