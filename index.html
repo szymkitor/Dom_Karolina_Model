@@ -753,8 +753,8 @@ const glassM=new THREE.MeshStandardMaterial({color:0x242b31,roughness:.06,metaln
  [4,3,2,1].forEach((n,k)=>{const x=15.65-(.52+PH/2+k*SP)*CV;for(let i=0;i<n;i++)pvPanel(x,7.8+(i-(n-1)/2)*GP,90)})}
 // wywiewka kanalizacyjna (dach), słupy podcienia
 
-/* wywiewka kanalizacyjna (odpowietrzenie pionu): rura PP Ø110 mm, ok. 55 cm ponad poszyciem, z mufa, wywietrznikiem (kapelusz na trzech wspornikach) i przejsciem dachowym (stozkowy kominek + plyta obrobki ułozona wzdluz spadku dachu); polozenie (7; 18) jak dotad */
-{const x0=7,y0=18,d=.25,h0=zAt(x0,y0),gx=(zAt(x0+d,y0)-zAt(x0-d,y0))/(2*d),gy=(zAt(x0,y0+d)-zAt(x0,y0-d))/(2*d),ok=h0>-8&&Math.abs(gx)<2&&Math.abs(gy)<2,sx=ok?-gx:0,sz=ok?gy:0,nl=Math.hypot(sx,1,sz),nx=sx/nl,ny=1/nl,nz=sz/nl,q=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(nx,ny,nz));
+/* wywiewka kanalizacyjna (odpowietrzenie pionu): rura PP Ø110 mm, ok. 55 cm ponad poszyciem, z mufa, wywietrznikiem (kapelusz na trzech wspornikach) i przejsciem dachowym (stozkowy kominek + plyta obrobki ułozona wzdluz spadku dachu); polozenie wg rzutu parteru: nad pionem kanalizacyjnym K w lazience nr 9, przy scianie pom. technicznego nr 13 (x ok. 2,6; y ok. 8,9) */
+{const x0=2.6,y0=8.9,d=.25,h0=zAt(x0,y0),gx=(zAt(x0+d,y0)-zAt(x0-d,y0))/(2*d),gy=(zAt(x0,y0+d)-zAt(x0,y0-d))/(2*d),ok=h0>-8&&Math.abs(gx)<2&&Math.abs(gy)<2,sx=ok?-gx:0,sz=ok?gy:0,nl=Math.hypot(sx,1,sz),nx=sx/nl,ny=1/nl,nz=sz/nl,q=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(nx,ny,nz));
  const g=new THREE.Group();g.position.set(x0,h0,-y0);scene.add(g);
  const pm=M(0x8b9096,{roughness:.45,metalness:.05}),dk=M(0x2e3135,{roughness:.6,metalness:.3}),hole=new THREE.MeshBasicMaterial({color:0x08090a});
  const put=(geo,m,px,py,pz,sl)=>{const me=new THREE.Mesh(geo,m);if(sl){me.position.set(nx*py,ny*py,nz*py);me.quaternion.copy(q)}else me.position.set(px,py,pz);me.castShadow=me.receiveShadow=true;g.add(me);statics.push(me);return me};
