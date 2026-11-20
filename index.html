@@ -2180,17 +2180,17 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
 ['l1','l2','l3','l4','l6','l7','l8','l9','l10','l11','l12','l13'].forEach(id=>{$(id).onclick=()=>setL(id,!lights[id].on)});
 /* granice dzialki (wg planu: PL): zolta podswietlana lina tuz nad gruntem + niewidzialne walce do zaznaczania w trybie pomiaru (userData.plotEdge = dokladny odcinek granicy, mierzony jak krawedz) */
 const PLT=(()=>{const g=new THREE.Group(),Y=-.27,W=(p)=>new THREE.Vector3(p[0],Y,-p[1]);
- const tc=document.createElement('canvas');tc.width=64;tc.height=64;{const q=tc.getContext('2d');q.fillStyle='#ffd21a';q.fillRect(0,0,64,64);q.strokeStyle='#fff3a0';q.lineWidth=9;for(let i=-64;i<128;i+=16){q.beginPath();q.moveTo(i,0);q.lineTo(i+64,64);q.stroke()}q.strokeStyle='#d99a00';q.lineWidth=3;for(let i=-64;i<128;i+=16){q.beginPath();q.moveTo(i+8,0);q.lineTo(i+72,64);q.stroke()}}
+ const tc=document.createElement('canvas');tc.width=64;tc.height=64;{const q=tc.getContext('2d');q.fillStyle='#d9b840';q.fillRect(0,0,64,64);q.strokeStyle='#e9d98c';q.lineWidth=9;for(let i=-64;i<128;i+=16){q.beginPath();q.moveTo(i,0);q.lineTo(i+64,64);q.stroke()}q.strokeStyle='#b58a1c';q.lineWidth=3;for(let i=-64;i<128;i+=16){q.beginPath();q.moveTo(i+8,0);q.lineTo(i+72,64);q.stroke()}}
  const tex=new THREE.CanvasTexture(tc);tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
- const rope=new THREE.MeshBasicMaterial({map:tex,color:0xffffff}),glow=new THREE.MeshBasicMaterial({color:0xffc400,transparent:true,opacity:.26,blending:THREE.AdditiveBlending,depthWrite:false}),glow2=new THREE.MeshBasicMaterial({color:0xffe27a,transparent:true,opacity:.14,blending:THREE.AdditiveBlending,depthWrite:false});
+ const rope=new THREE.MeshBasicMaterial({map:tex,color:0xffffff}),glow=new THREE.MeshBasicMaterial({color:0xffc400,transparent:true,opacity:.09,blending:THREE.AdditiveBlending,depthWrite:false}),glow2=new THREE.MeshBasicMaterial({color:0xffe27a,transparent:true,opacity:.04,blending:THREE.AdditiveBlending,depthWrite:false});
  const mk=(geo,m)=>{const me=new THREE.Mesh(geo,m);me.userData.mt=1;me.userData.rtSkip=1;me.castShadow=me.receiveShadow=false;me.frustumCulled=false;return me};
  for(let i=0;i<PL.length;i++){const A=PL[i],B=PL[(i+1)%PL.length],a=W(A),b=W(B),d=b.clone().sub(a),L=d.length(),qt=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),d.clone().normalize()),mid=a.clone().add(b).multiplyScalar(.5);
-  const cg=new THREE.CylinderGeometry(.02,.02,L,10,1,true),uv=cg.attributes.uv;for(let k=0;k<uv.count;k++)uv.setXY(k,uv.getX(k)*3,uv.getY(k)*L/.12);
+  const cg=new THREE.CylinderGeometry(.012,.012,L,10,1,true),uv=cg.attributes.uv;for(let k=0;k<uv.count;k++)uv.setXY(k,uv.getX(k)*3,uv.getY(k)*L/.12);
   const ro=mk(cg,rope);ro.position.copy(mid);ro.quaternion.copy(qt);ro.renderOrder=6;g.add(ro);
-  const g1=mk(new THREE.CylinderGeometry(.08,.08,L,12,1,true),glow);g1.position.copy(mid);g1.quaternion.copy(qt);g1.renderOrder=7;g.add(g1);
-  const g2=mk(new THREE.CylinderGeometry(.2,.2,L,12,1,true),glow2);g2.position.copy(mid);g2.quaternion.copy(qt);g2.renderOrder=7;g.add(g2);
+  const g1=mk(new THREE.CylinderGeometry(.055,.055,L,12,1,true),glow);g1.position.copy(mid);g1.quaternion.copy(qt);g1.renderOrder=7;g.add(g1);
+  const g2=mk(new THREE.CylinderGeometry(.14,.14,L,12,1,true),glow2);g2.position.copy(mid);g2.quaternion.copy(qt);g2.renderOrder=7;g.add(g2);
   const px=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,L,6),new THREE.MeshBasicMaterial({visible:false}));px.position.copy(mid);px.quaternion.copy(qt);px.userData.mt=1;px.userData.rtSkip=1;px.userData.plotEdge=[[a.x,a.y,a.z],[b.x,b.y,b.z]];px.frustumCulled=false;g.add(px)}
- PL.forEach(P=>{const v=W(P),s1=mk(new THREE.SphereGeometry(.03,12,8),new THREE.MeshBasicMaterial({color:0xffd21a})),s2=mk(new THREE.SphereGeometry(.13,14,10),glow);s1.position.copy(v);s2.position.copy(v);s2.renderOrder=7;g.add(s1,s2)});
+ PL.forEach(P=>{const v=W(P),s1=mk(new THREE.SphereGeometry(.022,12,8),new THREE.MeshBasicMaterial({color:0xd9b840})),s2=mk(new THREE.SphereGeometry(.09,14,10),glow);s1.position.copy(v);s2.position.copy(v);s2.renderOrder=7;g.add(s1,s2)});
  g.visible=false;scene.add(g);return g})();
 document.getElementById('plt').onclick=e=>{PLT.visible=!PLT.visible;e.currentTarget.classList.toggle('on',PLT.visible);dirty=true};
 // scalenie statycznych obiektów o tym samym materiale w jeden obiekt: geometria bez zmian, wielokrotnie mniej wywołań rysowania (przezroczyste, wielomateriałowe i ruchome zostają osobno)
