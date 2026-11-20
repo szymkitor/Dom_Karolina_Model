@@ -825,7 +825,7 @@ function fwall(x0,y0,x1,y1,sa,sb){const P0=[x0,y0],P1=[x1,y1],SQ=(x,y)=>({c:[x,y
  wallPrism(P0,P1,HW,pa,pb,4*CB,G0,wallM,x0+ux*e0);dasRun(x0+ux*e0,y0+uy*e0,x1-ux*e1,y1-uy*e1);
  slats(x0+ux*e0,y0+uy*e0,x1-ux*e1,y1-uy*e1,G0+4*CB+DT,G0+1.87)}
 [[-2.2,1.13,true,true],[6.13,8.53,true,true]].forEach(([a,b,sa,sb])=>fwall(a,FY,b,FY,sa,sb));fwall(10.15,FY,14.35,FY,true,false);   /* mur frontowy zaczyna sie od zlacza pomiarowego; ostatni odcinek konczy sie na kolumnie narozna (14,38) */
-{const bx=14.75,by=-7.5,L=Math.hypot(19.478-bx,-2.772-by),ux=(19.478-bx)/L,uy=(-2.772-by)/L,nx=-uy,ny=ux,ph=Math.atan2(uy,ux),TL=1.425,TR=5.275;   /* osie scian bocznych wiaty */
+{const bx=14.75,by=-7.5,L=Math.hypot(19.478-bx,-2.772-by),ux=(19.478-bx)/L,uy=(-2.772-by)/L,nx=-uy,ny=ux,ph=Math.atan2(uy,ux),TL=1.425,TR=5.275,_w0=scene.children.length;   /* osie scian bocznych wiaty */
  const Q=(t,s=0)=>[bx+ux*t+nx*s,by+uy*t+ny*s],sg=(a,b,h,th,m,y,s=0)=>{const p=Q(a,s),q=Q(b,s);seg(p[0],p[1],q[0],q[1],h,th,m,y)};
  /* mur skosu: zewnetrzne lico (s=0) na granicy dzialki, os muru w s=0,2; kolumna narozna (mitra przy zalamaniu granicy w x 14,78) i kolumna koncowa obrocona wzdluz skosu */
  const pp=(pts,h,y,m)=>{const g=new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(q=>new THREE.Vector2(q[0],q[1]))),{depth:h,bevelEnabled:false});g.rotateX(-Math.PI/2);add(g,m,0,y,0)},
@@ -938,6 +938,8 @@ BARR.push([Q(TL-.075,0),Q(TR+.075,0),Q(TR+.075,2.0),Q(TL-.075,2.0)]);{const PW=[
   part(new THREE.BoxGeometry(.46,.03,.035),dkm,0,fl+.94,.415);[-1,1].forEach(sx=>part(new THREE.BoxGeometry(.03,.03,.06),dkm,sx*.22,fl+.94,.385));
   part(new THREE.CylinderGeometry(.012,.012,.56,8),hb,0,fl+.1,.3,Math.PI/2);
   [-1,1].forEach(sx=>{part(new THREE.CylinderGeometry(.1,.1,.04,20),wm,sx*.27,fl+.1,.3,Math.PI/2);part(new THREE.CylinderGeometry(.045,.045,.05,12),hb,sx*.272,fl+.1,.3,Math.PI/2);part(new THREE.BoxGeometry(.07,.12,.07),mb,sx*.19,fl+.06,-.2)})});
+ /* PROBA: kopia wiaty (sciany, dach, drzwi, kosze, podloga) wzdluz wschodniego boku dzialki (Q6/Q6c): tyl na ogrodzeniu x=19,478, dlugosc 4 m wzdluz y od -2,6 do 1,4, wejscie od strony ogrodu; bez swiatla i kolizji w trybie spaceru; drzwi zamkniete; ukrycie: window.WIATA2.visible=false */
+ {const _g=new THREE.Group();scene.children.slice(_w0).forEach(o=>{if(o.isMesh||o.isGroup)_g.add(o.clone())});_g.rotation.y=Math.PI/4;_g.updateMatrix();const v=new THREE.Vector3(14.75,0,7.5).applyMatrix4(_g.matrix);_g.position.set(19.478-v.x,0,3.95-v.z);scene.add(_g);window.WIATA2=_g}
 }
 [-2.2,1.13,6.13,8.53,10.15].forEach(x=>pillar(x,FY));   /* kolumny narozna (14,78) i koncowa (skos) sa przy murze skosu */   /* slup w rogu (x -3) zastapiony zlaczem */
 /* domofon (slup po lewej od furtki) i skrzynka na listy (slup po prawej) - na licu od ulicy, z = FY front slupa +.2 */
