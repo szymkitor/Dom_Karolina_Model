@@ -920,11 +920,11 @@ BARR.push([Q(TL-.075,0),Q(TR+.075,0),Q(TR+.075,2.0),Q(TL-.075,2.0)]);{const PW=[
   for(let i=0;i<2;i++)for(let j=0;j<2;j++){q2.fillStyle='#17191b';q2.fillRect(5+32*i,5+32*j,22,22);q2.fillStyle='rgba(255,255,255,.25)';q2.fillRect(5+32*i,3+32*j,22,2);q2.fillStyle='rgba(255,255,255,.12)';q2.fillRect(3+32*i,5+32*j,2,22)}
   q2.strokeStyle='rgba(0,0,0,.25)';q2.strokeRect(.5,.5,63,63);
   const tx=new THREE.CanvasTexture(cv);tx.wrapS=tx.wrapT=THREE.RepeatWrapping;tx.repeat.set(L/.05,.13/.05);tx.anisotropy=8;
-  pl(tc,sc,-.2972,new THREE.PlaneGeometry(L,.13).rotateX(-Math.PI/2),M(0xffffff,{map:tx,roughness:.5,metalness:.55}));
-  const fr=M(0xa9aeb3,{metalness:.75,roughness:.35});
-  [-1,1].forEach(d=>pl(tc,sc+d*.072,-.2975,new THREE.BoxGeometry(L,.004,.014),fr));
-  [-1,1].forEach(d=>pl(tc+d*(L/2-.007),sc,-.2975,new THREE.BoxGeometry(.014,.004,.158),fr));
-  pl(tc,sc,-.2974,new THREE.BoxGeometry(.012,.0035,.13),fr)}
+  pl(tc,sc,-.2945,new THREE.PlaneGeometry(L,.13).rotateX(-Math.PI/2),M(0xffffff,{map:tx,roughness:.5,metalness:.55,polygonOffset:true,polygonOffsetFactor:-5,polygonOffsetUnits:-5}));   /* kratka nad podloga wiaty (kostka ma polygonOffset -2): wyzej i z mocniejszym offsetem - bez przenikania */
+  const fr=M(0xa9aeb3,{metalness:.75,roughness:.35,polygonOffset:true,polygonOffsetFactor:-6,polygonOffsetUnits:-6});
+  [-1,1].forEach(d=>pl(tc,sc+d*.072,-.2948,new THREE.BoxGeometry(L,.004,.014),fr));
+  [-1,1].forEach(d=>pl(tc+d*(L/2-.007),sc,-.2948,new THREE.BoxGeometry(.014,.004,.158),fr));
+  pl(tc,sc,-.2947,new THREE.BoxGeometry(.012,.0035,.13),fr)}
  /* fundamenty (cokol) sa czescia scian wiaty (wb) */
     /* pasy zachodza o kilka cm pod wstege chodnika (ta sama tekstura/poziom) - bez szczeliny przy skosnej krawedzi wstegi */   /* chodnik od ogrodu poszerzony do 1,6 m (swiatlo miedzy slupami) */   /* fundament pod sciany i przejscie podlogi do chodnika */   // wąski żwir wokół wiaty (bez przejścia chodnika); pod wiatą cała posadzka ze żwiru
  /* kosze na odpady 240 l (typ MGB): zwezajacy sie korpus, obrzeze, klapa z zawiasem, uchwyt do ciagniecia, os i dwa kola o sr. 20 cm z tylu (strona drzwi od ulicy), dwie stopki z przodu */
