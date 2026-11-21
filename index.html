@@ -2119,7 +2119,7 @@ function flood(id,x,y,z,yaw){const dk=M(0x2a2d31,{roughness:.5,metalness:.6}),g=
 flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2.12,-34.5,0);
 /* halogen l4 (front, na podjazd) rzuca cien: auto zaslania kostke/podjazd takze przy swietle sztucznym (reflektor wczesniej bez castShadow) */   // halogen nad drzwiami szopy
 
-[['l7',.55,9.85],['l3',11.4,12.55,2.39],['l3',12.7,12.55,2.39],['l3',14.0,12.55,2.39]].forEach(([id,x,Y,H=E])=>{const tr=new THREE.Mesh(new THREE.CylinderGeometry(.095,.095,.008,24),M(0xdfe2e4,{roughness:.5,metalness:.4})),ln=new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.008,24),new THREE.MeshBasicMaterial({color:0xfff1cf}));
+[['l7',.55,9.85,E-.33],['l3',11.4,12.55,2.39],['l3',12.7,12.55,2.39],['l3',14.0,12.55,2.39]].forEach(([id,x,Y,H=E])=>{const tr=new THREE.Mesh(new THREE.CylinderGeometry(.095,.095,.008,24),M(0xdfe2e4,{roughness:.5,metalness:.4})),ln=new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.008,24),new THREE.MeshBasicMaterial({color:0xfff1cf}));
  tr.position.set(x,H-.004,-Y);ln.position.set(x,H-.011,-Y);scene.add(tr,ln);
  addLight(id,ln,new THREE.SpotLight(0xffe2b4,1.8,7,1.15,.7,1),new THREE.Vector3(x,H-.06,-Y),new THREE.Vector3(x,H-3.4,-Y))});
 /* podcien wejscia: czarna natynkowa lampa sufitowa LED (plafon okragly o srednicy 28 cm, czarny aluminiowy korpus + dyfuzor opalowy), w miejscu dawnego punktu swietlnego */
@@ -2946,7 +2946,7 @@ const D=[
 ['ef','Kinkiet dekoracyjny LED (czarny, światło w górę i w dół)','Taras tylny, ściana przy tarasie, bliżej tyłu; oś na wys. 1,57 m.',[9.8,1.568,-17.28],[.2,.3,.22],[1,0]],
 ['ef','Oprawa halogenowa LED (reflektor ścienny)','Nad bramą garażową (front); włączana przyciskiem i czujnikiem ruchu, pochylona 40° w dół.',[3.66,2.65,0],[.22,.2,.3],[0,1]],
 ['ef','Oprawa halogenowa LED (reflektor ścienny)','Tył domu, nad oknem sypialni (L14); włączana przyciskiem, pochylona 40° w dół.',[5.3,2.7,-21.35],[.22,.2,.3],[0,-1]],
-['ef','Downlight w podbitce','Podbitka przy pompie ciepła (ściana zachodnia).',[.55,3.21,-9.85],[.12,.06,.12],0,{el:[-45,-30,-18]}],
+['ef','Downlight w podbitce','Podbitka przy pompie ciepła (ściana zachodnia).',[.55,2.88,-9.85],[.12,.06,.12],0,{el:[-45,-30,-18]}],
 ['ef','Downlight w podbitce','Podbitka nad zadaszonym tarasem z tyłu – 1. z 3 w rzędzie.',[11.4,2.38,-12.55],[.12,.06,.12],0,{el:[-45,-30,-18]}],
 ['ef','Downlight w podbitce','Podbitka nad zadaszonym tarasem z tyłu – 2. z 3 w rzędzie.',[12.7,2.38,-12.55],[.12,.06,.12],0,{el:[-45,-30,-18]}],
 ['ef','Downlight w podbitce','Podbitka nad zadaszonym tarasem z tyłu – 3. z 3 w rzędzie.',[14.0,2.38,-12.55],[.12,.06,.12],0,{el:[-45,-30,-18]}],
