@@ -277,7 +277,7 @@ function tgl(i,o){const prev=cur;cur=o?i:-1;panels.forEach((p,j)=>{if(p)p.classL
  if(prev>=0&&prev!==cur)hook(prev,false);if(cur>=0&&cur!==prev)hook(cur,true);menu=false;main.classList.remove('open');main.setAttribute('aria-expanded','false');fan();if(o)place()}
 function setMenu(o){if(o&&cur>=0)tgl(-1,false);menu=o;main.classList.toggle('open',o);main.setAttribute('aria-expanded',o);if(o)fan();else apply()}
 window.__fabLayout=()=>xy();
-window.__walkMenu=on=>{const L=['meas','area','view','cat'];subs.forEach(b=>{if(L.includes(b.dataset.k)){b.classList.toggle('dis',on);b.setAttribute('aria-disabled',on?'true':'false')}});if(on&&cur>=0&&L.includes(subs[cur].dataset.k))tgl(-1,false);xy()};
+window.__walkMenu=on=>{const L=['view','cat'];subs.forEach(b=>{if(L.includes(b.dataset.k)){b.classList.toggle('dis',on);b.setAttribute('aria-disabled',on?'true':'false')}});if(on&&cur>=0&&L.includes(subs[cur].dataset.k))tgl(-1,false);xy()};
 function toMenu(){tgl(-1,false);setMenu(true)}   /* krzyzyk / baniak glowny przy otwartym oknie: powrot do menu babelkow (nie zamyka wszystkiego) */
 subs.forEach((b,i)=>b.addEventListener('click',()=>{if(b.classList.contains('dis'))return;if(b.dataset.k==='walk'){setMenu(false);if(window.__walkToggle)window.__walkToggle();return}if(b.dataset.k==='reset'){b.querySelector('svg').style.transform='rotate(-360deg)';setTimeout(()=>location.reload(),280);return}if(cur===i)toMenu();else tgl(i,true)}));   /* reset: przeladowanie przywraca swiatla, pore dnia, kamere, drzwi, tryby; polozenie banieczki zostaje (localStorage) */
 let d0=null,drag=false;
