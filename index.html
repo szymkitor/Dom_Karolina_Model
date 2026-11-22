@@ -1303,6 +1303,8 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
  return}
  for(let i=0;i<o.n;i++){ub(o,x0+w*(i+.5)/o.n,zc,w/o.n-fw+.012,h-2*fw+.012,.03,glM);if(i)ub(o,x0+w*i/o.n,zc,.05,h-2*fw,.08,frM)}});
 {const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.Float32BufferAttribute(SILL,3));const sl=new THREE.LineSegments(gg,new THREE.LineBasicMaterial({color:0x10151a}));sl.visible=false;sl.userData.ln=1;sl.frustumCulled=false;scene.add(sl);LNX.push(sl)}   // styk parapetow z elewacja (tryb liniowy)
+/* swiatlo nieba wpadajace przez otwarte drzwi: reflektor-portal z cieniami, natezenie ~ stopien otwarcia x dzien (jedno zrodlo swiatla we wnetrzu poza sloncem) */
+window.SKP=[[GD,3.66,1.9,-.12,3.66,.2,-6.5,.85,1.25],[DR,8.35,1.3,-2.62,8.35,.2,-7,.4,.95]].map(([o,x,y,z,tx,ty,tz,k,an])=>{const l=new THREE.SpotLight(0xdbe8ff,0,12,an,.9,1.2);l.position.set(x,y,z);l.target.position.set(tx,ty,tz);l.castShadow=true;l.shadow.mapSize.set(1024,1024);l.shadow.camera.near=.1;l.shadow.camera.far=14;l.shadow.bias=-.0006;l.visible=false;scene.add(l,l.target);return{l,o,k}});window.skyPortals=()=>{const d=window.DAYK===undefined?1:window.DAYK;SKP.forEach(({l,o,k})=>{const v=k*d*Math.min(1,o.p*1.5);const was=l.visible;l.intensity=v;l.visible=v>.003;if(was!==l.visible)ren.shadowMap.needsUpdate=true})};
 GD.apply();DR.apply();document.getElementById('dd').onclick=()=>{DR.t=DR.t?0:1;document.getElementById('dd').classList.toggle('on',!!DR.t)};document.getElementById('gd').onclick=()=>{GD.t=GD.t?0:1;document.getElementById('gd').classList.toggle('on',!!GD.t)};   /* drzwi wejsciowe (na zawiasie, na zewnatrz) i brama garazowa segmentowa (Elementy) */
 // deska tarasowa, rynny i rury spustowe (ciemnoszare)
 const dkc=document.createElement('canvas');dkc.width=dkc.height=128;const dkx=dkc.getContext('2d');dkx.fillStyle='#2a1a0e';dkx.fillRect(0,0,128,128);
@@ -2167,7 +2169,7 @@ function updSc(){if(!SG)return;SCK.forEach(k=>{const g=SG[k],a=g.on?Math.min(1,.
 function sim(){const lat=52.2*RD,dec=23.44*RD*Math.sin(2*Math.PI*(284+dN)/365),dst=(dN>=87&&dN<=300)?1:0,H=(tH-(1+dst)+21.58/15-12)*15*RD,
  sE=Math.sin(lat)*Math.sin(dec)+Math.cos(lat)*Math.cos(dec)*Math.cos(H),el=Math.asin(sE),az=Math.atan2(Math.sin(H),Math.cos(H)*Math.sin(lat)-Math.tan(dec)*Math.cos(lat))+Math.PI,d=az-nB*RD,
  vx=Math.sin(d)*Math.cos(el),vy=Math.sin(el),vz=-Math.cos(d)*Math.cos(el),ed=el/RD,day=c01((ed+3)/10),tw=Math.exp(-Math.pow(ed/7,2))*.55;
- sun.position.set(7+vx*90,vy*90,-10+vz*90);sun.intensity=.95*day;sun.color.copy(mx(0xffc58a,0xffffff,c01(ed/25)));
+ sun.position.set(7+vx*90,vy*90,-10+vz*90);sun.intensity=.95*day;window.DAYK=day;if(window.skyPortals)skyPortals();sun.color.copy(mx(0xffc58a,0xffffff,c01(ed/25)));
  hemi.intensity=.1+.65*day;hemi.color.copy(mx(0x7f95ff,0xffffff,day));hemi.groundColor.copy(mx(0x202a20,0x8a9a7a,day));
  moon.position.set(7-vx*60,38,-10-vz*60);moon.intensity=.3*(1-day);
  scene.background.copy(mx(0x0a1020,0xcfe2f3,day).lerp(new THREE.Color(0xf3a678),tw));stars.material.opacity=.9*(1-day);
@@ -2762,7 +2764,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
  if(window.RL){const R=window.RL;if(R.p!==R.t){const d=R.t-R.p;R.p=Math.abs(d)<.002?R.t:R.p+d*.05;R.apply();ren.shadowMap.needsUpdate=true;dirty=true}}
  const gdt=t&&lastG?Math.min(.1,(t-lastG)/1000):0;if(t)lastG=t;
  if(gate.position.x!==gT){const d=gT-gate.position.x,stp=.5*gdt;gate.position.x=Math.abs(d)<=stp?gT:gate.position.x+Math.sign(d)*stp;ren.shadowMap.needsUpdate=true;dirty=true}
- {const A=window.DR,B=window.GD;if(A&&A.p!==A.t){const d=A.t-A.p,st=.8*gdt;A.p=Math.abs(d)<=st?A.t:A.p+Math.sign(d)*st;A.apply();ren.shadowMap.needsUpdate=true;dirty=true}if(B&&B.p!==B.t){const d=B.t-B.p,st=.22*gdt;B.p=Math.abs(d)<=st?B.t:B.p+Math.sign(d)*st;B.apply();ren.shadowMap.needsUpdate=true;dirty=true}}
+ if(window.skyPortals)skyPortals();{const A=window.DR,B=window.GD;if(A&&A.p!==A.t){const d=A.t-A.p,st=.8*gdt;A.p=Math.abs(d)<=st?A.t:A.p+Math.sign(d)*st;A.apply();ren.shadowMap.needsUpdate=true;dirty=true}if(B&&B.p!==B.t){const d=B.t-B.p,st=.22*gdt;B.p=Math.abs(d)<=st?B.t:B.p+Math.sign(d)*st;B.apply();ren.shadowMap.needsUpdate=true;dirty=true}}
  if(window.FK){const F=window.FK;if(F.p!==F.t){const d=F.t-F.p,st=1.6*gdt;F.p=Math.abs(d)<=st?F.t:F.p+Math.sign(d)*st;F.fg.rotation.y=F.p;ren.shadowMap.needsUpdate=true;dirty=true}}
  {const go=gT!==0||gate.position.x!==0,fo=!!window.FK&&(FK.t!==0||FK.p!==0);if(window.__lk0!==go||window.__lk1!==fo){window.__lk0=go;window.__lk1=fo;const g=$('gt'),f=$('fk0'),hg=$('lkg'),hf=$('lkf');g.disabled=!go&&fo;f.disabled=go&&!fo;hg.textContent=g.disabled?'Zablokowane: furtka jest otwarta – najpierw ją zamknij.':'';hg.style.display=g.disabled?'block':'none';hf.textContent=f.disabled?'Zablokowane: brama przesuwna nie jest zamknięta – najpierw ją zamknij.':'';hf.style.display=f.disabled?'block':'none'}}
  if(window.SD){for(const k in SD){const F=SD[k];if(F.p!==F.t){const d=F.t-F.p,st=.6*gdt;F.p=Math.abs(d)<=st?F.t:F.p+Math.sign(d)*st;F.L.forEach(l=>{l.g.rotation.y=l.ph+l.k*(Math.PI/2)*F.p});ren.shadowMap.needsUpdate=true;dirty=true}}}
