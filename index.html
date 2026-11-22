@@ -1250,9 +1250,9 @@ const ub=(o,al,zc,sa,sz,sd,m)=>{const ac=o.c-o.s*(D+.04);add(o.ax=='y'?new THREE
  [-1,1].forEach(k=>add(new THREE.BoxGeometry(.03,yT-yB,.1),blk,cx+k*.485,(yT+yB)/2,Z(.12)));   /* prowadnice na oscieznicach */
  const cur=new THREE.Mesh(new THREE.BoxGeometry(wC,1,.012),cm),rail=new THREE.Mesh(new THREE.BoxGeometry(wC,.04,.03),blk);cur.castShadow=rail.castShadow=true;cur.position.x=rail.position.x=cx;cur.position.z=rail.position.z=Z(.08);scene.add(cur,rail);
  const NM=Math.ceil(HM/PIT)+1,lp=new Float32Array(NM*6),lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.BufferAttribute(lp,3));const ll=new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:0x10151a}));ll.visible=false;ll.userData.ln=1;ll.frustumCulled=false;scene.add(ll);LNX.push(ll);
- const RL=window.RL={p:1,t:1,apply(){const h=Math.max(.0005,HM*this.p);cur.scale.y=h;cur.position.y=yT-h/2;cur.visible=this.p>.002;tx.repeat.set(1,h/PIT);tx.needsUpdate=true;rail.position.y=yT-h-.02;
+ const RL=window.RL={p:0,t:0,apply(){const h=Math.max(.0005,HM*this.p);cur.scale.y=h;cur.position.y=yT-h/2;cur.visible=this.p>.002;tx.repeat.set(1,h/PIT);tx.needsUpdate=true;rail.position.y=yT-h-.02;
    let n=0;for(let y=yT-PIT;y>yT-h+.004;y-=PIT){lp.set([cx-wC/2,y,Z(.08)-.0075,cx+wC/2,y,Z(.08)-.0075],n*6);n++;if(n>=NM)break}lg.setDrawRange(0,n*2);lg.attributes.position.needsUpdate=true}};RL.apply();
- document.getElementById('rl0').onclick=()=>{RL.t=RL.t?0:1;document.getElementById('rl0').classList.toggle('on',!!RL.t)};document.getElementById('rl0').classList.add('on')}
+ document.getElementById('rl0').onclick=()=>{RL.t=RL.t?0:1;document.getElementById('rl0').classList.toggle('on',!!RL.t)};}
 // lity słupek narożny przeszklenia salonu: 16,5 × 16,5 cm (pomiar z rzutu: czarny kwadrat ok. 16,4 × 16,8 cm), przylega do ram okien 3,2 m i 2,4 m, osie szyb przechodzą przez słupek
 add(new THREE.BoxGeometry(.165,2.39,.165),frM,14.6225,1.195,-11.0325,false);
 const sillM=M(0x4e3623,{roughness:.45,metalness:.55});
