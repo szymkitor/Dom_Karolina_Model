@@ -2735,7 +2735,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
    for(let i=0;i<n;i++){const nx=W.x+vx/n,nz=W.z+vz/n;if(!blocked(nx,-nz)){W.x=nx;W.z=nz}else if(!blocked(nx,-W.z))W.x=nx;else if(!blocked(W.x,-nz))W.z=nz}}
   const mv=dt>0?Math.hypot(W.x-ox,W.z-oz)/dt:0,run=mv>2.6;W.am=(W.am||0)+(Math.min(1,mv/2.1)-(W.am||0))*Math.min(1,dt*8);W.ph=(W.ph||0)+mv*dt*4.5;
   const A=W.am*(run?1.35:1);W.bob=Math.cos(2*W.ph)*.016*A;W.sw=Math.sin(W.ph)*.015*A;W.rl=Math.sin(W.ph)*.0045*A;W.bp=Math.sin(2*W.ph)*.0035*A;W.fx=(W.fx||0)+((run?4:0)-(W.fx||0))*Math.min(1,dt*4);
-  if(window.IL&&window.HOUSE){IL.intensity=0;if(window.HEMB!==undefined)hemi.intensity=HEMB*(window.HEMK=HOUSE.floorAt(W.x,-W.z)!==null?.4:1);IL.position.set(W.x,Math.min(2.4,(W.y||EYE)+.6),W.z)}
+  if(window.IL&&window.HOUSE){IL.intensity=0;if(window.HEMB!==undefined){const tk=HOUSE.floorAt(W.x,-W.z)!==null?.4:1;window.HEMK=(window.HEMK||1)+(tk-(window.HEMK||1))*Math.min(1,(dt||.016)*2.5);hemi.intensity=HEMB*HEMK}IL.position.set(W.x,Math.min(2.4,(W.y||EYE)+.6),W.z)}
   const ty=gh(W.x,-W.z)+EYE;W.y+=(ty-W.y)*Math.min(1,dt*10);fitFov();place();dirty=true};
  window.__walkToggle=(on)=>{if(on===undefined)on=!W.on;if(on===W.on)return;const fb=document.querySelector('.fab.sub[data-k=walk]');
   if(on){const ob=document.getElementById('orth');if(ORTHO&&ob)ob.click();
