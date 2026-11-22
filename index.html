@@ -1603,14 +1603,23 @@ function pineTex(){const c=document.createElement('canvas');c.width=c.height=128
  [-.56+.012,.83-.012].forEach(x=>[.28,.9,1.55].forEach(y=>bx(.03,.09,.014,x,.075+y,dz+.014,blk)));
  {const ro=put(new THREE.CylinderGeometry(.024,.024,.016,20),blk,.205,.075+.88,dz+.022);ro.rotation.x=Math.PI/2;bx(.12,.02,.02,.265,.075+.88,dz+.03,blk)}
  /* pasmo przeszklen (przod): czarna rama na calej szerokosci, 6 okien: [duze][male] | [duze][duze] nad drzwiami | [male][duze] */
- bx(3.42,YB-YW,.06,0,(YW+YB)/2,hd-.03,blk);
- const lens=[],glassP=(g,x,y,z)=>{const a=new THREE.Mesh(g,lensM);a.position.set(x,y,z);a.userData.cOn=0xffdf9e;a.userData.cOff=0x2d3840;sg.add(a);lens.push(a);const b=new THREE.Mesh(g,gl);b.position.set(x,y,z+.004);sg.add(b)};
- [[-1.67,-.95],[-.90,-.70],[-.51,.10],[.17,.78],[.85,.98],[1.03,1.67]].forEach(([a,b])=>glassP(new THREE.PlaneGeometry(b-a,.215),(a+b)/2,(YW+YB)/2+.002,hd+.011));
+ const fM=M(0x33312f,{roughness:.62,metalness:.05}),rcM=M(0x0b0b0b,{roughness:.8});
+ const WL=[[-1.67,-.95],[-.90,-.70],[-.51,.10],[.17,.78],[.85,.98],[1.03,1.67]],yw0=1.935,yw1=2.115,yl=1.912,yc=2.135;
+ bx(3.42,YB-YW,.05,0,(YW+YB)/2,hd-.045,rcM);   /* ciemne tlo wneki okien */
+ bx(3.42,.035,.05,0,YW+.0175,hd-.005,fM);bx(3.42,.035,.03,0,YW+.0175,hd+.005,fM);   /* gzyms nad listwami (wystaje) */
+ bx(3.42,.035,.04,0,YB-.0175,hd-.008,fM);bx(3.40,.012,.03,0,YB-.041,hd-.012,fM);      /* listwa przejsciowa pod dachem (dwa stopnie) */
+ WL.forEach(([a,b],i)=>{bx(b-a+.03,yw0-yl,.03,(a+b)/2,(yw0+yl)/2,hd-.009,fM);bx(b-a+.03,yc-yw1,.03,(a+b)/2,(yw1+yc)/2,hd-.009,fM);   /* szyny dolna/gorna ramy okna */
+  if(i<WL.length-1){const c=WL[i+1][0];bx(c-b,yc-yl,.03,(b+c)/2,(yl+yc)/2,hd-.009,fM)}});   /* slupki miedzy oknami */
+ bx(.02,yc-yl,.03,-1.70,(yl+yc)/2,hd-.009,fM);bx(.02,yc-yl,.03,1.70,(yl+yc)/2,hd-.009,fM);
+ WL.forEach(([a,b])=>{bx(.012,yw1-yw0,.03,a-.004,(yw0+yw1)/2,hd-.026,rcM);bx(b-a,.012,.03,(a+b)/2,yw0-.004,hd-.026,rcM)});
+ const lens=[],glassP=(g,x,y,z)=>{const a=new THREE.Mesh(g,lensM);a.position.set(x,y,z);a.userData.cOn=0xffdf9e;a.userData.cOff=0x2d3840;sg.add(a);lens.push(a);const b=new THREE.Mesh(g,gl);b.position.set(x,y,z+.003);sg.add(b)};
+ WL.forEach(([a,b])=>glassP(new THREE.PlaneGeometry(b-a,yw1-yw0),(a+b)/2,(yw0+yw1)/2,hd-.02));
  /* boki: czarny skosny pas pod dachem (od 188 cm do skosu dachu) z oknami trapezowymi i wywietrznikiem z tylu */
  const yt=z=>1.93+.24*(z+hd)/(2*hd);
  [-1,1].forEach(k=>{const sh=new THREE.Shape([new THREE.Vector2(hd,YW),new THREE.Vector2(-hd,YW),new THREE.Vector2(-hd,yt(-hd)),new THREE.Vector2(hd,yt(hd))]),g=new THREE.ExtrudeGeometry(sh,{depth:.06,bevelEnabled:false});g.rotateY(-Math.PI/2);g.translate(k>0?hw:-hw+.06,0,0);put(g,blk,0,0,0);
   [[.15,.97],[-.50,.07]].forEach(([za,zb])=>{const ya=1.877+.035,P=[[za,ya],[zb,ya],[zb,yt(zb)-.035],[za,yt(za)-.035]],gg=new THREE.ShapeGeometry(new THREE.Shape(P.map(p=>new THREE.Vector2(p[0],p[1]))));gg.rotateY(-Math.PI/2);gg.translate(k*(hw+.012),0,0);const a=new THREE.Mesh(gg,lensM);a.userData.cOn=0xffdf9e;a.userData.cOff=0x2d3840;sg.add(a);lens.push(a);const b2=new THREE.Mesh(gg.clone(),gl);b2.position.x=k*.004;sg.add(b2)});
-  for(let i=0;i<3;i++)bx(.006,.006,.3,k*(hw+.012),YW+.025+i*.018,-.80,slM)});   /* kratka wentylacyjna */
+  for(let i=0;i<3;i++)bx(.006,.006,.3,k*(hw+.012),YW+.025+i*.018,-.80,slM);bx(.03,.035,2.16,k*(hw+.005),YW+.0175,0,fM)});   /* gzyms na bokach */
+ bx(3.42,.035,.03,0,YW+.0175,-hd-.005,fM);   /* kratka wentylacyjna */
  /* dach jednospadowy czarny: 340 x 218 cm, grubosc ok. 9 cm, przod 226 cm, tyl 202 cm */
  {const A=Math.atan2(.24,2.18),L=2.18/Math.cos(A),r=put(new THREE.BoxGeometry(3.40,.09,L),roofM,0,2.14-.045*Math.cos(A),0);r.rotation.x=-A}
  sg.updateMatrixWorld(true);window.SHED_GP=lens;
