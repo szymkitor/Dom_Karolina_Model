@@ -219,6 +219,7 @@ body.walking canvas{touch-action:none}
   <button id="ptgo">Renderuj bieżący widok</button>
   <small class="hint">Używa aktualnej kamery, pory dnia i włączonych świateł. Wymaga WebGL2 i mocnego GPU; obraz doszlifowuje się na żywo.</small></section></div>
 <style>
+#pn_cat.cmin{width:min(250px,calc(100vw - 56px))}#pn_cat.cmin .hd{display:none}.catmini{display:flex;align-items:center;justify-content:space-between;gap:6px}.ui .catmini .catb{margin:0}.catmt{font-size:11px;opacity:.75;margin-top:6px;line-height:1.3;text-align:center}
 #catpin{position:fixed;z-index:34;display:none;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;border:3px solid #ff3b30;box-shadow:0 0 0 2px rgba(255,255,255,.85),0 0 18px 4px rgba(255,59,48,.75);pointer-events:none;animation:catp 1.3s ease-in-out infinite}
 @keyframes catp{50%{transform:scale(1.25);opacity:.55}}
 #catlbl{position:fixed;z-index:35;display:none;max-width:min(290px,calc(100vw - 16px));box-sizing:border-box;padding:9px 11px;border-radius:12px;background:rgba(18,22,27,.9);color:#fff;border-left:4px solid #ff3b30;box-shadow:0 8px 24px rgba(0,0,0,.4);pointer-events:none;font:12px/1.35 system-ui,sans-serif;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
@@ -2934,7 +2935,7 @@ const MTC=(()=>{
 <script>
 (()=>{
 if(typeof scene==='undefined'||typeof ctl==='undefined'||typeof THREE==='undefined')return;
-const GRP=[['ef','Punkty elektryczne na elewacji','gniazda, oprawy, urządzenia na ścianach i pod okapem domu'],['eo','Punkty elektryczne poza elewacją','słupek, lampy ogrodowe, szopa, wiata, tunel, złącze'],['hf','Punkty hydrauliczne na elewacji','krany, rury spustowe, przyłącza pompy ciepła'],['ho','Punkty hydrauliczne poza elewacją','kran na słupku, odwodnienia liniowe, pompa basenu']];
+const GRP=[['ef','Punkty elektryczne na elewacji','gniazda, oprawy, klimatyzacja, urządzenia na ścianach i pod okapem domu'],['eo','Punkty elektryczne poza elewacją','słupek, lampy ogrodowe, szopa, wiata, tunel, złącze'],['hf','Punkty hydrauliczne na elewacji','krany, rury spustowe, przyłącza pompy ciepła, instalacja klimatyzacji'],['ho','Punkty hydrauliczne poza elewacją','kran na słupku, odwodnienia liniowe, pompa basenu']];
 /* [grupa, typ, opis, srodek[x,y,z], polowy[wzdluz sciany, y, od sciany], normalna[x,z] albo 0, opcje] */
 const D=[
 ['ef','Kinkiet dekoracyjny LED (czarny, światło w górę i w dół)','Front domu, lewy narożnik garażu; oś na wys. 1,57 m.',[.58,1.568,0],[.2,.3,.22],[0,1]],
@@ -2964,6 +2965,7 @@ const D=[
 ['ef','Kamera kopułkowa','Pod okapem, narożnik południowo-wschodni (strona wiaty); wys. ok. 2,8 m.',[15.35,2.85,-1.96],[.1,.1,.1],0,{el:[-35,-20,-8]}],
 ['ef','Kamera kopułkowa','Pod okapem przy tarasie, strona wschodnia tyłu domu; wys. ok. 2,8 m.',[10.05,2.85,-19.34],[.1,.1,.1],0,{el:[-35,-20,-8]}],
 ['ef','Kamera kopułkowa','Pod okapem, tył domu, narożnik północno-zachodni; wys. ok. 2,8 m.',[1.52,2.85,-21.6],[.1,.1,.1],0,{el:[-35,-20,-8]}],
+['ef','Jednostka zewnętrzna klimatyzacji (split, zasilanie 230 V)','Ściana wschodnia salonu (strona tarasu z tyłu), na dwóch wspornikach pod podbitką; zasilanie i sterowanie wchodzą w ścianę z boku jednostki.',[15.1,2.32,-5.6],[.5,.42,.3],[1,0],{m:1}],
 ['ef','Przyłącze energetyczne (hak i skrzynka zakończeniowa)','Front, przy lewym narożniku: hak pod okapem (2,78 m) i skrzynka zakończeniowa linii od złącza.',[.2,2.55,.04],[.14,.24,.14],[0,1]],
 
 ['eo','Słupek ogrodowy z gniazdami (3 zintegrowane)','Przy tylnej granicy (P18b), słupek 35 cm; kabel do pompy basenu i do tunelu foliowego.',[17.5,-.12,-36.38],[.12,.24,.14],[0,1]],
@@ -2990,6 +2992,8 @@ const D=[
 ['hf','Rura spustowa Ø90 z wylotem na grunt','Ściana wschodnia, przy tarasie wejścia.',[14.96,1.4,-7.7],[.14,1.45,.14],[1,0],{m:2.7}],
 ['hf','Przyłącza hydrauliczne pompy ciepła (2 rury Ø5/4″ w izolacji)','Z tyłu pompy Galmet Prima 8GT, wejście do ściany kotłowni; zasilanie i powrót.',[.87,.17,-10.3],[.22,.12,.12],0,{m:.5,el:[30,45]}],
 
+['hf','Instalacja chłodnicza klimatyzacji (2 rurki Cu w izolacji + osłona zaworów)','Z boku jednostki zewnętrznej (ściana wschodnia salonu); rurki wchodzą w ścianę, zimny i gorący czynnik.',[15.03,2.2,-5.16],[.25,.22,.22],[0,1],{m:.6}],
+
 ['ho','Kran na słupku z wężem','Przed szopą, na lewo od drzwi (ze żwirowego paska); rura Ø40 mm, wys. 70 cm.',[-1.9,.1,-34.15],[.5,.55,.45],0,{m:1}],
 ['ho','Odwodnienie liniowe (kratka ściekowa)','Na całej szerokości podjazdu przy linii bramy przesuwnej; ruszt oczkowy w stalowej ramie.',[3.66,-.29,7.0],[2.9,.08,.25],0,{m:5.8,el:[35,50]}],
 ['ho','Odwodnienie liniowe (kratka ściekowa)','Wiata śmietnikowa, tuż za ścianą z drzwiami od ulicy, na całą szerokość drzwi.',[16.92,-.29,4.94],[.7,.08,.7],0,{m:2,el:[35,50]}],
@@ -2999,55 +3003,68 @@ const $=id=>document.getElementById(id),V3=THREE.Vector3;
 const gcell=(x,y)=>{const i=Math.floor((x+6)/3),j=Math.floor((y+9)/3),fx=x+6-i*3,fy=y+9-j*3;return String.fromCharCode(73+i)+(j+4)+'abcd'[(fy>=1.5?0:1)*2+(fx>=1.5?1:0)]};
 const ITEMS=D.map((r,i)=>{const o=Object.assign({},r[6]||{});const n=r[5]||null;const c=r[3];const p=n?[c[0]+n[0]*.25,-(c[2]+n[1]*.25)]:[c[0],-c[2]];return{g:r[0],t:r[1],d:r[2],c,h:r[4],n,o,cell:gcell(p[0],p[1])}});
 GRP.forEach(g=>{const L=ITEMS.filter(it=>it.g===g[0]);L.forEach((it,k)=>{it.no=k+1});const tc={};L.forEach(it=>{tc[it.t]=(tc[it.t]||0)+1});const seen={};L.forEach(it=>{seen[it.t]=(seen[it.t]||0)+1;it.tn=seen[it.t];it.tt=tc[it.t];it.gn=L.length})});
-let BB=null,cur=null,ovs=[],tw=null,savedPol=null,grp=null,active=false;
+let BB=null,PB=[],mini=false,cur=null,ovs=[],tw=null,savedPol=null,grp=null,active=false;
 const redM=new THREE.MeshBasicMaterial({color:0xff2a1c,transparent:true,opacity:.8,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-8,polygonOffsetUnits:-8,side:THREE.DoubleSide});
-function ensureBB(){if(BB)return;scene.updateMatrixWorld(true);BB=[];const s=new V3;scene.traverse(o=>{if(!o.isMesh||o.isInstancedMesh||!o.geometry||!o.visible||o.userData.cat||o.userData.mt||o.userData.plant||o.userData.ln)return;let m=o.material;if(Array.isArray(m))m=m[0];if(!m||(m.userData&&m.userData.plant)||m.blending===THREE.AdditiveBlending)return;const g=o.geometry;if(!g.boundingBox)g.computeBoundingBox();if(!g.boundingBox||g.boundingBox.isEmpty())return;const b=g.boundingBox.clone().applyMatrix4(o.matrixWorld);b.getSize(s);const sz=Math.max(s.x,s.y,s.z);if(!isFinite(sz))return;BB.push({m:o,b,cx:(b.min.x+b.max.x)/2,cy:(b.min.y+b.max.y)/2,cz:(b.min.z+b.max.z)/2,s:sz,tr:!!(m.transparent||o.material.transparent)})})}
-function collect(it){ensureBB();const c=it.c,h=it.h,n=it.n||[0,1],t=[-n[1],n[0]],lim=it.o.m||.6,PM=typeof pipeM!=='undefined'?pipeM:null,out=[];for(const r of BB){if(r.s>lim)continue;if(it.o.ex&&PM&&r.m.material===PM)continue;const dx=r.cx-c[0],dz=r.cz-c[2];if(Math.abs(dx*t[0]+dz*t[1])<h[0]&&Math.abs(r.cy-c[1])<h[1]&&Math.abs(dx*n[0]+dz*n[1])<h[2])out.push(r)}return out}
+function ensureBB(){if(BB)return;scene.updateMatrixWorld(true);BB=[];PB=[];const s=new V3,iM=new THREE.Matrix4;scene.traverse(o=>{if(!o.isMesh||!o.geometry||!o.visible||o.userData.cat||o.userData.mt||o.userData.ln)return;let m=o.material;if(Array.isArray(m))m=m[0];
+  if(o.isInstancedMesh||o.userData.plant||(m&&m.userData&&m.userData.plant)){const g=o.geometry;if(!g.boundingBox)g.computeBoundingBox();if(!g.boundingBox||g.boundingBox.isEmpty())return;const nI=o.isInstancedMesh?Math.min(o.count,4000):1;for(let k=0;k<nI;k++){const b=g.boundingBox.clone();if(o.isInstancedMesh){o.getMatrixAt(k,iM);iM.premultiply(o.matrixWorld);b.applyMatrix4(iM)}else b.applyMatrix4(o.matrixWorld);if(b.max.y-b.min.y>=.8&&b.max.y>.8)PB.push(b)}return}
+  if(!m||m.blending===THREE.AdditiveBlending)return;const g=o.geometry;if(!g.boundingBox)g.computeBoundingBox();if(!g.boundingBox||g.boundingBox.isEmpty())return;const b=g.boundingBox.clone().applyMatrix4(o.matrixWorld);b.getSize(s);const sz=Math.max(s.x,s.y,s.z);if(!isFinite(sz))return;BB.push({m:o,b,cx:(b.min.x+b.max.x)/2,cy:(b.min.y+b.max.y)/2,cz:(b.min.z+b.max.z)/2,s:sz,tr:!!(m.transparent||o.material.transparent)})})}
+function collect(it){ensureBB();const c=it.c,h=it.h,n=it.n||[0,1],t=[-n[1],n[0]],mg=.04,PM=typeof pipeM!=='undefined'?pipeM:null,
+ ax=Math.abs(t[0])*h[0]+Math.abs(n[0])*h[2]+mg,az=Math.abs(t[1])*h[0]+Math.abs(n[1])*h[2]+mg,
+ A=new THREE.Box3(new V3(c[0]-ax,c[1]-h[1]-mg,c[2]-az),new V3(c[0]+ax,c[1]+h[1]+mg,c[2]+az)),pos=[],own=new Set(),U=new THREE.Box3(),P=[new V3,new V3,new V3],
+ inside=p=>{const dx=p.x-c[0],dz=p.z-c[2];return Math.abs(dx*t[0]+dz*t[1])<=h[0]+mg&&Math.abs(p.y-c[1])<=h[1]+mg&&Math.abs(dx*n[0]+dz*n[1])<=h[2]+mg};
+ for(const r of BB){if(r.tr||!r.b.intersectsBox(A))continue;const o=r.m;if(it.o.ex&&PM&&o.material===PM)continue;
+  const g=o.geometry,pa=g.attributes.position,ix=g.index,M=o.matrixWorld,nt=ix?ix.count/3:pa.count/3;let hit=false;
+  for(let k=0;k<nt;k++){let ok=true;for(let j=0;j<3;j++){P[j].fromBufferAttribute(pa,ix?ix.getX(k*3+j):k*3+j).applyMatrix4(M);if(!inside(P[j])){ok=false;break}}
+   if(ok){for(let j=0;j<3;j++){pos.push(P[j].x,P[j].y,P[j].z);U.expandByPoint(P[j])}hit=true}}
+  if(hit)own.add(o)}
+ return{pos,U,own}}
 function clearOv(){ovs.forEach(o=>scene.remove(o));ovs=[]}
-function showOv(list){clearOv();list.forEach(r=>{const m=new THREE.Mesh(r.m.geometry,redM);m.matrixAutoUpdate=false;m.matrix.copy(r.m.matrixWorld);m.matrixWorld.copy(r.m.matrixWorld);m.frustumCulled=false;m.castShadow=false;m.receiveShadow=false;m.renderOrder=30;m.userData.cat=1;m.userData.mt=1;scene.add(m);ovs.push(m)});if(typeof dirty!=='undefined')dirty=true}
+function showOv(sel){clearOv();if(sel.pos.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(sel.pos,3));const m=new THREE.Mesh(g,redM);m.matrixAutoUpdate=false;m.frustumCulled=false;m.castShadow=false;m.receiveShadow=false;m.renderOrder=30;m.userData.cat=1;m.userData.mt=1;scene.add(m);ovs.push(m)}if(typeof dirty!=='undefined')dirty=true}
 const rc=new THREE.Raycaster();
-function bestView(it,list){
- const U=new THREE.Box3();list.forEach(r=>U.union(r.b));if(U.isEmpty()){const c=it.c;U.set(new V3(c[0]-.08,c[1]-.08,c[2]-.08),new V3(c[0]+.08,c[1]+.08,c[2]+.08))}
- const C=U.getCenter(new V3),S=U.getSize(new V3),sz=Math.max(S.x,S.y,S.z,.12);let dist=Math.max(1.4,sz*2.6+.7);dist=Math.min(dist,sz>3?13:9);
- const own=new Set(list.map(r=>r.m)),occ=BB.filter(r=>!own.has(r.m)&&!r.tr&&r.s<90);
- const pts=[C.clone()];[-1,1].forEach(a=>[-1,1].forEach(b=>[-1,1].forEach(c=>pts.push(new V3(C.x+a*S.x*.4,C.y+b*S.y*.4,C.z+c*S.z*.4)))));
- const els=it.o.el||[12,28,45],n=it.n;let best=null;const seg=new THREE.Ray(),tmp=new V3;
- for(const el of els)for(let az=0;az<360;az+=20){const a=az*Math.PI/180,ce=Math.cos(el*Math.PI/180),dir=new V3(Math.sin(a)*ce,Math.sin(el*Math.PI/180),Math.cos(a)*ce);
-  let al=0;if(n){al=dir.x*n[0]+dir.z*n[1];al/=Math.max(.001,ce);if(al<.35)continue}
-  const cp=C.clone().addScaledVector(dir,dist);if(cp.y<-.1||cp.y>40)continue;
-  let vis=0;for(const P of pts){const P0=P.clone().addScaledVector(dir,.03),len=P0.distanceTo(cp);seg.set(P0,dir);let hit=false;rc.set(P0,dir);rc.far=len-.05;
-   for(const r of occ){if(r.b.containsPoint(P0))continue;const q=seg.intersectBox(r.b,tmp);if(!q)continue;if(P0.distanceTo(q)>len-.05)continue;if(rc.intersectObject(r.m,false).length){hit=true;break}}
-   if(!hit)vis++}
+function bestView(it,sel){
+ const U=sel.U.clone();if(U.isEmpty()){const c=it.c;U.set(new V3(c[0]-.08,c[1]-.08,c[2]-.08),new V3(c[0]+.08,c[1]+.08,c[2]+.08))}
+ const C=U.getCenter(new V3),S=U.getSize(new V3),sz=Math.max(S.x,S.y,S.z,.12);let dist=Math.max(8,sz*2.6+5.5);dist=Math.min(dist,sz>3?16:12);
+ const occ=BB.filter(r=>!r.tr&&r.s<250);
+ const pts=[C.clone()];[[1,1,1],[-1,-1,-1],[1,-1,1],[-1,1,-1]].forEach(q=>pts.push(new V3(C.x+q[0]*S.x*.4,C.y+q[1]*S.y*.4,C.z+q[2]*S.z*.4)));
+ const els=it.o.el||[14,28,45],n=it.n;let best=null;const seg=new THREE.Ray();
+ const tq=new V3,blocked=(P0,dir,len)=>{seg.set(P0,dir);rc.set(P0,dir);rc.near=.25;rc.far=len-.1;for(const r of occ){if(!seg.intersectsBox(r.b))continue;if(rc.intersectObject(r.m,false).length)return true}
+  for(const b of PB){if(b.containsPoint(P0))continue;const q=seg.intersectBox(b,tq);if(q&&P0.distanceTo(q)<len-.15)return true}return false};
+ for(const el of els)for(let az=0;az<360;az+=24){const a=az*Math.PI/180,ce=Math.cos(el*Math.PI/180),dir=new V3(Math.sin(a)*ce,Math.sin(el*Math.PI/180),Math.cos(a)*ce);
+  let al=0;if(n){al=dir.x*n[0]+dir.z*n[1];al/=Math.max(.001,ce);if(al<.3)continue}
+  const cp=C.clone().addScaledVector(dir,dist);if(cp.y<.15||cp.y>40)continue;if(PB.some(b=>b.containsPoint(cp)))continue;
+  let vis=0;for(const P of pts){const P0=P.clone().addScaledVector(dir,.08);if(!blocked(P0,dir,P0.distanceTo(cp)))vis++}
   const sc=vis/pts.length+(n?.12*al:0)-Math.abs(el-(els[0]))*.0008;if(!best||sc>best.sc)best={sc,cp,vis}}
  if(!best){const dir=new V3(.5,.4,.8).normalize();best={cp:C.clone().addScaledVector(dir,dist)}}
+ rc.near=0;rc.far=Infinity;
  return{C,cp:best.cp}}
 function fly(cp,C){if(tw)cancelAnimationFrame(tw.id);const p0=cam.position.clone(),t0=ctl.target.clone(),T=650,s=performance.now();const st={};
- const step=now=>{let k=Math.min(1,(now-s)/T);const e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;cam.position.lerpVectors(p0,cp,e);ctl.target.lerpVectors(t0,C,e);ctl.update();if(typeof dirty!=='undefined')dirty=true;place();if(k<1)st.id=requestAnimationFrame(step);else tw=null};tw=st;st.id=requestAnimationFrame(step)}
+ const step=now=>{let k=Math.min(1,(now-s)/T);const e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;cam.position.lerpVectors(p0,cp,e);ctl.target.lerpVectors(t0,C,e);ctl.update();if(typeof dirty!=='undefined')dirty=true;place();if(k<1)st.id=requestAnimationFrame(step);else{tw=null;requestAnimationFrame(()=>{place();requestAnimationFrame(place)})}};tw=st;st.id=requestAnimationFrame(step)}
 const pin=$('catpin'),lbl=$('catlbl');
-function place(){if(!cur||!active){pin.style.display=lbl.style.display='none';return}if(typeof applyProj==='function')applyProj();const v=cur.C.clone().project(cam);if(v.z>1||v.z<-1){pin.style.display=lbl.style.display='none';return}const w=innerWidth,h=innerHeight,x=(v.x+1)/2*w,y=(1-v.y)/2*h;pin.style.display='block';pin.style.left=x+'px';pin.style.top=y+'px';lbl.style.display='block';const lw=lbl.offsetWidth,lh=lbl.offsetHeight;let lx=x+34,ly=y-lh-18;if(lx+lw>w-8)lx=x-34-lw;if(lx<8)lx=8;if(ly<8)ly=y+34;if(ly+lh>h-8)ly=h-8-lh;lbl.style.left=lx+'px';lbl.style.top=ly+'px'}
+function place(){if(!cur||!active){pin.style.display=lbl.style.display='none';return}if(typeof applyProj==='function')applyProj();cam.updateMatrixWorld(true);cam.matrixWorldInverse.copy(cam.matrixWorld).invert();const v=cur.C.clone().project(cam);if(v.z>1||v.z<-1){pin.style.display=lbl.style.display='none';return}const w=innerWidth,h=innerHeight,x=(v.x+1)/2*w,y=(1-v.y)/2*h;pin.style.display='block';pin.style.left=x+'px';pin.style.top=y+'px';lbl.style.display='block';const lw=lbl.offsetWidth,lh=lbl.offsetHeight;let lx=x+34,ly=y-lh-18;if(lx+lw>w-8)lx=x-34-lw;if(lx<8)lx=8;if(ly<8)ly=y+34;if(ly+lh>h-8)ly=h-8-lh;lbl.style.left=lx+'px';lbl.style.top=ly+'px'}
 ctl.addEventListener('change',place);addEventListener('resize',place);
 const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 function setLbl(it){lbl.innerHTML='<div class="cl1"><span class="cn">'+it.no+'</span><b>'+esc(it.t)+'</b></div><div class="cl2">'+esc(it.d)+'</div><div class="cl3">Pole siatki: <b>'+it.cell+'</b> · nr '+it.tn+' z '+it.tt+' tego typu · łącznie w grupie: '+it.gn+'</div>'}
-function fallbackOv(it){const h=it.h,n=it.n||[0,1],m=new THREE.Mesh(new THREE.BoxGeometry(Math.max(.06,h[0]*2),Math.max(.06,h[1]*2),Math.max(.06,h[2]*2)),redM);m.position.set(it.c[0],it.c[1],it.c[2]);m.rotation.y=Math.atan2(n[0],n[1]);m.userData.cat=1;m.userData.mt=1;m.renderOrder=30;m.castShadow=false;scene.add(m);ovs.push(m);if(typeof dirty!=='undefined')dirty=true}
-function select(it,go){if(!it)return;cur=it;const list=collect(it);showOv(list);if(!list.length)fallbackOv(it);const v=bestView(it,list);it.C=v.C;setLbl(it);if(go!==false)fly(v.cp,v.C);else place();renderPanel();place()}
+function select(it,go){if(!it)return;cur=it;mini=true;const sel=collect(it);showOv(sel);const v=bestView(it,sel);it.C=v.C;setLbl(it);if(go!==false)fly(v.cp,v.C);else place();renderPanel();place()}
 const pn=$('pn_cat');let gsel=null;
 function layout(){if(window.__fabLayout)window.__fabLayout()}
-function renderPanel(){let h='';
- if(!gsel){h+='<section><h3>Grupa</h3>'+GRP.map(g=>{const n=ITEMS.filter(i=>i.g===g[0]).length;return'<button class="catg" data-g="'+g[0]+'"><b>'+g[1]+'</b><small>'+n+' szt. · '+g[2]+'</small></button>'}).join('')+'</section><small class="hint">Wybierz grupę, a potem kolejne elementy: kamera ustawi najlepsze ujęcie, element zaświeci się na czerwono i dostanie opis z numerem. Tryb liniowy działa, w trybie spaceru katalog jest wyłączony.</small>'}
+function renderPanel(){let h='';const brow=gsel&&cur&&cur.g===gsel&&mini;pn.classList.toggle('cmin',!!brow);
+ if(!gsel){h+='<section><h3>Grupa</h3>'+GRP.map(g=>{const n=ITEMS.filter(i=>i.g===g[0]).length;return'<button class="catg" data-g="'+g[0]+'"><b>'+g[1]+'</b><small>'+n+' szt. · '+g[2]+'</small></button>'}).join('')+'</section><small class="hint">Wybierz grupę, a potem kolejne elementy: kamera ustawi szerokie ujęcie, element zaświeci się na czerwono i dostanie opis z numerem. Po wyborze elementu okno zwija się do małego paska. Tryb liniowy działa, w trybie spaceru katalog jest wyłączony.</small>'}
+ else if(brow){const g=GRP.find(x=>x[0]===gsel);h+='<div class="catmini"><button id="cat_back" class="catb" title="Wróć do wyboru grupy">‹ Grupy</button><button id="cat_list" class="catb" title="Pokaż listę elementów">Lista ▾</button></div><div class="catnav"><button id="cat_pv" aria-label="Poprzedni">‹</button><span><b>'+cur.no+'</b> / '+cur.gn+'</span><button id="cat_nx" aria-label="Następny">›</button></div><div class="catmt">'+esc(cur.t)+' · '+cur.tn+' z '+cur.tt+'</div>'}
  else{const g=GRP.find(x=>x[0]===gsel),L=ITEMS.filter(i=>i.g===gsel);h+='<section><h3><span class="t">'+g[1]+'</span><button id="cat_back" class="catb">‹ Grupy</button></h3>';
   if(cur&&cur.g===gsel)h+='<div class="catcard"><div class="cl1"><span class="cn">'+cur.no+'</span><b>'+esc(cur.t)+'</b></div><div class="cl2">'+esc(cur.d)+'</div><div class="cl3">Pole siatki: <b>'+cur.cell+'</b><br>Nr '+cur.tn+' z '+cur.tt+' tego typu · w grupie łącznie: '+cur.gn+'</div><div class="catnav"><button id="cat_pv" aria-label="Poprzedni">‹</button><span>'+cur.no+' / '+cur.gn+'</span><button id="cat_nx" aria-label="Następny">›</button></div></div>';
   let lt=null;L.forEach(it=>{if(it.t!==lt){lt=it.t;h+='<h4>'+esc(it.t)+' — '+it.tt+' szt.</h4><div class="catn">'}h+='<button data-i="'+ITEMS.indexOf(it)+'" class="cnb'+(cur===it?' on':'')+'" title="'+esc(it.d)+'">'+it.no+'</button>';const nx=L[L.indexOf(it)+1];if(!nx||nx.t!==lt)h+='</div>'});
   h+='</section>'}
  pn.querySelector('.cbody').innerHTML=h;layout()}
 pn.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.g){gsel=b.dataset.g;cur=null;clearOv();place();renderPanel();select(ITEMS.find(i=>i.g===gsel));return}
- if(b.id==='cat_back'){gsel=null;cur=null;clearOv();place();renderPanel();return}
+ if(b.id==='cat_back'){gsel=null;cur=null;mini=false;clearOv();place();renderPanel();return}
+ if(b.id==='cat_list'){mini=false;renderPanel();return}
  if(b.dataset.i){select(ITEMS[+b.dataset.i]);return}
  if(b.id==='cat_pv'||b.id==='cat_nx'){const L=ITEMS.filter(i=>i.g===gsel),k=L.indexOf(cur)+(b.id==='cat_nx'?1:-1);select(L[(k+L.length)%L.length])}});
-function on(){if(window.WALK&&WALK.on)return;active=true;ensureBB();savedPol=ctl.maxPolarAngle;ctl.maxPolarAngle=Math.PI*.78;gsel=null;cur=null;renderPanel()}
-function off(){active=false;if(tw){cancelAnimationFrame(tw.id);tw=null}clearOv();cur=null;gsel=null;place();if(savedPol!==null){ctl.maxPolarAngle=savedPol;savedPol=null;try{ctl.update()}catch(e){}}if(typeof dirty!=='undefined')dirty=true}
+function on(){if(window.WALK&&WALK.on)return;active=true;BB=null;ensureBB();mini=false;savedPol=ctl.maxPolarAngle;ctl.maxPolarAngle=Math.PI*.78;gsel=null;cur=null;renderPanel()}
+function off(){active=false;mini=false;pn.classList.remove('cmin');if(tw){cancelAnimationFrame(tw.id);tw=null}clearOv();cur=null;gsel=null;place();if(savedPol!==null){ctl.maxPolarAngle=savedPol;savedPol=null;try{ctl.update()}catch(e){}}if(typeof dirty!=='undefined')dirty=true}
 const ph=window.__panelHook;window.__panelHook=(k,o)=>{if(k==='cat'){o?on():off();return}if(ph)ph(k,o)};
 addEventListener('keydown',e=>{if(!active||!cur)return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const L=ITEMS.filter(i=>i.g===gsel),k=L.indexOf(cur)+(e.key==='ArrowRight'?1:-1);select(L[(k+L.length)%L.length]);e.preventDefault()}});
-window.__catalog={items:ITEMS,select:i=>select(ITEMS[i])};
+window.__catalog={items:ITEMS,select:i=>select(ITEMS[i]),dbg:i=>{const it=ITEMS[i],l=collect(it);return{i,g:it.g,t:it.t.slice(0,28),n:l.length,tot:it.no}}};
 })();
 
 </script></body></html>
