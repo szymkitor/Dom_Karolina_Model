@@ -519,6 +519,15 @@ document.getElementById('snp').onclick=async e=>{const b=e.currentTarget,txt=b.t
 view('corner');
 
 const hemi=new THREE.HemisphereLight(0xffffff,0x8a9a7a,.75);scene.add(hemi);
+/* wnetrze domu: swiatlo rozproszone nieba/trawy (polkula) nie dociera do srodka - tylko slonce (z cieniami) + ~10% przez okna */
+{const P=[[0,0],[7.25,0],[7.25,2.5],[14.9,2.5],[14.9,11.3],[9.8,11.3],[9.8,21.35],[1,21.35],[1,8.8],[0,8.8]],d=.22,n=P.length,nrm=(u,v)=>{const dx=v[0]-u[0],dy=v[1]-u[1],l=Math.hypot(dx,dy);return[dy/l,-dx/l]};
+ let ar=0;for(let i=0;i<n;i++){const a=P[i],b=P[(i+1)%n];ar+=a[0]*b[1]-b[0]*a[1]}const sg=ar>0?-1:1;
+ const I=P.map((b,i)=>{const a=P[(i+n-1)%n],c=P[(i+1)%n],n1=nrm(a,b),n2=nrm(b,c),k=1+(n1[0]*n2[0]+n1[1]*n2[1]);return[b[0]+sg*d*(n1[0]+n2[0])/k,b[1]+sg*d*(n1[1]+n2[1])/k]});
+ const f=v=>v.toFixed(4);
+ let g='float hi=0.;{vec3 wp=cameraPosition+(-vViewPosition)*mat3(viewMatrix);float X=wp.x,Y=-wp.z;bool ins=false;';
+ for(let i=0;i<n;i++){const a=I[i],b=I[(i+1)%n];if(Math.abs(a[1]-b[1])<1e-6)continue;g+='if((('+f(a[1])+'>Y)!=('+f(b[1])+'>Y))&&(X<('+f(b[0])+'-('+f(a[0])+'))*(Y-('+f(a[1])+'))/('+f(b[1])+'-('+f(a[1])+'))+('+f(a[0])+')))ins=!ins;'}
+ g+='if(ins&&wp.y<2.85&&wp.y>-.6)hi=1.;}float hk=mix(1.,.1,hi);';
+ THREE.ShaderChunk.lights_fragment_begin=THREE.ShaderChunk.lights_fragment_begin.replace('#if ( NUM_HEMI_LIGHTS > 0 )',g+'\n#if ( NUM_HEMI_LIGHTS > 0 )').replace('irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );','irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry ) * hk;');window.__INS=I}
 const sun=new THREE.DirectionalLight(0xffffff,.95);sun.castShadow=true;sun.shadow.mapSize.setScalar(Math.min(4096,ren.capabilities.maxTextureSize));
 Object.assign(sun.shadow.camera,{left:-46,right:46,top:46,bottom:-46,near:1,far:260});sun.target.position.set(7,0,-10);scene.add(sun,sun.target);sun.shadow.bias=-.0004;sun.shadow.normalBias=.04;
 function setSun(a){a*=Math.PI/180;sun.position.set(7+Math.cos(a)*55,38,-10+Math.sin(a)*55)}setSun(60);
@@ -2159,7 +2168,7 @@ function sim(){const lat=52.2*RD,dec=23.44*RD*Math.sin(2*Math.PI*(284+dN)/365),d
  sE=Math.sin(lat)*Math.sin(dec)+Math.cos(lat)*Math.cos(dec)*Math.cos(H),el=Math.asin(sE),az=Math.atan2(Math.sin(H),Math.cos(H)*Math.sin(lat)-Math.tan(dec)*Math.cos(lat))+Math.PI,d=az-nB*RD,
  vx=Math.sin(d)*Math.cos(el),vy=Math.sin(el),vz=-Math.cos(d)*Math.cos(el),ed=el/RD,day=c01((ed+3)/10),tw=Math.exp(-Math.pow(ed/7,2))*.55;
  sun.position.set(7+vx*90,vy*90,-10+vz*90);sun.intensity=.95*day;sun.color.copy(mx(0xffc58a,0xffffff,c01(ed/25)));
- window.HEMB=.1+.65*day;hemi.intensity=window.HEMB*(window.HEMK||1);hemi.color.copy(mx(0x7f95ff,0xffffff,day));hemi.groundColor.copy(mx(0x202a20,0x8a9a7a,day));
+ hemi.intensity=.1+.65*day;hemi.color.copy(mx(0x7f95ff,0xffffff,day));hemi.groundColor.copy(mx(0x202a20,0x8a9a7a,day));
  moon.position.set(7-vx*60,38,-10-vz*60);moon.intensity=.3*(1-day);
  scene.background.copy(mx(0x0a1020,0xcfe2f3,day).lerp(new THREE.Color(0xf3a678),tw));stars.material.opacity=.9*(1-day);
  const g=1-day;glassM.emissive.setHex(0xffb860);glassM.emissiveIntensity=g*.8;SIM.g=g;updSc();[glassM,roofGlass].forEach(m=>m.envMapIntensity=.1+.45*day);CARENV.forEach(m=>m.envMapIntensity=m.userData.b*(.12+.88*day));
@@ -2735,7 +2744,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
    for(let i=0;i<n;i++){const nx=W.x+vx/n,nz=W.z+vz/n;if(!blocked(nx,-nz)){W.x=nx;W.z=nz}else if(!blocked(nx,-W.z))W.x=nx;else if(!blocked(W.x,-nz))W.z=nz}}
   const mv=dt>0?Math.hypot(W.x-ox,W.z-oz)/dt:0,run=mv>2.6;W.am=(W.am||0)+(Math.min(1,mv/2.1)-(W.am||0))*Math.min(1,dt*8);W.ph=(W.ph||0)+mv*dt*4.5;
   const A=W.am*(run?1.35:1);W.bob=Math.cos(2*W.ph)*.016*A;W.sw=Math.sin(W.ph)*.015*A;W.rl=Math.sin(W.ph)*.0045*A;W.bp=Math.sin(2*W.ph)*.0035*A;W.fx=(W.fx||0)+((run?4:0)-(W.fx||0))*Math.min(1,dt*4);
-  if(window.IL&&window.HOUSE){IL.intensity=0;if(window.HEMB!==undefined){const tk=HOUSE.floorAt(W.x,-W.z)!==null?.4:1;window.HEMK=(window.HEMK||1)+(tk-(window.HEMK||1))*Math.min(1,(dt||.016)*2.5);hemi.intensity=HEMB*HEMK}IL.position.set(W.x,Math.min(2.4,(W.y||EYE)+.6),W.z)}
+  if(window.IL&&window.HOUSE){IL.intensity=0;IL.position.set(W.x,Math.min(2.4,(W.y||EYE)+.6),W.z)}
   const ty=gh(W.x,-W.z)+EYE;W.y+=(ty-W.y)*Math.min(1,dt*10);fitFov();place();dirty=true};
  window.__walkToggle=(on)=>{if(on===undefined)on=!W.on;if(on===W.on)return;const fb=document.querySelector('.fab.sub[data-k=walk]');
   if(on){const ob=document.getElementById('orth');if(ORTHO&&ob)ob.click();
@@ -2743,7 +2752,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
    const car=scene.children.find(o=>o.userData&&o.userData.hl===1);if(car){const b=new THREE.Box3().setFromObject(car);CAR=[b.min.x-.05,-b.max.z-.05,b.max.x+.05,-b.min.z+.05]}
    W.x=8.35;W.z=-1.5;W.yaw=Math.PI;W.pit=0;W.y=null;W.vx=W.vz=W.ph=W.am=W.fx=W.bob=W.sw=W.rl=W.bp=0;W.jx=W.jy=W.lx=W.ly=0;W.keys={};fitFov();W.on=true;document.body.classList.add('walking');place();try{getSelection().removeAllRanges()}catch(x){}window.__walkJoyApply();if(window.__walkMenu)window.__walkMenu(true);if(window.__fabLayout)window.__fabLayout();
    ht.classList.add('show');clearTimeout(hT);hT=setTimeout(()=>ht.classList.remove('show'),6000)}
-  else{W.on=false;window.HEMK=1;if(window.HEMB!==undefined)hemi.intensity=HEMB;if(window.IL)IL.intensity=0;document.body.classList.remove('walking');window.__walkJoyReset();if(window.__walkMenu)window.__walkMenu(false);if(window.__fabLayout)window.__fabLayout();ht.classList.remove('show');cam.rotation.order='XYZ';cam.fov=S.fov;cam.near=S.near;cam.updateProjectionMatrix();cam.position.copy(S.p);ctl.target.copy(S.t);ctl.enabled=true;ctl.update()}
+  else{W.on=false;if(window.IL)IL.intensity=0;document.body.classList.remove('walking');window.__walkJoyReset();if(window.__walkMenu)window.__walkMenu(false);if(window.__fabLayout)window.__fabLayout();ht.classList.remove('show');cam.rotation.order='XYZ';cam.fov=S.fov;cam.near=S.near;cam.updateProjectionMatrix();cam.position.copy(S.p);ctl.target.copy(S.t);ctl.enabled=true;ctl.update()}
   if(fb)fb.classList.toggle('act',W.on);dirty=true};
  ex.addEventListener('click',()=>window.__walkToggle(false))}
 
