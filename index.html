@@ -203,6 +203,7 @@ body.walking canvas{touch-action:none}
  <div class="hd"><div class="tt">Elementy</div><div class="st">Drzwi, bramy, roleta, pergola</div></div>
  <section><h3>Elementy</h3>
   <h4 style="margin-top:0">Drzwi wejściowe</h4><button id="dd">Otwórz / zamknij</button>
+  <h4>Drzwi tarasowe HS (salon – taras)</h4><button id="hs0">Otwórz / zamknij</button><small class="hint">Skrzydło przesuwne rusza od narożnika w stronę kuchni i zasuwa się na część stałą.</small>
   <h4>Brama garażowa (segmentowa)</h4><button id="gd">Otwórz / zamknij</button><small class="hint">Panele jadą do środka i zwijają się pod sufit garażu.</small>
   <h4>Brama wjazdowa (przesuwna)</h4><button id="gt">Otwórz / zamknij</button><small class="hint" id="lkg" style="display:none"></small>
   <h4>Roleta elewacyjna (sypialnia, tylna ściana)</h4><button id="rl0">Zwiń / rozwiń</button>
@@ -1082,7 +1083,7 @@ u('y',2.5,-1,12.3,3.1,.6,1.75,{n:3});u('y',2.5,-1,8.35,2,0,2.1,{kind:'door'});
 u('x',9.8,1,19.14,1.8,.85,1.54,{n:2});u('x',9.8,1,15.42,1.8,.85,1.54,{n:2});u('x',9.8,1,12.05,1.5,.85,1.54);
 u('x',1,-1,18.37,1,1.25,1.14);u('x',1,-1,14.58,1.8,.85,1.54,{n:2});u('x',1,-1,12.16,1,.85,1.54);u('x',1,-1,10.07,.6,1.25,1.14);
 u('y',21.35,1,5.4,1,.85,1.54);u('x',0,-1,4.4,1.6,1.15,1.2,{kind:'lux'});u('y',0,-1,3.66,5,-.25,2.25,{kind:'garage'});
-u('x',14.9,1,9.75,2.4,0,2.39,{n:2,cut:[8.55,11.3]});u('y',11.3,1,12.94,3.2,0,2.39,{n:2,cut:[11.34,14.9]});   // przeszklenia salonu z slupkiem narozn. 20x20 w rogu
+u('x',14.9,1,9.75,2.4,0,2.39,{n:2,cut:[8.55,11.3]});u('y',11.3,1,12.94,3.2,0,2.39,{n:2,cut:[11.34,14.9],kind:'hs'});   // przeszklenia salonu z slupkiem narozn. 20x20 w rogu
 const WB=[],wbox=(x0,x1,y0,y1,z0,z1)=>{if(x1-x0>1e-4&&y1-y0>1e-4&&z1-z0>1e-4)WB.push([x0,x1,y0,y1,z0,z1])};   /* czesci bryly scian (prostopadloscienne, osie rownolegle do osi swiata): po zebraniu lacza sie w jedna bryle (wallSolid) */
 const wb=(ax,c,s,a0,a1,z0,z1)=>{z0=Math.max(z0,-.1);if(a1-a0<1e-3||z1-z0<1e-3)return;const ac=c-s*T_/2;if(ax=='y')wbox(a0,a1,z0,z1,-ac-T_/2,-ac+T_/2);else wbox(ac-T_/2,ac+T_/2,z0,z1,-a1,-a0)};
 BD.forEach(([ax,c,s,a0,a1])=>{const ops=U.filter(o=>o.ax==ax&&o.c==c&&o.s==s&&o.ctr>=a0&&o.ctr<=a1).map(o=>({sill:o.sill,h:o.h,l:o.cut||[o.ctr-o.w/2,o.ctr+o.w/2]})).sort((p,q)=>p.l[0]-q.l[0]);
@@ -1148,13 +1149,13 @@ function wallSolid(B,MT,NM,KY){MT=MT||wallMat;const R=v=>Math.round(v*1e6)/1e6,c
  
  wallSolid(C1,window.CEILM=M(0xfbfaf7,{roughness:.95}),'strop','CEIL');   /* spod stropu: lekka emisja (dzien), zeby nie zielenial od swiatla odbitego od trawnika */wallSolid(C2,M(0xcfc9be,{roughness:.9}),'podloga_pietra','UPFLOOR');
  /* kolizje trybu spaceru: sciany zewnetrzne (czesci bryly na wysokosci ciala), przeszklenia, sciany dzialowe; drzwi wejsciowe i brama garazowa blokuja tylko gdy zamkniete */
- const ext=[],dor=[],gar=[],dd=(x,y,r)=>Math.hypot(Math.max(r[0]-x,0,x-r[2]),Math.max(r[1]-y,0,y-r[3]));
+ const ext=[],dor=[],gar=[],hsd=[],dd=(x,y,r)=>Math.hypot(Math.max(r[0]-x,0,x-r[2]),Math.max(r[1]-y,0,y-r[3]));
  WB.forEach(b=>{if(b[3]>.1&&b[2]<1.9)ext.push([b[0],-b[5],b[1],-b[4]])});
  U.forEach(o=>{const l=o.cut||[o.ctr-o.w/2,o.ctr+o.w/2],b=[o.c-o.s*T_,o.c].sort((p,q)=>p-q),r=o.ax=='y'?[l[0],b[0],l[1],b[1]]:[b[0],l[0],b[1],l[1]];
-  if(o.kind=='door'){ext.push([r[0],r[1],o.ctr-.47,r[3]],[o.ctr+.47,r[1],r[2],r[3]]);dor.push([o.ctr-.47,r[1],o.ctr+.47,r[3]])}else if(o.kind=='garage')gar.push(r);else ext.push(r)});
+  if(o.kind=='door'){ext.push([r[0],r[1],o.ctr-.47,r[3]],[o.ctr+.47,r[1],r[2],r[3]]);dor.push([o.ctr-.47,r[1],o.ctr+.47,r[3]])}else if(o.kind=='garage')gar.push(r);else if(o.kind=='hs'){ext.push([r[0],r[1],o.ctr,r[3]],[14.54,r[1],r[2],r[3]]);hsd.push([o.ctr,r[1],14.54,r[3]])}else ext.push(r)});
  const inn=IW.map(w=>[w[0],w[2],w[1],w[3]]),ins=(x,y,r)=>x>=r[0]&&x<=r[1]&&y>=r[2]&&y<=r[3];
  window.HOUSE={blocked(x,y,pr){for(const r of ext)if(dd(x,y,r)<pr)return true;for(const r of inn)if(dd(x,y,r)<pr)return true;
-   const D=window.DR,G=window.GD;if(!D||D.p<.55)for(const r of dor)if(dd(x,y,r)<pr)return true;if(!G||G.p<.6)for(const r of gar)if(dd(x,y,r)<pr)return true;return false},
+   const D=window.DR,G=window.GD;if(!D||D.p<.55)for(const r of dor)if(dd(x,y,r)<pr)return true;if(!G||G.p<.6)for(const r of gar)if(dd(x,y,r)<pr)return true;{const Hs=window.HS;if(!Hs||Hs.p<.5)for(const r of hsd)if(dd(x,y,r)<pr)return true}return false},
   floorAt(x,y){if(x>=1.16&&x<=6.16&&y>=0&&y<=.45)return -.25;for(const r of dor)if(x>=r[0]&&x<=r[2]&&y>=2.3&&y<=r[3]+.01)return 0;
    if(STEP.some(l=>ins(x,y,l)))return -.125;
    for(const r of INN)if(ins(x,y,r))return LOW.some(l=>ins(x,y,l))?-.25:0;return null},INN,LOW,IW}}
@@ -1272,6 +1273,25 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
  for(let i=0;i<=nc;i++)ub(o,Math.min(x1-.01,Math.max(x0+.01,x0+bw*i)),zc,.02,h,.06,mt);for(let j=0;j<=nr;j++)ub(o,a,Math.min(z+h-.01,Math.max(z+.01,z+bh*j)),w,.02,.06,mt);return}
  if(o.kind=='garage'){const n=4,ph=(h-.1)/n;const jM=M(0x2a2d31,{roughness:.7});const gz=-(o.c-o.s*(D+.04));GD.a=a;GD.z0=z;GD.pz=gz;GD.ph=ph;for(let i=0;i<n;i++){const pg=new THREE.Group(),pb=new THREE.Mesh(new THREE.BoxGeometry(w-.12,ph,.06),gdM);pb.castShadow=true;pg.add(pb);if(i){const jb=new THREE.Mesh(new THREE.BoxGeometry(w-.12,.01,.07),jM);jb.position.y=-ph/2;pg.add(jb)}pg.position.set(a,z+ph*(i+.5),gz);scene.add(pg);GD.pn.push({g:pg,s:ph*(i+.5)})}   /* brama segmentowa: 4 panele jezdza po torze (pionowo i pod sufit garazu) */
  ub(o,a,z+h-.05,w,.1,.1,frM);[x0+.03,x1-.03].forEach(x=>ub(o,x,z+(h-.1)/2,.06,h-.1,.1,frM));return}
+  if(o.kind=='hs'){   /* HS (drzwi przesuwne podnoszono-przesuwne) salon -> taras wg rzutu: 3,2 m = czesc stala (strona kuchni, tor zewnetrzny) + skrzydlo przesuwne (od narożnika, tor wewnetrzny), ktore po otwarciu zjezdza na czesc stala */
+  const ac=o.c-o.s*(D+.04),Z=off=>-(ac+o.s*off),grp=new THREE.Group(),sl=new THREE.Group(),alM=M(0x9a9fa5,{roughness:.35,metalness:.8}),bkM=M(0x0c0c0d,{roughness:.45,metalness:.4}),
+   hb=(g,al,y,sa,sz,sd,off,m)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(sa,sz,sd),m);q.position.set(al,y,Z(off));g.add(q);return q},
+   xi0=x0+.08,xi1=x1-.08,xm=a,yb=z+.05,yt=z+h-.08,TO=.035,TI=-.035;
+  hb(grp,a,z+h-.04,w,.08,.13,0,frM);hb(grp,a,z+.02,w,.04,.13,0,alM);   /* nadproze ramy i prog */
+  [x0+.04,x1-.04].forEach(x=>hb(grp,x,zc,.08,h,.13,0,frM));   /* slupki ramy (strona kuchni i naroznik) */
+  [TO,TI].forEach(t=>hb(grp,a,z+.0575,w-.16,.025,.02,t,alM));   /* dwa tory jezdne w progu */
+  hb(grp,a,yt+.01,w-.16,.02,.1,0,bkM);   /* prowadnica gorna */
+  const sash=(g,xa,xb,off,pf,mid)=>{const L=xb-xa,xc=(xa+xb)/2,hh=yt-yb;
+   hb(g,xc,yb+pf/2,L,pf,.05,off,frM);hb(g,xc,yt-pf/2,L,pf,.05,off,frM);
+   hb(g,xa+(mid==0?pf:pf*.6)/2,(yb+yt)/2,mid==0?pf:pf*.6,hh,.05,off,frM);hb(g,xb-(mid==1?pf:pf*.6)/2,(yb+yt)/2,mid==1?pf:pf*.6,hh,.05,off,frM);
+   hb(g,xc,(yb+yt)/2,L-2*pf+.02,hh-2*pf+.02,.024,off,glM)};
+  sash(grp,xi0,xm+.03,TO,.055,1);   /* czesc stala: ramka skrzydla, szyba zespolona; profil srodkowy przy skrzydle */
+  sash(sl,xm-.03,xi1,TI,.055,0);   /* skrzydlo przesuwne (po stronie wnetrza) */
+  hb(sl,xm-.03+.045,(yb+yt)/2+.05,.03,.2,.03,TI-.045,bkM);hb(sl,xm-.03+.045,(yb+yt)/2+.05,.05,.02,.012,TI-.032,bkM);   /* uchwyt przy slupku srodkowym (od wnetrza) */
+  hb(sl,xi1-.02,(yb+yt)/2,.03,.5,.012,TI-.032,alM);   /* zaczep przy ramie */
+  const S=(xm-.03)-xi0-.02;scene.add(grp,sl);
+  window.HS={p:0,t:0,S,sl,apply(){const e=this.p*this.p*(3-2*this.p);this.sl.position.x=-this.S*e}};HS.apply();
+  document.getElementById('hs0').onclick=()=>{HS.t=HS.t?0:1;document.getElementById('hs0').classList.toggle('on',!!HS.t)};return}
  const dr=o.kind=='door';   /* drzwi: bez dolnej belki ramy - skrzydlo i ościeżnice siegaja posadzki */
  if(!dr)ub(o,a,z+fw/2,w,fw,.08,frM);else{[[x0,a-.5],[a+.5,x1]].forEach(([p0,p1])=>ub(o,(p0+p1)/2,z+fw/2,p1-p0,fw,.08,frM));ub(o,a,z+.01,1.0,.02,.14,M(0xa3a9af,{roughness:.35,metalness:.8}))}   /* ramy pod szybami bocznymi + prog pod skrzydlem */
  ub(o,a,z+h-fw/2,w,fw,.08,frM);
@@ -2771,6 +2791,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
  const gdt=t&&lastG?Math.min(.1,(t-lastG)/1000):0;if(t)lastG=t;
  if(gate.position.x!==gT){const d=gT-gate.position.x,stp=.5*gdt;gate.position.x=Math.abs(d)<=stp?gT:gate.position.x+Math.sign(d)*stp;ren.shadowMap.needsUpdate=true;dirty=true}
  if(window.skyPortals)skyPortals();{const A=window.DR,B=window.GD;if(A&&A.p!==A.t){const d=A.t-A.p,st=.8*gdt;A.p=Math.abs(d)<=st?A.t:A.p+Math.sign(d)*st;A.apply();ren.shadowMap.needsUpdate=true;dirty=true}if(B&&B.p!==B.t){const d=B.t-B.p,st=.22*gdt;B.p=Math.abs(d)<=st?B.t:B.p+Math.sign(d)*st;B.apply();ren.shadowMap.needsUpdate=true;dirty=true}}
+ if(window.HS){const F=window.HS;if(F.p!==F.t){const d=F.t-F.p,st=.5*gdt;F.p=Math.abs(d)<=st?F.t:F.p+Math.sign(d)*st;F.apply();dirty=true}}
  if(window.FK){const F=window.FK;if(F.p!==F.t){const d=F.t-F.p,st=1.6*gdt;F.p=Math.abs(d)<=st?F.t:F.p+Math.sign(d)*st;F.fg.rotation.y=F.p;ren.shadowMap.needsUpdate=true;dirty=true}}
  {const go=gT!==0||gate.position.x!==0,fo=!!window.FK&&(FK.t!==0||FK.p!==0);if(window.__lk0!==go||window.__lk1!==fo){window.__lk0=go;window.__lk1=fo;const g=$('gt'),f=$('fk0'),hg=$('lkg'),hf=$('lkf');g.disabled=!go&&fo;f.disabled=go&&!fo;hg.textContent=g.disabled?'Zablokowane: furtka jest otwarta – najpierw ją zamknij.':'';hg.style.display=g.disabled?'block':'none';hf.textContent=f.disabled?'Zablokowane: brama przesuwna nie jest zamknięta – najpierw ją zamknij.':'';hf.style.display=f.disabled?'block':'none'}}
  if(window.SD){for(const k in SD){const F=SD[k];if(F.p!==F.t){const d=F.t-F.p,st=.6*gdt;F.p=Math.abs(d)<=st?F.t:F.p+Math.sign(d)*st;F.L.forEach(l=>{l.g.rotation.y=l.ph+l.k*(Math.PI/2)*F.p});ren.shadowMap.needsUpdate=true;dirty=true}}}
