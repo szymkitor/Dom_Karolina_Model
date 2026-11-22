@@ -2609,17 +2609,18 @@ const YM=.74,YL=.34,DAR=Math.sqrt(RR*RR-(YC-.22)*(YC-.22));
 const zs=[-2.278,-2.262,-2.24,-2.205,-2.15,-2.07,-1.97,-1.86,-1.78];
 for(let k=0;k<=8;k++)zs.push(FA-DAR+DAR*2*k/8);
 zs.push(-.9,-.5,0,.5,.9);for(let k=0;k<=8;k++)zs.push(RA-DAR+DAR*2*k/8);zs.push(1.8,1.95,2.05,2.15,2.25,2.31,2.34,2.351);
+{const zz=zs.slice(),o=[];for(let i=0;i<zz.length-1;i++){o.push(zz[i]);if(zz[i+1]-zz[i]>.12){const n=Math.ceil((zz[i+1]-zz[i])/.12);for(let k=1;k<n;k++)o.push(zz[i]+(zz[i+1]-zz[i])*k/n)}}o.push(zz[zz.length-1]);zs.length=0;o.forEach(v=>zs.push(v))}   /* zageszczenie przekrojow: gladkie zaokraglenia */
 const archY=(z)=>{for(const za of[FA,RA]){const d=Math.abs(z-za);if(d<DAR-1e-6)return YC+Math.sqrt(RR*RR-d*d)}return null};
 const body=zs.map(z=>{const W=wm(z),S=ws(z),Y0=y0(z),C=yc(z),CR=crown(z),YS=C-CR,A=archY(z),wA=W-.008,half=[];
  const YCH=Math.min(.78,YS-.17);   /* linia charakterystyczna (ostra krawedz) */
  half.push([0,C],[.4*S,C-.12*CR],[.75*S,C-.5*CR],[S,YS],[S,YS],[W,YCH],[W,YCH]);   /* podwojone punkty = ostre zalamania (normalne liczone osobno po obu stronach) */
  let y6=YL;if(A!==null)y6=Math.max(YL,Math.min(A+.10,YM-.03));
- half.push([W-.03,y6]);
+ half.push([W-.022,(YCH+y6)/2+.04]);half.push([W-.075,y6]);   /* wypukly dolny bok, podciety ku progowi */
  if(A!==null){half.push([wA,A],[.665,A],[.665,Y0],[0,Y0])}else{half.push([wA,Y0],[wA-.0005,Y0],[wA-.001,Y0],[0,Y0])}
  // half: 0..10 ; ring = right 0..10 + left 9..1
- const ring=[];half.forEach(p=>ring.push([p[0],p[1],z]));for(let k=10;k>=1;k--)ring.push([-half[k][0],half[k][1],z]);return{ring,A}});
-const bodyMat=(i,j)=>{const z=(zs[i]+zs[i+1])/2,A=body[i].A!==null&&body[i+1].A!==null,s=j<=10?j:(j<=20?21-j:0);
- if(s>=8)return'dark';return'paint'};
+ const ring=[];half.forEach(p=>ring.push([p[0],p[1],z]));for(let k=11;k>=1;k--)ring.push([-half[k][0],half[k][1],z]);return{ring,A}});
+const bodyMat=(i,j)=>{const z=(zs[i]+zs[i+1])/2,A=body[i].A!==null&&body[i+1].A!==null,s=j<=11?j:(j<=22?23-j:0);
+ if(s>=9)return'dark';return'paint'};
 grid(body.map(b=>b.ring),false,true,bodyMat,false);
 const ringAt=k=>body[k].ring;
 fan(ringAt(0),[0,0,-1],'paint');fan(ringAt(body.length-1),[0,0,1],'paint');
@@ -2640,7 +2641,7 @@ fan(gh[0],[0,0,-1],'dark');fan(gh[gh.length-1],[0,0,1],'paint');
 
 tube([[0,1.39,1.49],[0,1.55,1.57],[0,1.70,1.64]],.005,'dark',5);
 // ===== boki: lusterka, klamki, szczeliny, klapka (wszystko przylega do powierzchni nadwozia) =====
-const sideX=(z,y)=>{let k=0;for(let i=1;i<zs.length;i++)if(Math.abs(zs[i]-z)<Math.abs(zs[k]-z))k=i;const r=body[k].ring;for(let j=4;j<7;j++){const a=r[j],b=r[j+1];if(a[1]>=y&&y>=b[1]){const t=(a[1]-y)/((a[1]-b[1])||1);return a[0]+(b[0]-a[0])*t}}return r[5][0]},
+const sideX=(z,y)=>{let k=0;for(let i=1;i<zs.length;i++)if(Math.abs(zs[i]-z)<Math.abs(zs[k]-z))k=i;const r=body[k].ring;for(let j=4;j<8;j++){const a=r[j],b=r[j+1];if(a[1]>=y&&y>=b[1]){const t=(a[1]-y)/((a[1]-b[1])||1);return a[0]+(b[0]-a[0])*t}}return r[5][0]},
  sline=(sx,z0,z1,y0,y1,o,n)=>Array.from({length:n+1},(_,i)=>{const t=i/n,z=z0+(z1-z0)*t,y=y0+(y1-y0)*t;return[sx*(sideX(z,y)+o),y,z]});
 [-1,1].forEach(sx=>{
  ell(sx*.965,1.03,-.68,.07,.052,.1,'paint',[0,sx*.12,0],16,10);
