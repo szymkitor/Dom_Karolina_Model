@@ -738,7 +738,7 @@ const glass=0x6f93bd;
 // otoczenie (niebo) do odbić w szybach
 const envC=document.createElement('canvas');envC.width=512;envC.height=256;{const q=envC.getContext('2d'),gr=q.createLinearGradient(0,0,0,256);gr.addColorStop(0,'#8a98a6');gr.addColorStop(.35,'#b4bfc9');gr.addColorStop(.5,'#dfe4e8');gr.addColorStop(.52,'#7f8f73');gr.addColorStop(1,'#3e4a38');q.fillStyle=gr;q.fillRect(0,0,512,256);q.fillStyle='rgba(255,255,255,.9)';q.beginPath();q.arc(380,70,18,0,6.3);q.fill()}
 const envTex=new THREE.CanvasTexture(envC);envTex.mapping=THREE.EquirectangularReflectionMapping;const envMap=new THREE.PMREMGenerator(ren).fromEquirectangular(envTex).texture;
-const glassM=new THREE.MeshStandardMaterial({color:0x242b31,roughness:.06,metalness:.05,envMap:envMap,envMapIntensity:.5}),roofGlass=glassM.clone();var CARENV=[];
+const glassM=new THREE.MeshStandardMaterial({color:0x242b31,roughness:.06,metalness:.05,envMap:envMap,envMapIntensity:.5}),roofGlass=glassM.clone();[glassM,roofGlass].forEach(m=>{m.transparent=true;m.opacity=.32;m.depthWrite=false});var CARENV=[];   /* szyby przezroczyste (widac wnetrze); odbicia otoczenia zostaja */
 [['x',14.82,1,9.8,2.4,0,2.35],['y',11.02,1,13.3,3.2,0,2.35],['y',2.4,-1,12.3,3.1,.6,1.75],
  ['y',2.4,-1,8.37,.95,0,2.1,0x5a4332],['y',2.4,-1,7.6,.45,0,2.1],['y',2.4,-1,9.14,.45,0,2.1],
  ['x',9.9,1,19.1,1.8,.85,1.5],['x',9.9,1,15.5,1.8,.85,1.5],['x',9.9,1,12.15,1.5,.85,1.5],
