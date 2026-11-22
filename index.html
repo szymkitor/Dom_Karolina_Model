@@ -1134,7 +1134,7 @@ wallSolid(WB);
  FB.push([1.16,6.16,ZB,ZG,-.45,-.24]);   /* prog w otworze bramy garazowej (od konca pochylni do lica sciany wewnetrznej) */
  wallSolid(PW,M(0xf5f3ef,{roughness:.95}),'sciany_dzialowe','INTWALLS');wallSolid(FB,M(0xa9a49b,{roughness:.9}),'podlogi','FLOORS');window.IL=new THREE.PointLight(0xfff3e0,0,9,2);scene.add(IL);   /* latarka wnetrza: slabe swiatlo przy kamerze w trybie spaceru, tylko gdy stoimy w domu (daje cieniowanie scian bez swiatla slonecznego) */
  
- wallSolid(C1,window.CEILM=M(0xfbfaf7,{roughness:.95,emissive:0xb4b2ac,emissiveIntensity:.55}),'strop','CEIL');   /* spod stropu: lekka emisja (dzien), zeby nie zielenial od swiatla odbitego od trawnika */wallSolid(C2,M(0xcfc9be,{roughness:.9}),'podloga_pietra','UPFLOOR');
+ wallSolid(C1,window.CEILM=M(0xfbfaf7,{roughness:.95}),'strop','CEIL');   /* spod stropu: lekka emisja (dzien), zeby nie zielenial od swiatla odbitego od trawnika */wallSolid(C2,M(0xcfc9be,{roughness:.9}),'podloga_pietra','UPFLOOR');
  /* kolizje trybu spaceru: sciany zewnetrzne (czesci bryly na wysokosci ciala), przeszklenia, sciany dzialowe; drzwi wejsciowe i brama garazowa blokuja tylko gdy zamkniete */
  const ext=[],dor=[],gar=[],dd=(x,y,r)=>Math.hypot(Math.max(r[0]-x,0,x-r[2]),Math.max(r[1]-y,0,y-r[3]));
  WB.forEach(b=>{if(b[3]>.1&&b[2]<1.9)ext.push([b[0],-b[5],b[1],-b[4]])});
@@ -2159,10 +2159,10 @@ function sim(){const lat=52.2*RD,dec=23.44*RD*Math.sin(2*Math.PI*(284+dN)/365),d
  sE=Math.sin(lat)*Math.sin(dec)+Math.cos(lat)*Math.cos(dec)*Math.cos(H),el=Math.asin(sE),az=Math.atan2(Math.sin(H),Math.cos(H)*Math.sin(lat)-Math.tan(dec)*Math.cos(lat))+Math.PI,d=az-nB*RD,
  vx=Math.sin(d)*Math.cos(el),vy=Math.sin(el),vz=-Math.cos(d)*Math.cos(el),ed=el/RD,day=c01((ed+3)/10),tw=Math.exp(-Math.pow(ed/7,2))*.55;
  sun.position.set(7+vx*90,vy*90,-10+vz*90);sun.intensity=.95*day;sun.color.copy(mx(0xffc58a,0xffffff,c01(ed/25)));
- hemi.intensity=.1+.65*day;hemi.color.copy(mx(0x7f95ff,0xffffff,day));hemi.groundColor.copy(mx(0x202a20,0x8a9a7a,day));
+ window.HEMB=.1+.65*day;hemi.intensity=window.HEMB*(window.HEMK||1);hemi.color.copy(mx(0x7f95ff,0xffffff,day));hemi.groundColor.copy(mx(0x202a20,0x8a9a7a,day));
  moon.position.set(7-vx*60,38,-10-vz*60);moon.intensity=.3*(1-day);
  scene.background.copy(mx(0x0a1020,0xcfe2f3,day).lerp(new THREE.Color(0xf3a678),tw));stars.material.opacity=.9*(1-day);
- const g=1-day;glassM.emissive.setHex(0xffb860);glassM.emissiveIntensity=g*.8;SIM.g=g;if(window.CEILM)CEILM.emissiveIntensity=.55*day;updSc();[glassM,roofGlass].forEach(m=>m.envMapIntensity=.1+.45*day);CARENV.forEach(m=>m.envMapIntensity=m.userData.b*(.12+.88*day));
+ const g=1-day;glassM.emissive.setHex(0xffb860);glassM.emissiveIntensity=g*.8;SIM.g=g;updSc();[glassM,roofGlass].forEach(m=>m.envMapIntensity=.1+.45*day);CARENV.forEach(m=>m.envMapIntensity=m.userData.b*(.12+.88*day));
  const tmin=Math.round(tH*60)%1440,hh=Math.floor(tmin/60),mm=tmin%60,dt=new Date(2026,0,dN);
  $('tl').textContent=String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')+' (słońce '+Math.round(ed)+'°)';$('clh').textContent=String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');$('cld').textContent=(ed>0?'☀ ':'☾ ')+dt.getDate()+'.'+String(dt.getMonth()+1).padStart(2,'0');$('dl').textContent=dt.getDate()+'.'+String(dt.getMonth()+1).padStart(2,'0');shReq=true;dirty=true}
 $('tm').oninput=e=>{tH=+e.target.value;sim()};$('dy').oninput=e=>{dN=+e.target.value;sim()};const spU=()=>{const k=Math.pow(10,+$('spd').value),m=6*k;$('spl').textContent='×'+(k<10?k.toFixed(1):Math.round(k))+' · 1 s = '+(m<1?Math.round(m*60)+' s':m<60?m.toFixed(m<10?1:0)+' min':(m/60).toFixed(1)+' h')};window.__spd=()=>Math.pow(10,+$('spd').value);$('spd').oninput=spU;spU();$('pl').onclick=()=>{playing=!playing;$('pl').textContent=playing?'❚❚':'▶';$('spr').style.display=playing?'block':'none'};sim();
@@ -2735,7 +2735,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
    for(let i=0;i<n;i++){const nx=W.x+vx/n,nz=W.z+vz/n;if(!blocked(nx,-nz)){W.x=nx;W.z=nz}else if(!blocked(nx,-W.z))W.x=nx;else if(!blocked(W.x,-nz))W.z=nz}}
   const mv=dt>0?Math.hypot(W.x-ox,W.z-oz)/dt:0,run=mv>2.6;W.am=(W.am||0)+(Math.min(1,mv/2.1)-(W.am||0))*Math.min(1,dt*8);W.ph=(W.ph||0)+mv*dt*4.5;
   const A=W.am*(run?1.35:1);W.bob=Math.cos(2*W.ph)*.016*A;W.sw=Math.sin(W.ph)*.015*A;W.rl=Math.sin(W.ph)*.0045*A;W.bp=Math.sin(2*W.ph)*.0035*A;W.fx=(W.fx||0)+((run?4:0)-(W.fx||0))*Math.min(1,dt*4);
-  if(window.IL&&window.HOUSE){IL.intensity=HOUSE.floorAt(W.x,-W.z)!==null?.16:0;IL.position.set(W.x,Math.min(2.4,(W.y||EYE)+.6),W.z)}
+  if(window.IL&&window.HOUSE){IL.intensity=0;if(window.HEMB!==undefined)hemi.intensity=HEMB*(window.HEMK=HOUSE.floorAt(W.x,-W.z)!==null?.4:1);IL.position.set(W.x,Math.min(2.4,(W.y||EYE)+.6),W.z)}
   const ty=gh(W.x,-W.z)+EYE;W.y+=(ty-W.y)*Math.min(1,dt*10);fitFov();place();dirty=true};
  window.__walkToggle=(on)=>{if(on===undefined)on=!W.on;if(on===W.on)return;const fb=document.querySelector('.fab.sub[data-k=walk]');
   if(on){const ob=document.getElementById('orth');if(ORTHO&&ob)ob.click();
@@ -2743,7 +2743,7 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
    const car=scene.children.find(o=>o.userData&&o.userData.hl===1);if(car){const b=new THREE.Box3().setFromObject(car);CAR=[b.min.x-.05,-b.max.z-.05,b.max.x+.05,-b.min.z+.05]}
    W.x=8.35;W.z=-1.5;W.yaw=Math.PI;W.pit=0;W.y=null;W.vx=W.vz=W.ph=W.am=W.fx=W.bob=W.sw=W.rl=W.bp=0;W.jx=W.jy=W.lx=W.ly=0;W.keys={};fitFov();W.on=true;document.body.classList.add('walking');place();try{getSelection().removeAllRanges()}catch(x){}window.__walkJoyApply();if(window.__walkMenu)window.__walkMenu(true);if(window.__fabLayout)window.__fabLayout();
    ht.classList.add('show');clearTimeout(hT);hT=setTimeout(()=>ht.classList.remove('show'),6000)}
-  else{W.on=false;if(window.IL)IL.intensity=0;document.body.classList.remove('walking');window.__walkJoyReset();if(window.__walkMenu)window.__walkMenu(false);if(window.__fabLayout)window.__fabLayout();ht.classList.remove('show');cam.rotation.order='XYZ';cam.fov=S.fov;cam.near=S.near;cam.updateProjectionMatrix();cam.position.copy(S.p);ctl.target.copy(S.t);ctl.enabled=true;ctl.update()}
+  else{W.on=false;window.HEMK=1;if(window.HEMB!==undefined)hemi.intensity=HEMB;if(window.IL)IL.intensity=0;document.body.classList.remove('walking');window.__walkJoyReset();if(window.__walkMenu)window.__walkMenu(false);if(window.__fabLayout)window.__fabLayout();ht.classList.remove('show');cam.rotation.order='XYZ';cam.fov=S.fov;cam.near=S.near;cam.updateProjectionMatrix();cam.position.copy(S.p);ctl.target.copy(S.t);ctl.enabled=true;ctl.update()}
   if(fb)fb.classList.toggle('act',W.on);dirty=true};
  ex.addEventListener('click',()=>window.__walkToggle(false))}
 
