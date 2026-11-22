@@ -1606,11 +1606,11 @@ function pineTex(){const c=document.createElement('canvas');c.width=c.height=128
  const fM=M(0x33312f,{roughness:.62,metalness:.05}),rcM=M(0x0b0b0b,{roughness:.8});
  const WL=[[-1.67,-.95],[-.90,-.70],[-.51,.10],[.17,.78],[.85,.98],[1.03,1.67]],yw0=1.935,yw1=2.115,yl=1.912,yc=2.135;
  bx(3.42,YB-YW,.05,0,(YW+YB)/2,hd-.045,rcM);   /* ciemne tlo wneki okien */
- bx(3.42,.035,.05,0,YW+.0175,hd-.005,fM);bx(3.42,.035,.03,0,YW+.0175,hd+.005,fM);   /* gzyms nad listwami (wystaje) */
- bx(3.42,.035,.04,0,YB-.0175,hd-.008,fM);bx(3.42,.012,.03,0,YB-.041,hd-.012,fM);      /* listwa przejsciowa pod dachem (dwa stopnie) */
- WL.forEach(([a,b],i)=>{bx(b-a+.03,yw0-yl,.03,(a+b)/2,(yw0+yl)/2,hd-.009,fM);bx(b-a+.03,yc-yw1,.03,(a+b)/2,(yw1+yc)/2,hd-.009,fM);   /* szyny dolna/gorna ramy okna */
+ bx(3.42,.035,.04,0,YW+.0175,hd,fM);   /* gzyms nad listwami (wystaje) */
+ bx(3.42,.035,.04,0,YB-.0175,hd-.004,fM);      /* listwa przejsciowa pod dachem (dwa stopnie) */
+ WL.forEach(([a,b],i)=>{bx(b-a,yw0-yl,.03,(a+b)/2,(yw0+yl)/2,hd-.009,fM);bx(b-a,yc-yw1,.03,(a+b)/2,(yw1+yc)/2,hd-.009,fM);   /* szyny dolna/gorna ramy okna */
   if(i<WL.length-1){const c=WL[i+1][0];bx(c-b,yc-yl,.03,(b+c)/2,(yl+yc)/2,hd-.009,fM)}});   /* slupki miedzy oknami */
- bx(.02,yc-yl,.03,-1.70,(yl+yc)/2,hd-.009,fM);bx(.02,yc-yl,.03,1.70,(yl+yc)/2,hd-.009,fM);
+ bx(.03,yc-yl,.03,-1.685,(yl+yc)/2,hd-.009,fM);bx(.03,yc-yl,.03,1.685,(yl+yc)/2,hd-.009,fM);
  
  const lens=[],glassP=(g,x,y,z)=>{const a=new THREE.Mesh(g,lensM);a.position.set(x,y,z);a.userData.cOn=0xffdf9e;a.userData.cOff=0x2d3840;sg.add(a);lens.push(a);const b=new THREE.Mesh(g,gl);b.position.set(x,y,z+.0025);sg.add(b)};
  WL.forEach(([a,b])=>glassP(new THREE.PlaneGeometry(b-a,yw1-yw0),(a+b)/2,(yw0+yw1)/2,hd-.0165));
