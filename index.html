@@ -1072,7 +1072,7 @@ const U=[],u=(ax,c,s,ctr,w,sill,h,o={})=>U.push(Object.assign({ax,c,s,ctr,w,sill
 u('y',2.5,-1,12.3,3.1,.6,1.75,{n:3});u('y',2.5,-1,8.35,2,0,2.1,{kind:'door'});
 u('x',9.8,1,19.14,1.8,.85,1.54,{n:2});u('x',9.8,1,15.42,1.8,.85,1.54,{n:2});u('x',9.8,1,12.05,1.5,.85,1.54);
 u('x',1,-1,18.37,1,1.25,1.14);u('x',1,-1,14.58,1.8,.85,1.54,{n:2});u('x',1,-1,12.16,1,.85,1.54);u('x',1,-1,10.07,.6,1.25,1.14);
-u('y',21.35,1,5.4,1,.85,1.54);u('x',0,-1,4.4,1.6,1.4,1.2,{kind:'lux'});u('y',0,-1,3.66,5,-.25,2.25,{kind:'garage'});
+u('y',21.35,1,5.4,1,.85,1.54);u('x',0,-1,4.4,1.6,1.15,1.2,{kind:'lux'});u('y',0,-1,3.66,5,-.25,2.25,{kind:'garage'});
 u('x',14.9,1,9.75,2.4,0,2.39,{n:2,cut:[8.55,11.3]});u('y',11.3,1,12.94,3.2,0,2.39,{n:2,cut:[11.34,14.9]});   // przeszklenia salonu z slupkiem narozn. 20x20 w rogu
 const WB=[],wbox=(x0,x1,y0,y1,z0,z1)=>{if(x1-x0>1e-4&&y1-y0>1e-4&&z1-z0>1e-4)WB.push([x0,x1,y0,y1,z0,z1])};   /* czesci bryly scian (prostopadloscienne, osie rownolegle do osi swiata): po zebraniu lacza sie w jedna bryle (wallSolid) */
 const wb=(ax,c,s,a0,a1,z0,z1)=>{z0=Math.max(z0,-.1);if(a1-a0<1e-3||z1-z0<1e-3)return;const ac=c-s*T_/2;if(ax=='y')wbox(a0,a1,z0,z1,-ac-T_/2,-ac+T_/2);else wbox(ac-T_/2,ac+T_/2,z0,z1,-a1,-a0)};
