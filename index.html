@@ -1262,15 +1262,15 @@ const ub=(o,al,zc,sa,sz,sd,m)=>{const ac=o.c-o.s*(D+.04);add(o.ax=='y'?new THREE
 add(new THREE.BoxGeometry(.165,2.39,.165),frM,14.6225,1.195,-11.0325,false);
 const sillM=M(0x4e3623,{roughness:.45,metalness:.55});
 const DR=window.DR={p:0,t:0,g:null,apply(){if(this.g){const e=this.p*this.p*(3-2*this.p);this.g.rotation.y=-1.75*e}}},GD=window.GD={p:0,t:0,pn:[],mv:null,/* brama segmentowa na szynach: 5 zawiasow z rolkami jedzie po torze (pion -> luk R .38 -> poziom pod sufitem), kazdy panel to sztywny odcinek miedzy dwoma zawiasami (dlugosc ciegna = wysokosc panelu), wiec panele sa zawsze oparte rolkami o szyny; ramie napedu (wozek na szynie sufitowej) lapie gorny zawias */
- apply(){const RR=.38,LV=2.4,AL=Math.PI/2*RR,SH=3.05,YT=.6,z0=this.z0,ph=this.ph,n=this.pn.length,pA=Math.min(1,this.p/.12),kA=pA*pA*(3-2*pA),pB=Math.max(0,(this.p-.12)/.88),sh=SH*pB*pB*(3-2*pB),eps=(.24-YT)*(1-kA),
+ apply(){const RR=.38,LV=2.4,AL=Math.PI/2*RR,SH=2.84,YT=.6,z0=this.z0,ph=this.ph,n=this.pn.length,pA=Math.min(1,this.p/.12),kA=pA*pA*(3-2*pA),pB=Math.max(0,(this.p-.12)/.88),sh=SH*pB*pB*(3-2*pB),eps=(.24-YT)*(1-kA),
   P=s=>s<=LV?[YT,z0+s]:s<=LV+AL?(t=>[YT+RR*(1-Math.cos(t)),z0+LV+RR*Math.sin(t)])((s-LV)/RR):[YT+RR+(s-LV-AL),z0+LV+RR],
   sg=(m,A,B)=>{const dy=B[0]-A[0],dz=B[1]-A[1];m.position.set(m.userData.x,(A[1]+B[1])/2,-(A[0]+B[0])/2);m.scale.y=Math.hypot(dy,dz);m.rotation.x=Math.atan2(-dy,dz)};
   const J=[P(sh)];let s=sh;for(let k=0;k<n;k++){const A=J[k];let lo=s+ph,hi=s+ph*1.6;for(let i=0;i<30;i++){const m=(lo+hi)/2,Q=P(m);if(Math.hypot(Q[0]-A[0],Q[1]-A[1])<ph)lo=m;else hi=m}s=(lo+hi)/2;J.push(P(s))}
   this.pn.forEach((q,i)=>{const A=J[i],B=J[i+1],dy=B[0]-A[0],dz=B[1]-A[1];q.g.position.set(this.a,(A[1]+B[1])/2,-((A[0]+B[0])/2+eps));q.g.rotation.x=Math.atan2(-dy,dz)});
   const o=this.mv;if(!o)return;
   for(let k=0;k<=n;k++){const A=J[k];[0,1].forEach(j=>{const d=j?1:-1,x=this.a+d*this.RX;o.rl[k][j].position.set(x,A[1],-A[0]);const r=o.rd[k][j];r.position.set(x,A[1],-(A[0]+eps/2));r.scale.z=Math.max(.001,Math.abs(eps));const t=o.sb[k][j];t.position.set(this.a+d*(this.RX-.0175),A[1],-(A[0]+eps))})}
-  const T=J[n],zt=2.5755,L=1.05,dz=zt-T[1],yt=T[0]+Math.sqrt(Math.max(0,L*L-dz*dz));
-  o.cr.position.set(this.a,T[1],-(T[0]+eps/2));o.cr.scale.z=Math.max(.001,Math.abs(eps));o.tr.position.set(this.a,zt,-yt);sg(o.arm,[T[0],T[1]],[yt,zt]);o.pv.position.set(this.a,T[1],-T[0]);
+  const T=J[n],zt=2.56,L=.7,dz=zt-T[1],yt=T[0]+Math.sqrt(Math.max(0,L*L-dz*dz));
+  o.cr.position.set(this.a,T[1],-(T[0]+eps/2));o.cr.scale.z=Math.max(.001,Math.abs(eps));o.tr.position.set(this.a,zt+.025,-yt);sg(o.arm,[T[0],T[1]],[yt,zt]);o.pv.position.set(this.a,T[1],-T[0]);
   [0,1].forEach(j=>{const d=j?1:-1,x=this.a+d*this.RX;o.cb[j].userData.x=x;sg(o.cb[j],[J[0][0]-.06,J[0][1]+.04],[.54,o.SZ])});
   o.sh.rotation.x=sh/.04}};
 const SILL=[];
@@ -1280,20 +1280,20 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
  if(o.kind=='lux'){const mt=M(0xb9b6ad,{roughness:.9}),nc=8,nr=6,bw=w/nc,bh=h/nr;   /* luksfery: przezroczyste pustaki szklane (to samo szklo co okna - wpuszcza swiatlo) w siatce cienkich spoin */
  for(let i=0;i<nc;i++)for(let j=0;j<nr;j++)ub(o,x0+bw*(i+.5),z+bh*(j+.5),bw-.02,bh-.02,.08,glM);
  for(let i=0;i<=nc;i++)ub(o,Math.min(x1-.01,Math.max(x0+.01,x0+bw*i)),zc,.02,h,.06,mt);for(let j=0;j<=nr;j++)ub(o,a,Math.min(z+h-.01,Math.max(z+.01,z+bh*j)),w,.02,.06,mt);return}
- if(o.kind=='garage'){const n=4,ph=(h-.1)/n;const jM=M(0x2a2d31,{roughness:.7});const gz=-(o.c-o.s*(D+.04));GD.a=a;GD.z0=z;GD.pz=gz;GD.ph=ph;for(let i=0;i<n;i++){const pg=new THREE.Group(),pb=new THREE.Mesh(new THREE.BoxGeometry(w-.12,ph,.06),gdM);pb.castShadow=true;pg.add(pb);if(i){const jb=new THREE.Mesh(new THREE.BoxGeometry(w-.12,.01,.07),jM);jb.position.y=-ph/2;pg.add(jb)}pg.position.set(a,z+ph*(i+.5),gz);scene.add(pg);GD.pn.push({g:pg,s:ph*(i+.5)})}   /* brama segmentowa: 4 panele jezdza po torze (pionowo i pod sufit garazu) */
+ if(o.kind=='garage'){const n=4,ph=(h-.1)/n;const jM=M(0x2a2d31,{roughness:.7});const gz=-(o.c-o.s*(D+.04));GD.a=a;GD.z0=z;GD.pz=gz;GD.ph=ph;for(let i=0;i<n;i++){const pg=new THREE.Group(),pb=new THREE.Mesh(new THREE.BoxGeometry(w-.04,ph,.04),gdM);pb.castShadow=true;pg.add(pb);if(i){const jb=new THREE.Mesh(new THREE.BoxGeometry(w-.04,.01,.05),jM);jb.position.y=-ph/2;pg.add(jb)}pg.position.set(a,z+ph*(i+.5),gz);scene.add(pg);GD.pn.push({g:pg,s:ph*(i+.5)})}   /* brama segmentowa: 4 panele jezdza po torze (pionowo i pod sufit garazu) */
  {/* ===== szyny, osprzet i automat bramy (wnetrze garazu): tor pionowy y .6, luk R .38, poziom pod sufitem; os x = os bramy; sufit garazu +2,63 ===== */
   const zM=M(0xa5aaae,{roughness:.38,metalness:.8}),dM=M(0x2f3338,{roughness:.55,metalness:.5}),bM=M(0x111214,{roughness:.5,metalness:.3}),wM=M(0xd9dbdd,{roughness:.5,metalness:.15}),spM=M(0x26292d,{roughness:.5,metalness:.6}),
-   RX=(w-.12)/2+.035,YT=.6,RR=.38,LV=2.4,zA=z+LV,zH=z+LV+RR,SZ=z+LV+.13,V=(x,y,zz)=>new THREE.Vector3(x,y,-zz);
+   RX=(w-.04)/2+.035,YT=.6,RR=.38,LV=2.4,zA=z+LV,zH=z+LV+RR,SZ=z+LV+.13,V=(x,y,zz)=>new THREE.Vector3(x,y,-zz);
   GD.RX=RX;
   const seg=(x,A,B,wx,th,m)=>{const dy=B[0]-A[0],dz=B[1]-A[1],q=add(new THREE.BoxGeometry(wx,Math.hypot(dy,dz),th),m,x,(A[1]+B[1])/2,-(A[0]+B[0])/2,false);q.rotation.x=Math.atan2(-dy,dz);return q},
    bxs=(sx,sy,sz,x,y,zz,m)=>add(new THREE.BoxGeometry(sx,sy,sz),m,x,y,-zz,false);   /* skrzynka: wymiary x,wys,glebokosc; srodek x,wys,glebokosc(y) */
   [-1,1].forEach(k=>{const x=a+k*RX;
    seg(x,[YT,z+.04],[YT,zA],.045,.06,zM);   /* szyna pionowa (od dolu przy posadzce) */
    let pv=[YT,zA];for(let i=1;i<=16;i++){const t=i/16*Math.PI/2,pt=[YT+RR*(1-Math.cos(t)),zA+RR*Math.sin(t)];seg(x,pv,pt,.045,.06,zM);pv=pt}   /* luk */
-   seg(x,[YT+RR,zH],[3.42,zH],.045,.06,zM);   /* szyna pozioma pod sufitem */
-   bxs(.03,.06,.03,x,zH,3.44,dM);   /* ogranicznik konca szyny */
+   seg(x,[YT+RR,zH],[3.2,zH],.045,.06,zM);   /* szyna pozioma pod sufitem */
+   bxs(.03,.06,.03,x,zH,3.22,dM);   /* ogranicznik konca szyny */
    [.15,.8,1.45,2.05].forEach(zz=>{bxs(.045,.05,.12,x,zz,.51,dM);bxs(.07,.12,.004,x,zz,.452,dM)});   /* katowniki mocujace szyne pionowa do sciany (perforowane) */
-   [1.45,2.4,3.3].forEach(yy=>{bxs(.04,2.63-(zH+.03),.03,x,(2.63+zH+.03)/2,yy,dM);bxs(.07,.006,.07,x,2.627,yy,dM)});   /* wieszaki szyny poziomej do stropu */});
+   [1.45,2.3,3.05].forEach(yy=>{bxs(.04,2.63-(zH+.03),.03,x,(2.63+zH+.03)/2,yy,dM);bxs(.07,.006,.07,x,2.627,yy,dM)});   /* wieszaki szyny poziomej do stropu */});
   /* wal sprezyn skretnych nad otworem: wal, 2 sprezyny, 2 bebny linowe, lozyska i plyta srodkowa; obraca sie wraz z podnoszeniem (ok. 12 obrotow) */
   const sh=new THREE.Group();sh.position.set(a,SZ,-.5);scene.add(sh);
   const cyl=(r,l,m,x)=>{const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r,l,16),m);q.rotation.z=Math.PI/2;q.position.x=x;sh.add(q);return q};
@@ -1306,13 +1306,16 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
   const rm=new THREE.CylinderGeometry(.014,.014,.014,14),rodG=new THREE.BoxGeometry(.012,.012,1),stG=new THREE.BoxGeometry(.035,.012,.012);
   for(let k=0;k<=4;k++){mv.rl.push([]);mv.rd.push([]);mv.sb.push([]);[0,1].forEach(()=>{const r=new THREE.Mesh(rm,dM);r.rotation.z=Math.PI/2;const d=new THREE.Mesh(rodG,zM),t=new THREE.Mesh(stG,zM);[r,d,t].forEach(q=>scene.add(q));mv.rl[k].push(r);mv.rd[k].push(d);mv.sb[k].push(t)})}
   const cG=new THREE.CylinderGeometry(.003,.003,1,6);[0,1].forEach(j=>{const c=new THREE.Mesh(cG,zM);c.userData.x=a;scene.add(c);mv.cb.push(c)});
-  /* automat sufitowy (naped szynowy): szyna jezdna ze wozkiem pod sufitem w osi bramy, glowica z silnikiem z tylu, ramie laczace wozek z gornym zawiasem bramy */
-  const RY0=.5,RY1=4.5,RZ=2.608;
-  bxs(.05,.035,RY1-RY0,a,RZ,(RY0+RY1)/2,wM);bxs(.03,.012,RY1-RY0,a,RZ-.0235,(RY0+RY1)/2,zM);   /* szyna napedu + prowadnica wozka */
+  /* automat WISNIOWSKI SPARK (wg katalogu): szyna dzielona, stalowa, nielakierowana (Ls = 3288 mm dla Ho <= 2250), wozek jezdny z obudowa i czerwonym sznurkiem rozblokowania awaryjnego, czarna glowica z silnikiem 24 V DC na tylnym koncu szyny (Emin = Ls + 363 mm), zawieszenie do stropu; ramie laczy wozek z gornym zawiasem bramy */
+  const RY0=.47,RY1=RY0+3.288,RZ=2.608,gM=M(0xb7bbbf,{roughness:.42,metalness:.85}),wh=M(0xe9eaec,{roughness:.4,metalness:.1}),rd=M(0xc4161c,{roughness:.5}),blk=M(0x0e0f10,{roughness:.45,metalness:.25}),rc=(RY0+RY1)/2;
+  bxs(.05,.035,RY1-RY0,a,RZ,rc,gM);bxs(.03,.012,RY1-RY0,a,RZ-.0235,rc,zM);   /* szyna napedu (profil C) + prowadnica wozka */
+  bxs(.058,.042,.2,a,RZ,RY0+1.64,zM);bxs(.052,.038,.004,a,RZ,RY0+1.54,dM);bxs(.052,.038,.004,a,RZ,RY0+1.74,dM);   /* lacznik dwoch czesci szyny (szyna dzielona) */
   bxs(.09,.2,.02,a,2.52,.46,dM);bxs(.05,.05,.04,a,2.585,.49,dM);   /* wspornik scienny nad otworem */
-  [1.3,2.4,3.5].forEach(yy=>{bxs(.08,.012,.06,a,2.624,yy,dM);bxs(.02,.012,.02,a,2.611,yy,dM)});   /* zawieszenie szyny do stropu */
-  bxs(.2,.2,.42,a,2.53,4.71,wM);bxs(.17,.03,.3,a,2.425,4.71,bM);bxs(.06,.05,.05,a,2.607,4.5-.02,dM);   /* glowica: silnik + przekladnia, osłona, lampka (wylaczona) */
-  const tr=new THREE.Mesh(new THREE.BoxGeometry(.05,.03,.12),dM);scene.add(tr);mv.tr=tr;
+  [1.2,2.2,3.15].forEach(yy=>{bxs(.08,.012,.06,a,2.624,yy,dM);bxs(.02,.012,.02,a,2.611,yy,dM)});   /* zawieszenie szyny do stropu */
+  bxs(.15,.1,.36,a,2.555,RY1+.17,blk);bxs(.13,.05,.3,a,2.49,RY1+.17,blk);bxs(.16,.02,.2,a,2.61,RY1+.1,dM);bxs(.1,.01,.1,a,2.502,RY1+.2,M(0x2b2d30,{roughness:.3,metalness:.4}));   /* czarna glowica z silnikiem (tyl szyny) */
+  const tr=new THREE.Group();scene.add(tr);mv.tr=tr;const tp=(g,m,x,y,zz)=>{const q=new THREE.Mesh(g,m);q.position.set(x,y,zz);tr.add(q);return q};
+  tp(new THREE.BoxGeometry(.06,.045,.16),wh,0,-.0225,0);tp(new THREE.BoxGeometry(.05,.02,.1),blk,0,-.055,0);tp(new THREE.BoxGeometry(.062,.012,.05),zM,0,-.0075,.07);   /* wozek z biala obudowa i lampka */
+  tp(new THREE.CylinderGeometry(.0025,.0025,.34,6),rd,0,-.235,.03);tp(new THREE.SphereGeometry(.02,12,10),rd,0,-.425,.03);   /* czerwony sznurek rozblokowania z raczka */
   const arm=new THREE.Mesh(new THREE.BoxGeometry(.03,1,.012),zM);arm.userData.x=a;scene.add(arm);mv.arm=arm;
   const pv=new THREE.Mesh(new THREE.BoxGeometry(.05,.05,.04),dM);scene.add(pv);mv.pv=pv;
   const cr=new THREE.Mesh(rodG.clone(),zM);cr.scale.x=2;cr.scale.y=2;scene.add(cr);mv.cr=cr;
