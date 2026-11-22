@@ -1307,7 +1307,10 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
   bxp(.036,.036,.032,HX,Hy,.071,bkm);   /* kolano */
   bxp(.17,.022,.03,HX-.085+.018,Hy,.071,bkm);   /* sztaba klamki w strone ramki */
   [[Hy+.33],[Hy-.085]].forEach(([yy])=>{bxp(.055,.055,.008,HX,yy,.0195,bkm);bxp(.006,.016,.002,HX,yy+.004,.0245,kh);bxp(.009,.009,.002,HX,yy-.012,.0245,kh)});   /* rozety zamkow z otworem na klucz */
-  [.154,.443,.85].forEach(f=>bxp(.022,.15,.02,a-.462,(z+h-fw)-f*(h-fw-.02),-.006,bkm));   /* zawiasy */}
+  [.154,.443,.85].forEach(f=>bxp(.022,.15,.02,a-.462,(z+h-fw)-f*(h-fw-.02),-.006,bkm));   /* zawiasy */
+  {const IN=-.082;   /* TYL skrzydla (od strony sieni): klamka z rozeta i sztaba, rozety zamkow z pokretlami */
+   bxp(.05,.05,.012,HX,Hy,IN-.006,bkm);bxp(.028,.028,.046,HX,Hy,IN-.035,bkm);bxp(.036,.036,.032,HX,Hy,IN-.074,bkm);bxp(.17,.022,.03,HX-.085+.018,Hy,IN-.105,bkm);
+   [Hy+.33,Hy-.085].forEach(yy=>{bxp(.055,.055,.008,HX,yy,IN-.004,bkm);bxp(.014,.014,.012,HX,yy,IN-.014,bkm);bxp(.05,.016,.014,HX,yy,IN-.025,bkm);bxp(.012,.012,.003,HX-.015,yy,IN-.0025,kh)})}   /* pokretla zamkow od wnetrza */}
  {/* drzwi: skrzydlo grubosci 7 cm wysuniete przed lico ramy (rama .08 glebokosci, skrzydlo licem 4,5 cm przed nia), plyta srodkowa wypukla, ciemna uszczelka w szczelinach, zawiasy ukryte */
   const ac=o.c-o.s*(D+.04),pl=(xc,zc2,w2,h2,t,off,m)=>add(new THREE.BoxGeometry(w2,h2,t),m,xc,zc2,-(ac+o.s*off),false),
    Lz0=z+.02,Lz1=z+h-fw,Lh=Lz1-Lz0,Lc=(Lz0+Lz1)/2,gkM=M(0x131415,{roughness:.8}),pnM=M(0x674f3c,{roughness:.42});
@@ -1322,9 +1325,12 @@ U.forEach(o=>{const a=o.ctr,w=o.w,z=o.sill,h=o.h,x0=a-w/2,x1=a+w/2,zc=z+h/2,fw=.
   const oakM=M(0xffffff,{map:oakTx,roughness:.55}),
    mosM=M(0x0a0a0b,{roughness:.4,metalness:.1}),frgM=M(0xc9cfd3,{roughness:.4,metalness:0}),
    sx=a+.16,fW=.21,gW=.11;   /* srodek pasa szyby: ok. 63-78% szerokosci skrzydla liczac od zawiasow */
-  pl(a,Lc,.944,Lh+.002,.07,.05,oakM);   /* skrzydlo (lico .085 od osi ramy) */
-  pl(sx,Lc,fW,Lh,.006,.0885,mosM);   /* czarna ramka przez cala wysokosc skrzydla (jak w katalogu) */
-  pl(sx,Lz1-Lh*.118-Lh*.769/2,gW,Lh*.769,.006,.0925,frgM);   /* jasna szyba w ramce (od 12% do 89% wysokosci) */
+  /* skrzydlo: forniroawane pola po obu stronach pionowej czarnej ramki; w ramce szyba PRZEZROCZYSTA (widoczna z obu stron, ciemna uszczelka dookola) */
+  const x0L=a-.472,x1R=a+.472,bL=sx-fW/2,bR=sx+fW/2,gz0=Lz1-Lh*.89,gz1=Lz1-Lh*.118,gcx=sx,gcz=(gz0+gz1)/2,gh=gz1-gz0,fb=(fW-gW)/2;
+  pl((x0L+bL)/2,Lc,bL-x0L,Lh+.002,.07,.05,oakM);pl((bR+x1R)/2,Lc,x1R-bR,Lh+.002,.07,.05,oakM);   /* pola fornirowane (lico .085 od osi ramy) */
+  pl(sx,(gz1+Lz1)/2,fW,Lz1-gz1,.074,.05,mosM);pl(sx,(Lz0+gz0)/2,fW,gz0-Lz0,.074,.05,mosM);   /* czarna ramka: gora i dol */
+  [-1,1].forEach(k=>pl(sx+k*(gW/2+fb/2),gcz,fb,gh,.074,.05,mosM));   /* czarna ramka: boki szyby */
+  pl(gcx,gcz,gW,gh,.012,.05,glM);   /* szyba w skrzydle - przezroczysta */
  }
  return}
  for(let i=0;i<o.n;i++){ub(o,x0+w*(i+.5)/o.n,zc,w/o.n-fw+.012,h-2*fw+.012,.03,glM);if(i)ub(o,x0+w*i/o.n,zc,.05,h-2*fw,.08,frM)}});
