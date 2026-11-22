@@ -38,7 +38,7 @@ canvas{display:block;width:100%;height:100%}
 .ui button:active{transform:scale(.96)}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .chips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.chips button{display:flex;align-items:center;gap:8px;text-align:left;line-height:1.2;min-height:40px}
+.chips.elg button{height:44px;min-height:44px;box-sizing:border-box;font-size:13px}.chips button{display:flex;align-items:center;gap:8px;text-align:left;line-height:1.2;min-height:40px}
 .chips button::before{content:"";flex:none;width:9px;height:9px;border-radius:50%;background:var(--line);box-shadow:inset 0 0 0 1px rgba(127,140,155,.5);transition:all .2s}
 .chips button.on{background:linear-gradient(135deg,rgba(255,170,80,.34),rgba(232,100,58,.22));border-color:var(--ac);font-weight:600}
 .chips button.on::before{background:#ffcf80;box-shadow:0 0 9px 2px rgba(255,170,70,.9)}
@@ -200,21 +200,17 @@ body.walking canvas{touch-action:none}
   <h4>Ogród</h4><div class="chips"><button id="l11">Lampa kula – narożnik</button><button id="l12">Lampa kula – podjazd</button><button id="l13">Lampa kula – trawnik</button></div>
   <h4>Dom</h4><div class="chips"><button id="l2">Wejście</button><button id="l3">Światło tarasowe</button><button id="l5f">Kinkiety – front</button><button id="l5s">Kinkiety – boczne</button><button id="l5t">Kinkiety – taras</button><button id="l7">Pompa ciepła</button><button id="l4">Nad garażem</button><button id="l1">Trawnik</button></div></section></div>
 <div class="ui hid" id="pn_elem">
- <div class="hd"><div class="tt">Elementy</div><div class="st">Drzwi, bramy, roleta, pergola</div></div>
- <section><h3>Elementy</h3>
-  <h4 style="margin-top:0">Drzwi wejściowe</h4><button id="dd">Otwórz / zamknij</button>
-  <h4>Drzwi tarasowe HS (salon – taras)</h4><button id="hs0">Otwórz / zamknij</button><small class="hint">Skrzydło przesuwne rusza od narożnika w stronę kuchni i zasuwa się na część stałą.</small>
-  <h4>Brama garażowa (segmentowa)</h4><button id="gd">Otwórz / zamknij</button><small class="hint">Panele jadą do środka i zwijają się pod sufit garażu.</small>
-  <h4>Brama wjazdowa (przesuwna)</h4><button id="gt">Otwórz / zamknij</button><small class="hint" id="lkg" style="display:none"></small>
-  <h4>Roleta elewacyjna (sypialnia, tylna ściana)</h4><button id="rl0">Zwiń / rozwiń</button>
-  <h4>Furtka (otwiera się do wewnątrz)</h4><button id="fk0">Otwórz / zamknij</button><small class="hint" id="lkf" style="display:none"></small>
-  <h4>Wiata śmietnikowa – drzwi od ulicy</h4><button id="sdf">Otwórz / zamknij</button>
-  <h4>Wiata śmietnikowa – drzwi od ogrodu</h4><button id="sdr">Otwórz / zamknij</button>
-  <h4>Pergola lamelowa</h4>
-  <button id="pg0">Otwórz / zamknij</button>
+ <div class="hd"><div class="tt">Elementy</div><div class="st">Drzwi, bramy, roleta, wiata, pergola</div></div>
+ <section><h3>Dom</h3>
+  <div class="chips elg"><button id="dd" title="Otwórz / zamknij">Drzwi wejściowe</button><button id="hs0" title="Otwórz / zamknij">Drzwi HS – taras</button><button id="rl0" title="Zwiń / rozwiń">Roleta – sypialnia</button></div>
+  <small class="hint">Drzwi HS: skrzydło rusza od narożnika w stronę kuchni i zasuwa się na część stałą.</small></section>
+ <section><h3>Garaż i wjazd</h3>
+  <div class="chips elg"><button id="gd" title="Otwórz / zamknij">Brama garażowa</button><button id="gt" title="Otwórz / zamknij">Brama wjazdowa</button><button id="fk0" title="Otwórz / zamknij">Furtka</button></div>
+  <small class="hint" id="lkg" style="display:none"></small><small class="hint" id="lkf" style="display:none"></small></section>
+ <section><h3>Ogród</h3>
+  <div class="chips elg"><button id="sdf" title="Otwórz / zamknij">Wiata – od ulicy</button><button id="sdr" title="Otwórz / zamknij">Wiata – od ogrodu</button><button id="pg0" title="Otwórz / zamknij">Pergola</button></div>
   <div class="row" style="margin-top:8px"><input id="pga" type="range" min="0" max="110" value="90"><span id="pgl">90°</span></div>
-  <small class="hint">Otwarta 90° (lamele pionowo) · zamknięta 0°. Suwak ustawia dowolny kąt lameli.</small>
-</section></div>
+  <small class="hint">Pergola: otwarta 90° (lamele pionowo), zamknięta 0°. Suwak ustawia dowolny kąt lameli.</small></</section></div>
 <div class="ui hid" id="pn_rt">
  <div class="hd"><div class="tt">Ray tracing</div><div class="st">Render fotorealistyczny</div></div>
  <section><h3>Ray tracing</h3>
