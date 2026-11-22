@@ -2107,7 +2107,7 @@ $('tm').oninput=e=>{tH=+e.target.value;sim()};$('dy').oninput=e=>{dN=+e.target.v
 // oświetlenie punktowe (włączane przyciskami): LED/halogen nad oknem sypialni (tył, L14) i nad bramą garażu (front), downlighty w podbitce nad tarasem wejściowym i (3 w rzędzie) nad zadaszonym tarasem z tyłu
 const lights={};
 function addLight(id,lens,spot,p,t){spot.position.copy(p);spot.target.position.copy(t);scene.add(spot,spot.target);const l=lights[id]=lights[id]||{on:true,spots:[],lenses:[]};l.spots.push(spot);l.lenses.push(lens)}
-function setL(id,on){const l=lights[id];l.on=on;if(window.shAssign)shAssign();l.spots.forEach(s=>{s.visible=on});l.lenses.forEach(m=>m.material.color.setHex(on?(m.userData.cOn||0xfff1cf):(m.userData.cOff||0x7d868c)));$(id).classList.toggle('on',on);dirty=true;shReq=true;syncM()}
+function setL(id,on){const l=lights[id];l.on=on;if(window.shAssign)shAssign();l.spots.forEach(s=>{s.visible=on});l.lenses.forEach(m=>{m.material.color.setHex(on?(m.userData.cOn||0xfff1cf):(m.userData.cOff||0x7d868c));if(m.userData.em!==undefined)m.material.emissive.setHex(on?m.userData.em:0)});$(id).classList.toggle('on',on);dirty=true;shReq=true;syncM()}
 // oprawa ścienna odchylona o 40° w dół; yaw: 0 = świeci w stronę +z (front domu), π = w stronę -z (tył)
 function flood(id,x,y,z,yaw){const dk=M(0x2a2d31,{roughness:.5,metalness:.6}),g=new THREE.Group(),h=new THREE.Group(),th=.7,
  bx=(p,sx,sy,sz,px,py,pz,m)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);q.position.set(px,py,pz);q.castShadow=true;p.add(q);return q};
@@ -2147,7 +2147,7 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',-.9,G0+2
  const gm=new THREE.Mesh(new THREE.BoxGeometry(.012,.5,.68),new THREE.MeshBasicMaterial({color:0x141a20}));gm.position.set(sx+.016,sy,sz);gm.userData.cOn=0xffdf9e;gm.userData.cOff=0x141a20;scene.add(gm);
  addLight('l8',gm,new THREE.SpotLight(0xffd9a0,1.5,5,.9,.8,1),new THREE.Vector3(sx+.08,sy,sz),new THREE.Vector3(sx+3,sy-1.3,sz))}
 /* lampa ogrodowa kula (opalowy dyfuzor PE/PMMA fi 60 cm na niskiej czarnej podstawie fi 20 cm x 3 cm, E27): w naroznik trawnika miedzy zewnetrzna krawedzia chodnika z plytami a ukosem kostki (wierzcholek 14,57; -1,49), po 0,8 m od obu krawedzi, srodek (15,70; -1,47); wlacznik: chip l11 (Ogrod) */
-[['l11',15.7,-1.47],['l12',6.83,-4.9],['l13',10.82,-2.90]].forEach(([lid,lx,ly])=>{const gy=-.30,bk=new THREE.MeshStandardMaterial({color:0x17181a,roughness:.6,metalness:.2}),gm=new THREE.Mesh(new THREE.SphereGeometry(.3,48,32),new THREE.MeshBasicMaterial({color:0xcfd3d6}));gm.userData.cOn=0xf0ede6;gm.userData.cOff=0xcfd3d6;
+[['l11',15.7,-1.47],['l12',6.83,-4.9],['l13',10.82,-2.90]].forEach(([lid,lx,ly])=>{const gy=-.30,bk=new THREE.MeshStandardMaterial({color:0x17181a,roughness:.6,metalness:.2}),gm=new THREE.Mesh(new THREE.SphereGeometry(.3,48,32),new THREE.MeshStandardMaterial({color:0xcfd3d6,roughness:.55,metalness:0,emissive:0x000000}));gm.userData.cOn=0xf0ede6;gm.userData.cOff=0xcfd3d6;gm.userData.em=0xf0ede6;   /* wylaczona kula jest oswietlana tylko swiatlem otoczenia (w nocy ciemna), wlaczona swieci wlasnym swiatlem */
  const b1=new THREE.Mesh(new THREE.CylinderGeometry(.1,.106,.03,40),bk),b2=new THREE.Mesh(new THREE.CylinderGeometry(.085,.1,.012,40),bk);b1.position.set(lx,gy+.015,-ly);b2.position.set(lx,gy+.036,-ly);b1.castShadow=b2.castShadow=true;
  gm.position.set(lx,gy+.315,-ly);scene.add(b1,b2,gm);
  const pt=new THREE.PointLight(0xfff0d8,1.2,9,1.5);pt.position.set(lx,gy+.315,-ly);scene.add(pt);
