@@ -2600,27 +2600,25 @@ function ell(cx,cy,cz,rx,ry,rz,mat,rot,N=14,M=10){const P=[];for(let i=0;i<=N;i+
 // rura wzdłuż łamanej
 function tube(pts,r,mat,S=6,loop){const P=pts.map((p,i)=>{const a=pts[Math.max(0,i-1)],b=pts[Math.min(pts.length-1,i+1)],t=nrm(sub(b,a));let u=Math.abs(t[1])<.9?[0,1,0]:[1,0,0];const s=nrm(cr(t,u)),w=cr(t,s),row=[];for(let k=0;k<S;k++){const an=2*Math.PI*k/S;row.push([p[0]+(s[0]*Math.cos(an)+w[0]*Math.sin(an))*r,p[1]+(s[1]*Math.cos(an)+w[1]*Math.sin(an))*r,p[2]+(s[2]*Math.cos(an)+w[2]*Math.sin(an))*r])}return row});grid(P,!!loop,true,()=>mat,false)}
 // ===== profile wzdłuż auta =====
-const yc=sp([[-2.278,.60],[-2.25,.72],[-2.21,.76],[-2.15,.79],[-2.0,.88],[-1.89,.91],[-1.78,.94],[-1.67,.96],[-1.56,.985],[-1.45,1.0],[-1.34,1.018],[-1.23,1.026],[-1.13,1.04],[-.5,1.012],[0,1.0],[.5,1.0],[1.0,1.04],[1.5,1.07],[1.9,1.07],[2.1,1.04],[2.2,1.03],[2.28,1.02],[2.32,1.01],[2.351,1.0]]),
+const yc=sp([[-2.278,.60],[-2.25,.72],[-2.21,.76],[-2.15,.79],[-2.0,.88],[-1.89,.91],[-1.78,.94],[-1.67,.96],[-1.56,.985],[-1.45,1.0],[-1.34,1.018],[-1.23,1.026],[-1.13,1.04],[-.5,1.012],[0,1.0],[.5,1.0],[1.0,1.04],[1.5,1.07],[1.9,1.07],[2.1,1.03],[2.2,.995],[2.28,.97],[2.32,.94],[2.351,.88]]),
  crown=sp([[-2.278,0],[-2.17,.01],[-2.0,.045],[-1.5,.06],[-1.2,.05],[-1.1,.02],[-1.0,0],[2.351,0]]),
- wm=sp([[-2.278,.62],[-2.262,.70],[-2.23,.765],[-2.16,.825],[-2.09,.855],[-2.03,.875],[-1.96,.89],[-1.90,.90],[-1.83,.905],[-1.76,.897],[-1.70,.906],[-1.6,.914],[-1.2,.914],[-.8,.903],[-.3,.897],[.1,.903],[.5,.886],[.8,.886],[1.1,.908],[1.5,.908],[1.7,.9],[1.79,.875],[1.92,.86],[2.06,.84],[2.19,.80],[2.25,.78],[2.31,.735],[2.34,.67],[2.351,.60]]),
+ wm=sp([[-2.278,.45],[-2.23,.55],[-2.16,.656],[-2.09,.735],[-2.03,.79],[-1.96,.83],[-1.90,.86],[-1.83,.875],[-1.76,.897],[-1.70,.906],[-1.6,.914],[-1.2,.914],[-.8,.903],[-.3,.897],[.1,.903],[.5,.886],[.8,.886],[1.1,.908],[1.5,.908],[1.7,.9],[1.79,.875],[1.92,.826],[2.06,.793],[2.19,.72],[2.25,.68],[2.32,.55],[2.351,.45]]),
  ws=z=>wm(z)-.09,
  y0=sp([[-2.278,.30],[-2.15,.25],[-1.9,.22],[1.9,.22],[2.25,.28],[2.351,.31]]);
 const YM=.74,YL=.34,DAR=Math.sqrt(RR*RR-(YC-.22)*(YC-.22));
 const zs=[-2.278,-2.262,-2.24,-2.205,-2.15,-2.07,-1.97,-1.86,-1.78];
 for(let k=0;k<=8;k++)zs.push(FA-DAR+DAR*2*k/8);
 zs.push(-.9,-.5,0,.5,.9);for(let k=0;k<=8;k++)zs.push(RA-DAR+DAR*2*k/8);zs.push(1.8,1.95,2.05,2.15,2.25,2.31,2.34,2.351);
-{const zz=zs.slice(),o=[];for(let i=0;i<zz.length-1;i++){o.push(zz[i]);if(zz[i+1]-zz[i]>.12){const n=Math.ceil((zz[i+1]-zz[i])/.12);for(let k=1;k<n;k++)o.push(zz[i]+(zz[i+1]-zz[i])*k/n)}}o.push(zz[zz.length-1]);zs.length=0;o.forEach(v=>zs.push(v))}   /* zageszczenie przekrojow: gladkie zaokraglenia */
 const archY=(z)=>{for(const za of[FA,RA]){const d=Math.abs(z-za);if(d<DAR-1e-6)return YC+Math.sqrt(RR*RR-d*d)}return null};
 const body=zs.map(z=>{const W=wm(z),S=ws(z),Y0=y0(z),C=yc(z),CR=crown(z),YS=C-CR,A=archY(z),wA=W-.008,half=[];
- const YCH=Math.min(.78,YS-.17);   /* linia charakterystyczna (ostra krawedz) */
- half.push([0,C],[.4*S,C-.12*CR],[.75*S,C-.5*CR],[S,YS],[S,YS],[W,YCH],[W,YCH]);   /* podwojone punkty = ostre zalamania (normalne liczone osobno po obu stronach) */
+ half.push([0,C],[.4*S,C-.12*CR],[.75*S,C-.5*CR],[S,YS],[W-.012,YS-.11-(C-.9)*0],[W,Math.min(YM,YS-.12)]);
  let y6=YL;if(A!==null)y6=Math.max(YL,Math.min(A+.10,YM-.03));
- half.push([W-.022,(YCH+y6)/2+.04]);half.push([W-.075,y6]);   /* wypukly dolny bok, podciety ku progowi */
+ half.push([W-.008,y6]);
  if(A!==null){half.push([wA,A],[.665,A],[.665,Y0],[0,Y0])}else{half.push([wA,Y0],[wA-.0005,Y0],[wA-.001,Y0],[0,Y0])}
  // half: 0..10 ; ring = right 0..10 + left 9..1
- const ring=[];half.forEach(p=>ring.push([p[0],p[1],z]));for(let k=11;k>=1;k--)ring.push([-half[k][0],half[k][1],z]);return{ring,A}});
-const bodyMat=(i,j)=>{const z=(zs[i]+zs[i+1])/2,A=body[i].A!==null&&body[i+1].A!==null,s=j<=11?j:(j<=22?23-j:0);
- if(s>=9)return'dark';return'paint'};
+ const ring=[];half.forEach(p=>ring.push([p[0],p[1],z]));for(let k=9;k>=1;k--)ring.push([-half[k][0],half[k][1],z]);return{ring,A}});
+const bodyMat=(i,j)=>{const z=(zs[i]+zs[i+1])/2,A=body[i].A!==null&&body[i+1].A!==null,s=j<=9?j:(j<=18?19-j:0);
+ if(s>=7)return'dark';if(s===6)return'paint';return'paint'};
 grid(body.map(b=>b.ring),false,true,bodyMat,false);
 const ringAt=k=>body[k].ring;
 fan(ringAt(0),[0,0,-1],'paint');fan(ringAt(body.length-1),[0,0,1],'paint');
@@ -2628,20 +2626,20 @@ fan(ringAt(0),[0,0,-1],'paint');fan(ringAt(body.length-1),[0,0,1],'paint');
 const yr=sp([[-1.13,1.05],[-1.01,1.111],[-.9,1.166],[-.79,1.216],[-.68,1.265],[-.57,1.31],[-.46,1.353],[-.35,1.386],[-.24,1.413],[-.13,1.43],[-.02,1.446],[.9,1.446],[1.08,1.435],[1.3,1.424],[1.52,1.40],[1.74,1.375],[1.90,1.345],[1.97,1.33],[2.06,1.22],[2.15,1.12],[2.24,1.03],[2.30,.98],[2.351,.93]]),
  yb=z=>yc(z)-.012,gz=[];
 for(let z=-1.13;z<=-.2;z+=.1)gz.push(+z.toFixed(3));for(let z=-.1;z<=1.9;z+=.15)gz.push(+z.toFixed(3));gz.push(1.96,2.02,2.07,2.12,2.18,2.24,2.3,2.351);
-const gh=gz.map(z=>{const R=yr(z),B=yb(z),H=Math.max(R-B,.0005),wr=(z>1.7?.625-(z-1.7)*.13:.625),KW=Math.min(1,(wm(z)-.035)/.79),half0=[[0,R],[.28,R-.012],[.5*(wr/.6),R-.045],[wr,R-Math.min(.10,.2*H)],[wr,R-Math.min(.10,.2*H)],[wr+.05,R-Math.min(.16,.3*H)],[wr+.10,R-Math.min(.26,.6*H)],[.76,B+Math.min(.1,.3*H)],[.79,B],[.79,B-.02]],half=half0.map((p,ix)=>[p[0]*KW,p[1]]),ring=[];
- half.forEach(p=>ring.push([p[0],p[1],z]));for(let k=8;k>=1;k--)ring.push([-half[k][0],half[k][1],z]);return ring});
+const gh=gz.map(z=>{const R=yr(z),B=yb(z),H=Math.max(R-B,.0005),wr=(z>1.7?.625-(z-1.7)*.13:.625),KW=Math.min(1,(wm(z)-.035)/.79),half0=[[0,R],[.28,R-.012],[.5*(wr/.6),R-.045],[wr,R-Math.min(.10,.2*H)],[wr+.05,R-Math.min(.16,.3*H)],[wr+.10,R-Math.min(.26,.6*H)],[.76,B+Math.min(.1,.3*H)],[.79,B],[.79,B-.02]],half=half0.map((p,ix)=>[p[0]*KW,p[1]]),ring=[];
+ half.forEach(p=>ring.push([p[0],p[1],z]));for(let k=7;k>=1;k--)ring.push([-half[k][0],half[k][1],z]);return ring});
 const inWin=z=>(z>-.80&&z<.14)||(z>.29&&z<1.22)||(z>1.25&&z<1.68);
-const ghMat=(i,j)=>{const z=(gz[i]+gz[i+1])/2,ws_=z<-.25,wr_=z>1.98,s=j<=8?j:(j<=16?17-j:0);
- if(s<=2)return(ws_||wr_)?'glass':'paint';if(s<=4)return(ws_||wr_)?'dark':'paint';
- if(s<=7){if(ws_&&z<-.80)return'dark';if(wr_&&s<=5)return'dark';if(z>.14&&z<.29)return'dark';if(inWin(z))return'glass';return(z>1.68&&z<2.0)?'paint':'dark'}
- if(s===8)return(z>-.80&&z<1.70)?'chrome':'paint';return'paint'};
+const ghMat=(i,j)=>{const z=(gz[i]+gz[i+1])/2,ws_=z<-.25,wr_=z>1.98,s=j<=7?j:(j<=14?15-j:0);
+ if(s<=1)return(ws_||wr_)?'glass':'paint';if(s<=3)return(ws_||wr_)?'dark':'paint';
+ if(s<=6){if(ws_&&z<-.80)return'dark';if(z>.14&&z<.29)return'dark';if(inWin(z))return'glass';return(z>1.68&&z<2.0)?'paint':'dark'}
+ if(s===7)return(z>-.80&&z<1.70)?'chrome':'paint';return'paint'};
 grid(gh,false,true,ghMat,false);
 fan(gh[0],[0,0,-1],'dark');fan(gh[gh.length-1],[0,0,1],'paint');
 // ===== dach: relingi, spoiler, antena =====
 
 tube([[0,1.39,1.49],[0,1.55,1.57],[0,1.70,1.64]],.005,'dark',5);
 // ===== boki: lusterka, klamki, szczeliny, klapka (wszystko przylega do powierzchni nadwozia) =====
-const sideX=(z,y)=>{let k=0;for(let i=1;i<zs.length;i++)if(Math.abs(zs[i]-z)<Math.abs(zs[k]-z))k=i;const r=body[k].ring;for(let j=4;j<8;j++){const a=r[j],b=r[j+1];if(a[1]>=y&&y>=b[1]){const t=(a[1]-y)/((a[1]-b[1])||1);return a[0]+(b[0]-a[0])*t}}return r[5][0]},
+const sideX=(z,y)=>{let k=0;for(let i=1;i<zs.length;i++)if(Math.abs(zs[i]-z)<Math.abs(zs[k]-z))k=i;const r=body[k].ring;for(let j=3;j<6;j++){const a=r[j],b=r[j+1];if(a[1]>=y&&y>=b[1]){const t=(a[1]-y)/((a[1]-b[1])||1);return a[0]+(b[0]-a[0])*t}}return r[5][0]},
  sline=(sx,z0,z1,y0,y1,o,n)=>Array.from({length:n+1},(_,i)=>{const t=i/n,z=z0+(z1-z0)*t,y=y0+(y1-y0)*t;return[sx*(sideX(z,y)+o),y,z]});
 [-1,1].forEach(sx=>{
  ell(sx*.965,1.03,-.68,.07,.052,.1,'paint',[0,sx*.12,0],16,10);
@@ -2649,12 +2647,7 @@ const sideX=(z,y)=>{let k=0;for(let i=1;i<zs.length;i++)if(Math.abs(zs[i]-z)<Mat
 });
 // klamki, listwa na błotniku
 [-1,1].forEach(sx=>{[[0.0,.82],[.9,.85]].forEach(([z,y])=>{tube(sline(sx,z-.075,z+.075,y,y,.006,4),.0105,'dark',6)});
- tube(sline(sx,-1.02,-.66,.80,.795,.004,6),.0042,'chrome',4);
- /* szczeliny drzwi, prog, pokrywa silnika */
- [[-.80,-.84,.33,.97],[.20,.22,.33,.97],[1.26,1.285,.33,.97]].forEach(([z0,z1,y0,y1])=>tube(sline(sx,z0,z1,y0,y1,.003,8),.0032,'dark',4));
- tube(sline(sx,-.80,1.28,.33,.33,.003,12),.0036,'dark',4);
- tube(Array.from({length:9},(_,k)=>{const z=-2.12+k*.12;return[sx*.74*ws(z),yc(z)-.5*crown(z)+.003,z]}),.0034,'dark',4);
-});
+ tube(sline(sx,-1.02,-.66,.80,.795,.004,6),.0042,'chrome',4)});
 box(0,1.33,1.93,1.08,.028,.17,'paint',[-.1,0,0]);
 // ===== przód i tył: elementy "naklejane" na powierzchnię karoserii =====
 const inside=(ring,x,y)=>{let c=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];if((a[1]>y)!=(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])c=!c}return c};
@@ -2670,24 +2663,19 @@ const dr=(pts,zf,o=0)=>pts.map(([x,y])=>[x,y,zf(x,y)+o]);
 const FZ=(x,y)=>fz(x,y,.004),FZ2=(x,y)=>fz(x,y,.009),RZ=(x,y)=>rz(x,y,.004),RZ2=(x,y)=>rz(x,y,.009);
 const sym=(f)=>{for(const s of[1,-1])f(s)};
 const flipP=(pts,s)=>s>0?pts:pts.map(([x,y])=>[-x,y]).reverse();
-/* swiatla i atrapy: plaski (pochylony) dekal dopasowany do powierzchni, nigdy wewnatrz nadwozia; out=-1 przod, +1 tyl */
-const mkPl=(poly,zf,out)=>{const c=[0,0];poly.forEach(p=>{c[0]+=p[0]/poly.length;c[1]+=p[1]/poly.length});const h=.05,cx=Math.abs(c[0]),cy=c[1],zc=zf(cx,cy),bx=(zf(cx+h,cy)-zf(cx-h,cy))/(2*h),by=(zf(cx,cy+h)-zf(cx,cy-h))/(2*h),pl=(x,y)=>zc+bx*(Math.abs(x)-cx)+by*(y-cy);
- let ex=0;poly.concat([c]).forEach(p=>{ex=Math.max(ex,out*(zf(Math.abs(p[0]),p[1])-pl(p[0],p[1])))});return(x,y)=>pl(x,y)+out*(ex+.003)};
-const pd=(poly,out,mat,lift=0)=>{const zf=out<0?(x,y)=>fz(x,y,0):(x,y)=>rz(x,y,0),f=mkPl(poly,zf,out),g=(x,y)=>f(x,y)+out*lift;decal(poly,g,mat,out);return(x,y)=>g(x,y)};
-const edge=(poly,f,out,r,mat)=>tube(poly.concat([poly[0]]).map(([x,y])=>[x,y,f(x,y)+out*.002]),r,mat,4);
-sym(s=>{const hl=flipP([[.50,.775],[.86,.805],[.885,.74],[.70,.70],[.52,.715]],s),f=pd(hl,-1,'headlight');edge(hl,f,-1,.0042,'chrome');
- const drl=flipP([[.54,.748],[.85,.778],[.86,.76],[.55,.73]],s);pd(drl,-1,'lampW',.004);
- const fg=flipP([[.56,.42],[.80,.42],[.80,.35],[.58,.34]],s);const ff=pd(fg,-1,'dark2',.002);edge(fg,ff,-1,.003,'chrome');});
-{const g=[[-.50,.60],[.50,.60],[.52,.70],[.30,.745],[-.30,.745],[-.52,.70]],f=pd(g.slice().reverse(),-1,'dark',.003);edge(g,f,-1,.005,'chrome')}
-{const em=[[0,.775],[.072,.68],[0,.585],[-.072,.68]];pd(em,-1,'chrome',.008);pd([[0,.745],[.04,.68],[0,.615],[-.04,.68]],-1,'dark2',.011)}
-pd([[-.62,.30],[.62,.30],[.665,.43],[.52,.48],[-.52,.48],[-.665,.43]],-1,'dark',.003);
+sym(s=>{const hl=flipP([[.50,.78],[.84,.80],[.86,.74],[.70,.70],[.52,.72]],s);decal(hl,FZ2,'headlight',-1);tube(dr(hl.concat([hl[0]]),FZ2),.0042,'chrome',4);
+ const drl=flipP([[.56,.745],[.80,.77]],s);tube(dr(drl,(a,b)=>fz(a,b,.012)),.008,'lampW',4);
+ const fg=flipP([[.58,.40],[.76,.40],[.76,.34],[.60,.33]],s);decal(fg,FZ2,'dark2',-1);});
+decal([[-.50,.60],[.50,.60],[.52,.70],[.30,.745],[-.30,.745],[-.52,.70]].reverse(),FZ,'dark',-1);
+{const g=[[-.50,.60],[.50,.60],[.52,.70],[.30,.745],[-.30,.745],[-.52,.70]];tube(dr(g.concat([g[0]]),FZ2),.005,'chrome',4)}
+decal([[0,.775],[.072,.68],[0,.585],[-.072,.68]],FZ2,'chrome',-1);decal([[0,.745],[.04,.68],[0,.615],[-.04,.68]],(a,b)=>fz(a,b,.013),'dark2',-1);
+decal([[-.62,.30],[.62,.30],[.665,.43],[.52,.48],[-.52,.48],[-.665,.43]],FZ,'dark',-1);
 [.335,.37,.405,.44].forEach(y=>tube(dr([[-.52,y],[.52,y]],FZ2),.005,'dark2',4));
 box(0,.365,fz(0,.365,.012),.52,.11,.012,'plateF');
-sym(s=>{const lp=flipP([[.40,.985],[.74,.96],[.73,.80],[.50,.80],[.40,.86]],s),f=pd(lp,1,'lampR');edge(lp,f,1,.004,'chrome');
- pd(flipP([[.43,.835],[.66,.835],[.66,.805],[.43,.815]],s),1,'lampW',.004);
- pd(flipP([[.46,.97],[.70,.95],[.70,.935],[.46,.955]],s),1,'dark2',.004)});
-pd([[0,.99],[.06,.91],[0,.83],[-.06,.91]],1,'chrome',.006);
-pd([[-.66,.30],[.66,.30],[.70,.42],[.50,.46],[-.50,.46],[-.70,.42]],1,'dark',.003);
+sym(s=>{const lp=flipP([[.52,1.02],[.84,.99],[.80,.80],[.60,.84],[.52,.90]],s);decal(lp,RZ,'lampR',1);
+ const lw=flipP([[.54,.80],[.70,.78],[.68,.74],[.54,.76]],s);decal(lw,RZ2,'lampW',1)});
+decal([[0,.99],[.06,.91],[0,.83],[-.06,.91]],RZ2,'chrome',1);
+decal([[-.66,.30],[.66,.30],[.70,.42],[.50,.46],[-.50,.46],[-.70,.42]],RZ,'dark',1);
 tube(dr([[-.40,.672],[.40,.672]],RZ2),.007,'chrome',4);
 box(0,.66,rz(0,.66,.012),.52,.11,.012,'plateR');
 tube([[-.41,.30,rz(-.41,.30,-.03)],[-.41,.30,rz(-.41,.30,.07)]],.042,'chrome',14);
