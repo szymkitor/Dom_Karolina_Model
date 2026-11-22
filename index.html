@@ -1116,7 +1116,7 @@ function wallSolid(B,MT,NM,KY){MT=MT||wallMat;const R=v=>Math.round(v*1e6)/1e6,c
     P.forEach(q=>{const w3=[0,0,0];w3[d]=c;w3[u]=q[0];w3[v]=q[1];pos.push(w3[0],w3[1],w3[2]);const n3=[0,0,0];n3[d]=sg;nor.push(n3[0],n3[1],n3[2]);uv.push(...(d===0?[w3[2],w3[1]]:d===1?[w3[0],w3[2]]:[w3[0],w3[1]]))});
     ind.push(base,base+1,base+2,base,base+2,base+3)}}}
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(ind);
- const me=add(g,MT,0,0,0);me.name=NM||'bryla_scian';window[KY||'WALLSOLID']={mesh:me,boxes:B.length,tris:ind.length/3,cells:F.length};return me}
+ const me=add(g,MT,0,0,0);me.name=NM||'bryla_scian';me.material.shadowSide=THREE.FrontSide;window[KY||'WALLSOLID']={mesh:me,boxes:B.length,tris:ind.length/3,cells:F.length};return me}
 /* ===== WNETRZE DOMU wg rzutu parteru A-1 i przekrojow A-A, B-B (bez wyposazenia, framug, drzwi i parapetow) =====
    posadzka parteru 0,00 (warstwy PG1: spod -0,22 pod terakota), garaz i pom. techniczne (13) -0,25 (PG2, spod -0,48); strop zelbetowy: spod +2,63, gora +2,88; na nim ocieplenie i podloga strychu (poziom 0 pietra +3,16 wg przekroju); otwor pod schody (2) zalepiony plyta GK = lita czesc stropu;
    sciany dzialowe: SW1 24 cm (bloczek 24 + tynki), SW2 12 cm - wspolrzedne z wektorowego rzutu (os x = plan x w dol rysunku, os y = w prawo), kazda sciana dochodzi do stropu (+2,63). Sciany zewnetrzne 45 cm (juz powyzej) maja lico wewnetrzne 45 cm od obrysu. */
