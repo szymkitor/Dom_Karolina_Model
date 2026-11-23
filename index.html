@@ -38,7 +38,7 @@ canvas{display:block;width:100%;height:100%}
 .ui button:active{transform:scale(.96)}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .chips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.chips.elg button{height:44px;min-height:44px;box-sizing:border-box;font-size:13px}.chips button{display:flex;align-items:center;gap:8px;text-align:left;line-height:1.2;min-height:40px}
+.chips h5.sub,h5.sub{margin:10px 0 5px;font-size:11px;font-weight:600;letter-spacing:.04em;opacity:.65;text-transform:uppercase}.chips.elg button{height:44px;min-height:44px;box-sizing:border-box;font-size:13px}.chips button{display:flex;align-items:center;gap:8px;text-align:left;line-height:1.2;min-height:40px}
 .chips button::before{content:"";flex:none;width:9px;height:9px;border-radius:50%;background:var(--line);box-shadow:inset 0 0 0 1px rgba(127,140,155,.5);transition:all .2s}
 .chips button.on{background:linear-gradient(135deg,rgba(255,170,80,.34),rgba(232,100,58,.22));border-color:var(--ac);font-weight:600}
 .chips button.on::before{background:#ffcf80;box-shadow:0 0 9px 2px rgba(255,170,70,.9)}
@@ -194,11 +194,15 @@ body.walking canvas{touch-action:none}
 <div class="ui hid" id="pn_lights">
  <div class="hd"><div class="tt">Światła</div><div class="st">Oświetlenie domu i ogrodu</div></div>
  <section><h3><span class="t">Światła</span><button id="lm">Wszystkie</button></h3>
-  <h4>Szopa</h4><div class="chips"><button id="l8">Wnętrze</button><button id="l6">Światło zewnętrzne</button></div>
-  <h4>Wiata śmietnikowa</h4><div class="chips"><button id="l9">Wnętrze</button></div>
-  <h4>Tunel foliowy</h4><div class="chips"><button id="l10">Żarówka</button></div>
-  <h4>Ogród</h4><div class="chips"><button id="l11">Lampa kula – narożnik</button><button id="l12">Lampa kula – podjazd</button><button id="l13">Lampa kula – trawnik</button></div>
-  <h4>Dom</h4><div class="chips"><button id="l2">Wejście</button><button id="l3">Światło tarasowe</button><button id="l5f">Kinkiety – front</button><button id="l5s">Kinkiety – boczne</button><button id="l5t">Kinkiety – taras</button><button id="l7">Pompa ciepła</button><button id="l4">Nad garażem</button><button id="l1">Trawnik</button></div></section></div>
+  <h4>Szopa</h4><div class="chips elg"><button id="l8">Wnętrze</button><button id="l6">Światło zewnętrzne</button></div>
+  <h4>Wiata śmietnikowa</h4><div class="chips elg"><button id="l9">Wnętrze</button></div>
+  <h4>Wnętrze domu</h4><div class="chips elg"><button id="r_all" title="Wszystkie lampy sufitowe w domu (bez garażu)">Wszystkie pokoje</button></div>
+  <h5 class="sub">Część dzienna</h5><div class="chips elg"><button id="r_wia">Wiatrołap (12)</button><button id="r_kor">Korytarz (11)</button><button id="r_sal">Salon z jadalnią (1)</button><button id="r_ane">Aneks kuchenny (2)</button></div>
+  <h5 class="sub">Część nocna</h5><div class="chips elg"><button id="r_p3">Sypialnia (3)</button><button id="r_p4">Pokój (4)</button><button id="r_p5">Pokój (5)</button><button id="r_p6">Pokój (6)</button><button id="r_gar">Garderoba (7)</button><button id="r_l8">Łazienka (8)</button><button id="r_l9">Łazienka (9)</button></div>
+  <h5 class="sub">Gospodarcze</h5><div class="chips elg"><button id="r_sp">Spiżarnia (10)</button><button id="r_tech">Pom. techniczne (13)</button></div>
+  <h4>Tunel foliowy</h4><div class="chips elg"><button id="l10">Żarówka</button></div>
+  <h4>Ogród</h4><div class="chips elg"><button id="l11">Lampa kula – narożnik</button><button id="l12">Lampa kula – podjazd</button><button id="l13">Lampa kula – trawnik</button></div>
+  <h4>Dom</h4><div class="chips elg"><button id="l2">Wejście</button><button id="l3">Światło tarasowe</button><button id="l5f">Kinkiety – front</button><button id="l5s">Kinkiety – boczne</button><button id="l5t">Kinkiety – taras</button><button id="l7">Pompa ciepła</button><button id="l4">Nad garażem</button><button id="l1">Trawnik</button></div></section></div>
 <div class="ui hid" id="pn_elem">
  <div class="hd"><div class="tt">Elementy</div><div class="st">Drzwi, bramy, roleta, wiata, pergola</div></div>
  <section><h3>Dom</h3>
@@ -505,7 +509,7 @@ function lnSet(on){if(on===LN.on)return;if(on){lnBuild();LN.sw=[];LN.hid=[];if(w
    if(o.isMesh){const m=o.material;if(o.isInstancedMesh||o.userData.plant||(m&&m.userData&&m.userData.plant)||(m&&!Array.isArray(m)&&m.blending===THREE.AdditiveBlending)){if(o.visible){o.visible=false;LN.hid.push(o)}}else{LN.sw.push([o,m]);o.material=lnMat(m)}}
    else if((o.isPoints||o.isSprite||o===gridMesh)&&o.visible){o.visible=false;LN.hid.push(o)}});LN.ls.forEach(l=>l.visible=true);LN.hs.forEach(l=>l.visible=true);LNX.forEach(l=>l.visible=true)}
  else{LN.ls.forEach(l=>l.visible=false);LN.hs.forEach(l=>l.visible=false);LNX.forEach(l=>l.visible=false);LN.sw.forEach(([o,m])=>o.material=m);LN.hid.forEach(o=>o.visible=true);LN.sw=[];LN.hid=[];ren.shadowMap.needsUpdate=true;shReq=true}
- LN.on=on;['lm','l1','l2','l3','l4','l5f','l5s','l5t','l6','l7','l8','l9','l10','l11','l12','l13','tm','dy','pl','ptgo','camv'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=on});if(on){playing=false;document.getElementById('pl').textContent='▶';document.getElementById('spr').style.display='none'}dirty=true}
+ LN.on=on;['lm','r_all','r_wia','r_kor','r_sal','r_ane','r_p3','r_p4','r_p5','r_p6','r_gar','r_l8','r_l9','r_sp','r_tech','l1','l2','l3','l4','l5f','l5s','l5t','l6','l7','l8','l9','l10','l11','l12','l13','tm','dy','pl','ptgo','camv'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=on});if(on){playing=false;document.getElementById('pl').textContent='▶';document.getElementById('spr').style.display='none'}dirty=true}
 function drawFrame(){applyProj();if(window.__mtUpd)window.__mtUpd();if(!LN.on){ren.render(scene,cam);return}
  ren.shadowMap.needsUpdate=false;const bg=scene.background,sv=bg&&bg.clone?bg.clone():null;if(sv)bg.set(0xffffff);ren.render(scene,cam);if(sv)bg.copy(sv)}
 document.getElementById('orth').onclick=e=>{const o=!ORTHO;setProj(o);e.currentTarget.classList.toggle('on',o)};
@@ -2402,6 +2406,28 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',.615,G0+
   const gm=new THREE.MeshBasicMaterial({color:0xcfd6d9});gm.userData={cOn:0xfff3d0,cOff:0xcfd6d9};const bu=new THREE.Mesh(new THREE.SphereGeometry(.05,16,12),gm);bu.position.copy(W(cx,gy+1.85,Ym));scene.add(bu);
   const nk=new THREE.Mesh(new THREE.CylinderGeometry(.018,.03,.05,12),gm);nk.position.copy(W(cx,gy+1.905,Ym));scene.add(nk);
   const pt=new THREE.PointLight(0xffd9a0,2.0,5,1.5);pt.position.copy(W(cx,gy+1.83,Ym));scene.add(pt);lights.l10={on:false,spots:[pt],lenses:[bu,nk,bt]}}}
+/* LAMPY SUFITOWE w pomieszczeniach (bez garazu) - plafony o sr. 30 cm pod stropem (spod +2,63); polozenie wg rzutu parteru (numery pomieszczen jak w tabeli rzutu); jedno swiatlo punktowe na przycisk/pokoj (bez cieni), domyslnie wylaczone */
+const ROOMLAMPS=[
+ ['r_wia',[[8.02,4.84]],[8.02,4.84],5.2],
+ ['r_kor',[[7.7,8.3],[5.2,10.4],[5.2,14.2]],[[7.7,8.3],[5.2,12.3]],5.5],
+ ['r_sal',[[11.9,5.0],[11.9,9.0]],[[11.9,7.0]],8.5],
+ ['r_ane',[[8.1,12.1]],[8.1,12.1],5.2],
+ ['r_p3',[[6.98,18.93]],[6.98,18.93],5.5],
+ ['r_p4',[[2.88,15.25]],[2.88,15.25],5],
+ ['r_p5',[[7.64,15.6]],[7.64,15.6],5],
+ ['r_p6',[[2.88,11.8]],[2.88,11.8],4.5],
+ ['r_gar',[[2.88,20.14]],[2.88,20.14],4],
+ ['r_l8',[[2.88,18.35]],[2.88,18.35],4],
+ ['r_l9',[[2.88,9.3]],[2.88,9.3],4],
+ ['r_sp',[[6.4,9.58]],[6.4,9.58],3.2],
+ ['r_tech',[[2.02,7.58]],[2.02,7.58],4.5]];
+{const bd=M(0xf3f2ee,{roughness:.55}),rim=M(0xd9d8d3,{roughness:.4,metalness:.3}),CY=2.63;
+ ROOMLAMPS.forEach(([id,fx,pl,dist])=>{const bulbs=[];
+  fx.forEach(([x,y])=>{const a=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,.035,32),bd);a.position.set(x,CY-.0175,-y);scene.add(a);statics.push(a);
+   const r=new THREE.Mesh(new THREE.TorusGeometry(.155,.006,6,32),rim);r.rotation.x=Math.PI/2;r.position.set(x,CY-.036,-y);scene.add(r);statics.push(r);
+   const gm=new THREE.MeshBasicMaterial({color:0xd9dcde});gm.userData={cOn:0xfff3d0,cOff:0xd9dcde};const d=new THREE.Mesh(new THREE.CylinderGeometry(.14,.14,.006,32),gm);d.position.set(x,CY-.0385,-y);scene.add(d);bulbs.push(d)});
+  const P=Array.isArray(pl[0])?pl:[pl],ls=P.map(([x,y])=>{const L=new THREE.PointLight(0xffd9a0,1.5,dist,1.5);L.position.set(x,CY-.25,-y);L.visible=false;scene.add(L);return L});
+  lights[id]={on:false,spots:ls,lenses:bulbs}})}
 /* cienie od sztucznych swiatel: kazde swiatlo z cieniem dolacza do shadera tekstury i zmienne (varying), a przelaczenie liczby cieni przekompilowuje materialy - za duzo cieni naraz = wolne wlaczanie swiatel albo bledy shadera na telefonach. Dlatego naraz cien rzuca tylko kilka WLACZONYCH swiatel (wg priorytetu), budzet zalezy od karty */
 {const gl=ren.getContext(),MV=(gl&&gl.getParameter&&gl.getParameter(gl.MAX_VARYING_VECTORS))||15,MT=(ren.capabilities&&ren.capabilities.maxTextures)||16,MAXC=Math.max(3,Math.min(6,MV-8,MT-8));
  const cfg=(l,sz,nr)=>{l.shadow.mapSize.set(sz,sz);if(l.isSpotLight){l.shadow.camera.near=nr;l.shadow.camera.far=18;l.shadow.bias=-.0008;l.shadow.normalBias=.02}else{l.shadow.camera.near=.12;l.shadow.camera.far=9;l.shadow.bias=-.002}return l};
@@ -2409,6 +2435,9 @@ flood('l1',5.3,2.7,-21.35,Math.PI);flood('l4',3.66,2.65,0,0);flood('l6',.615,G0+
  const ORD=['l4','l13','l11','l3','l1','l6','l9'];   /* l12 (kula przy podjezdzie) bez cienia: na podjezdzie cien auta tylko od halogenu l4 */
  window.shAssign=()=>{let n=0;ORD.forEach(id=>{const ls=SHD[id],want=lights[id].on&&n+ls.length<=MAXC;ls.forEach(l=>{if(l.castShadow!==want)l.castShadow=want});if(want)n+=ls.length})};shAssign()}
 ['l1','l2','l3','l4','l6','l7','l8','l9','l10','l11','l12','l13'].forEach(id=>{$(id).onclick=()=>setL(id,!lights[id].on)});
+const RLI=ROOMLAMPS.map(r=>r[0]);RLI.forEach(id=>{$(id).onclick=()=>{setL(id,!lights[id].on);syncR()}});
+function syncR(){$('r_all').classList.toggle('on',RLI.some(id=>lights[id].on))}
+$('r_all').onclick=()=>{const t=!RLI.some(id=>lights[id].on);RLI.forEach(id=>setL(id,t));syncR()};
 /* granice dzialki (wg planu: PL): zolta podswietlana lina tuz nad gruntem + niewidzialne walce do zaznaczania w trybie pomiaru (userData.plotEdge = dokladny odcinek granicy, mierzony jak krawedz) */
 const PLT=(()=>{const g=new THREE.Group(),Y=-.27,W=(p)=>new THREE.Vector3(p[0],Y,-p[1]);
  const tc=document.createElement('canvas');tc.width=64;tc.height=64;{const q=tc.getContext('2d');q.fillStyle='#d9b840';q.fillRect(0,0,64,64);q.strokeStyle='#e9d98c';q.lineWidth=9;for(let i=-64;i<128;i+=16){q.beginPath();q.moveTo(i,0);q.lineTo(i+64,64);q.stroke()}q.strokeStyle='#b58a1c';q.lineWidth=3;for(let i=-64;i<128;i+=16){q.beginPath();q.moveTo(i+8,0);q.lineTo(i+72,64);q.stroke()}}
@@ -2598,11 +2627,11 @@ hoseHook(0,.66,-1.05,-Math.PI/2);hoseHook(1,.66,-20.3,-Math.PI/2);
   m(plate,blk,0,0,.007);m(body,blk,0,0,.014);{const ll=new THREE.LineSegments(sgL,sgLM);ll.position.set(0,0,.014);ll.visible=false;ll.userData.ln=1;g.add(ll);LNX.push(ll)}m(cap,blk,0,.1,.014);m(cap,blk,0,-.1,.014);m(lg,SG[k].lens,0,.1008,.014);m(lg,SG[k].lens,0,-.1008,.014).userData.lensDown=1;m(wash,SG[k].glow,0,0,.004).renderOrder=4;
   g.position.set(x,y,z);g.rotation.y=yaw;g.scale.setScalar(1.4);g.userData.sconce=k;scene.add(g);g.traverse(o=>{if(o.isMesh&&o.material!==SG[k].glow)statics.push(o)})};
  sc(.58,1.568,0,0,'f');sc(6.73,1.568,0,0,'f');sc(10.06,1.568,-2.5,0,'f');sc(14.9,1.568,-3.6,Math.PI/2,'s');sc(14.9,1.568,-6.6,Math.PI/2,'s');sc(9.8,1.568,-13.665,Math.PI/2,'t');sc(9.8,1.568,-17.28,Math.PI/2,'t')}
-const LL=['l1','l2','l3','l4','l6','l7','l8','l9','l10','l11','l12','l13'];
+const LL=['l1','l2','l3','l4','l6','l7','l8','l9','l10','l11','l12','l13'].concat(ROOMLAMPS.map(r=>r[0]));
 function syncM(){const any=LL.some(id=>lights[id]&&lights[id].on)||(SG&&SCK.some(k=>SG[k].on));$("lm").classList.toggle('on',any);if(window.__fabSync)__fabSync(any)}
 updSc();SCK.forEach(k=>{$(SCI[k]).onclick=()=>{SG[k].on=!SG[k].on;$(SCI[k]).classList.toggle('on',SG[k].on);updSc();syncM()}});
 LL.forEach(id=>setL(id,false));SCK.forEach(k=>SG[k].on=false);updSc();syncM();
-$('lm').onclick=()=>{const t=!(LL.some(id=>lights[id].on)||SCK.some(k=>SG[k].on));LL.forEach(id=>setL(id,t));SCK.forEach(k=>{SG[k].on=t;$(SCI[k]).classList.toggle('on',t)});updSc();syncM()}
+$('lm').onclick=()=>{const t=!(LL.some(id=>lights[id].on)||SCK.some(k=>SG[k].on));LL.forEach(id=>setL(id,t));syncR();SCK.forEach(k=>{SG[k].on=t;$(SCI[k]).classList.toggle('on',t)});updSc();syncM()}
 // Renault Megane IV Grandtour (2017), skala 1:1 (dł. 4626, szer. 1814, wys. 1449, rozstaw osi 2712, koła 205/55 R16): karoseria jako gładki loft przekrojów, nadkola, szklenie, reflektory/grill/lampy 'naklejone' na powierzchnię; zaparkowany przodem do garażu na pochylni (6%)
 // Generator siatek Renault Megane IV Grandtour (2017) - czysta matematyka, bez THREE.
 // Układ lokalny: x = prawa strona auta, y = góra, z = tył auta (nos w -z). Początek: środek rozstawu osi, na gruncie.
