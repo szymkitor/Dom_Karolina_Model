@@ -2855,6 +2855,7 @@ return out}
  [zL+P/2,zR-P/2].forEach(z=>tube(AR.map(a=>new V3(xb-a[0],gy+a[1],z)),.02,al));
  const bz=(ya,yb,x,y,rad)=>{const g=new THREE.CylinderGeometry(rad,rad,Math.abs(yb-ya),12);g.rotateX(Math.PI/2);return add(g,al,x,y,(ya+yb)/2)};
  bz(zL+P/2,zR-P/2,xb-1.02,gy+r+.02,r);        /* rura dolna z tylu */
+ [zL+P/2,zR-P/2].forEach(z=>{const g=new THREE.CylinderGeometry(r,r,1.02+P/2,12);g.rotateZ(Math.PI/2);add(g,al,xb+P/2-(1.02+P/2)/2,gy+r+.02,z)});   /* prety dolne boczne: od slupka ramy do rury tylnej */
           /* rura dolna przy ramie (listwa siatki) */
 /* siatka: biala, sznurek ok. 3 mm, oczko ok. 10 cm; gora/tyl wisza lekko (ugiecie), boki wybrzuszone na zewnatrz */
  const cv=document.createElement('canvas');cv.width=cv.height=128;{const q=cv.getContext('2d');q.strokeStyle='#fff';q.lineWidth=10;q.strokeRect(0,0,128,128)}
