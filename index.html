@@ -2843,6 +2843,34 @@ return out}
  /* jedna wspolna wstega miedzy opaska zwirowa domu a zwirem chodnika z plytami (x 15,40, y 2,0-8,05): oba zwiry stykaja sie, wiec algorytm nie dawal zadnej (wczesniej: dwie wstegi z 4 cm szpara trawnika) */
  {const y0=2.0,y1=8.05,xa=15.4,xb=15.4+W,iT=[V(xa,TOP,-y0),V(xa,TOP,-y1)],oT=[V(xb,TOP,-y0),V(xb,TOP,-y1)],iB=[V(xa,BOT,-y0),V(xa,BOT,-y1)],oB=[V(xb,BOT,-y0),V(xb,BOT,-y1)];quad(iT[0],iT[1],oT[1],oT[0]);quad(iT[0],iB[0],iB[1],iT[1]);quad(oT[0],oT[1],oB[1],oB[0]);quad(iT[0],oT[0],oB[0],iB[0]);quad(iT[1],oT[1],oB[1],iB[1])}
  if(idx.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();add(g,M(0x0b0c0d,{roughness:.55,side:THREE.DoubleSide}),0,0,0,false)}}
+/* bramka do gry w pilke (ogrodowa 3,0 x 1,2 m, glebokosc 1,0 m) w polach J15b/J16d/J16b (x -1,5..0, y 25,5..30), otwarta na wschod; pilka nr 5 w swietle bramki */
+{const gy=-.30,xf=-.40,xb=-1.40,zc=-27.75,W=3.0,H=1.2,Hr=.8,r=.03,zL=zc-W/2,zR=zc+W/2,wm=M(0xf6f6f4,{roughness:.35,metalness:.1}),V3=THREE.Vector3;
+ const cyl=(a,b)=>{const A=new V3(...a),B=new V3(...b),g=new THREE.CylinderGeometry(r,r,A.distanceTo(B),12),me=add(g,wm,0,0,0);me.position.copy(A).add(B).multiplyScalar(.5);me.quaternion.setFromUnitVectors(new V3(0,1,0),B.clone().sub(A).normalize());return me},
+  jt=p=>add(new THREE.SphereGeometry(r,12,8),wm,p[0],p[1],p[2]),
+  F=[[xf,gy,zL],[xf,gy+H,zL],[xf,gy,zR],[xf,gy+H,zR]],B=[[xb,gy,zL],[xb,gy+Hr,zL],[xb,gy,zR],[xb,gy+Hr,zR]],gr=y=>y+r;
+ cyl(F[0],F[1]);cyl(F[2],F[3]);cyl(F[1],F[3]);                       /* slupki i poprzeczka */
+ cyl(B[0],B[1]);cyl(B[2],B[3]);cyl(B[1],B[3]);                       /* tylne slupki i gorna rura tylna */
+ cyl(F[1],B[1]);cyl(F[3],B[3]);                                      /* skosne rury boczne */
+ cyl([xf,gy+r,zL],[xb,gy+r,zL]);cyl([xf,gy+r,zR],[xb,gy+r,zR]);cyl([xb,gy+r,zL],[xb,gy+r,zR]);   /* podstawa na gruncie */
+ [F[1],F[3],B[1],B[3],[xf,gy+r,zL],[xf,gy+r,zR],[xb,gy+r,zL],[xb,gy+r,zR]].forEach(jt);
+ /* siatka: panele z tekstura oczek 10 cm (alphaTest) */
+ const c=document.createElement('canvas');c.width=c.height=64;{const q=c.getContext('2d');q.strokeStyle='#fff';q.lineWidth=7;q.strokeRect(0,0,64,64)}
+ const tx=new THREE.CanvasTexture(c);tx.wrapS=tx.wrapT=THREE.RepeatWrapping;tx.anisotropy=4;
+ const nm=new THREE.MeshStandardMaterial({color:0xf2f2f2,map:tx,alphaTest:.2,side:THREE.DoubleSide,roughness:.9}),pos=[],uv=[],ix=[];
+ const panel=(P,T)=>{const o=new V3(...P[0]),e1=new V3(...P[1]).sub(o).normalize(),n=new V3().crossVectors(e1,new V3(...P[P.length-1]).sub(o)).normalize(),e2=new V3().crossVectors(n,e1),b=pos.length/3;
+  P.forEach(p=>{const v=new V3(...p).sub(o);pos.push(...p);uv.push(v.dot(e1)*10,v.dot(e2)*10)});T.forEach(t=>ix.push(b+t[0],b+t[1],b+t[2]))};
+ const t0=gy+r*2,tF=gy+H-r,tB=gy+Hr-r;
+ panel([[xf-.02,tF,zL+r],[xf-.02,tF,zR-r],[xb,tB,zR-r],[xb,tB,zL+r]],[[0,1,2],[0,2,3]]);              /* dach */
+ panel([[xb+.02,tB,zL+r],[xb+.02,tB,zR-r],[xb+.02,t0,zR-r],[xb+.02,t0,zL+r]],[[0,1,2],[0,2,3]]);      /* tyl */
+ [zL+.02,zR-.02].forEach(z=>panel([[xf,t0,z],[xf,tF,z],[xb,tB,z],[xb,t0,z]],[[0,1,2],[0,2,3]]));         /* boki */
+ const ng=new THREE.BufferGeometry();ng.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));ng.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));ng.setIndex(ix);ng.computeVertexNormals();
+ add(ng,nm,0,0,0,false);
+ /* pilka nr 5 (srednica 22 cm): biala z czarnymi pieciokatami (kolory wierzcholkow wg 12 kierunkow ikosaedru), lezy na trawie w swietle bramki */
+ const g=new THREE.SphereGeometry(.11,40,28),ph=(1+Math.sqrt(5))/2,D=[];[[0,1,ph],[0,-1,ph],[0,1,-ph],[0,-1,-ph],[1,ph,0],[-1,ph,0],[1,-ph,0],[-1,-ph,0],[ph,0,1],[-ph,0,1],[ph,0,-1],[-ph,0,-1]].forEach(a=>D.push(new V3(...a).normalize()));
+ const pa=g.attributes.position,col=new Float32Array(pa.count*3),vv=new V3();
+ for(let i=0;i<pa.count;i++){vv.set(pa.getX(i),pa.getY(i),pa.getZ(i)).normalize();let m=0;D.forEach(d=>{m=Math.max(m,vv.dot(d))});const k=m>.9?.07:.96;col[3*i]=col[3*i+1]=col[3*i+2]=k}
+ g.setAttribute('color',new THREE.BufferAttribute(col,3));
+ const ball=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.45,metalness:0}));ball.position.set(-.95,gy+.11,-27.95);ball.rotation.set(.4,.7,.2);ball.castShadow=ball.receiveShadow=true;ball.name='pilka';scene.add(ball)}
 batchStatics();
 const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
 /* TRYB SPACERU: widok z oczu człowieka (wys. oczu 1,65 m), start tuż za drzwiami wejściowymi (plan x 8,35; y 1,5, patrzymy na ulicę); lewy joystick = ruch, prawy joystick = rozglądanie (także przeciąganie po ekranie, strzałki, WASD / Shift); pole widzenia dobierane do proporcji ekranu (poziomo ok. 80°, czyli bez rozciągnięcia na brzegach); kolizje: obrysy budynków (FOOT), ogrodzenie, basen, tunel (wejście od frontu), inspekt, samochód, słupek, słupy i meble tarasu; wysokość terenu: taras wejściowy 0,00 + stopień, pochylnia podjazdu, taras tylny (deska 0,00 + stopień -0,166) */
@@ -2852,8 +2880,8 @@ const fv=new THREE.Vector3();let lastR=0,ema=16,nS=0,lastG=0;
  dseg=(x,y,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],L=dx*dx+dy*dy,t=L?Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/L)):0;return Math.hypot(x-a[0]-dx*t,y-a[1]-dy*t)},
  dpoly=(x,y,P)=>{let m=1e9;for(let i=0;i<P.length;i++)m=Math.min(m,dseg(x,y,P[i],P[(i+1)%P.length]));return m},
  drect=(x,y,r)=>Math.hypot(Math.max(r[0]-x,0,x-r[2]),Math.max(r[1]-y,0,y-r[3])),inr=(x,y,r)=>x>=r[0]&&x<=r[2]&&y>=r[1]&&y<=r[3],
- RECT=[[17.8,29.3,17.9,36.4],[20.8,29.3,20.9,36.4],[17.8,36.3,20.9,36.4],[17.8,29.3,18.85,29.4],[19.85,29.3,20.9,29.4],[18.526,24.6,20.971,27.35],
-  [9.27,.13,9.67,.53],[14.37,12.77,14.77,13.17],[11.4,11.7,14.0,13.4],[9.8,16.4,10.45,18.15]],CIR=[[15.75,33.75,1.62],[17.5,36.38,.14]],
+ RECT=[[-.45,26.2,-.35,26.3],[-.45,29.2,-.35,29.3],[-1.45,26.2,-1.35,29.3],[-1.45,26.2,-.35,26.3],[-1.45,29.2,-.35,29.3],[17.8,29.3,17.9,36.4],[20.8,29.3,20.9,36.4],[17.8,36.3,20.9,36.4],[17.8,29.3,18.85,29.4],[19.85,29.3,20.9,29.4],[18.526,24.6,20.971,27.35],
+  [9.27,.13,9.67,.53],[14.37,12.77,14.77,13.17],[11.4,11.7,14.0,13.4],[9.8,16.4,10.45,18.15]],CIR=[[-.95,27.95,.11],[15.75,33.75,1.62],[17.5,36.38,.14]],
  FW=[[-3.4,-7.5,1.33,-7.1],[1.33,-7.5,5.93,-7.1],[5.93,-7.5,8.73,-7.1],[8.73,-7.5,9.95,-7.1],[9.95,-7.5,14.75,-7.1]],SK=[[0,0,1.35,.4],[5.35,0,6.69,.4]];let CAR=null;   /* murowany front (mur 40 cm: y -7,5..-7,1, slupy, brama, furtka) i mur skosu (s 0..0,4, poza wiata) jako bryly - nie mozna w nie wejsc */
  const WT=(x,y)=>{const dx=x-14.75,dy=y+7.5;return[dx*.70711+dy*.70711,-dx*.70711+dy*.70711]},
  wiWalls=()=>{const f=window.SD&&SD.f&&SD.f.p>.55,r=window.SD&&SD.r&&SD.r.p>.55,o=[[1.35,-.075,1.5,2.075],[5.2,-.075,5.35,2.075]];[[2.05,.632],[2.05,1.369],[4.65,.632],[4.65,1.369]].forEach(([t,u])=>o.push([t-.4,u-.31,t+.4,u+.31]));   /* 4 kosze 240 l w niszach wiaty (t, s wg ukladu wiaty) */if(f)o.push([1.5,-.075,2.55,.12],[4.15,-.075,5.2,.12]);else o.push([1.5,-.075,5.2,.12]);if(r)o.push([1.5,1.88,2.55,2.075],[4.15,1.88,5.2,2.075]);else o.push([1.5,1.88,5.2,2.075]);return o},
