@@ -2852,20 +2852,24 @@ return out}
  /* luk boczny: od gornego tylu ramy poziomo w tyl, luk, w dol z lekkim pochyleniem do rury dolnej (profil u = odleglosc w tyl od tylnej scianki ramy, v = wysokosc nad gruntem) */
  const xb=xf-P/2,AR=[[0,1.50],[.35,1.50],[.58,1.47],[.76,1.32],[.89,1.05],[.97,.65],[1.01,.25],[1.02,.04]],
   tube=(pts,rad,m)=>{const c=new THREE.CatmullRomCurve3(pts,false,'catmullrom',.5);const me=add(new THREE.TubeGeometry(c,48,rad,10,false),m,0,0,0);return me};
- [zL+P/2,zR-P/2].forEach(z=>tube(AR.map(a=>new V3(xb-a[0],gy+a[1],z)),r,al));
+ [zL+P/2,zR-P/2].forEach(z=>tube(AR.map(a=>new V3(xb-a[0],gy+a[1],z)),.02,al));
  const bz=(ya,yb,x,y,rad)=>{const g=new THREE.CylinderGeometry(rad,rad,Math.abs(yb-ya),12);g.rotateX(Math.PI/2);return add(g,al,x,y,(ya+yb)/2)};
  bz(zL+P/2,zR-P/2,xb-1.02,gy+r+.02,r);        /* rura dolna z tylu */
- bz(zL+P/2,zR-P/2,xb-.05,gy+r+.01,r);         /* rura dolna przy ramie (listwa siatki) */
- /* siatka: oczko 12 cm, sznurek ok. 4 mm (alphaTest) */
- const cv=document.createElement('canvas');cv.width=cv.height=64;{const q=cv.getContext('2d');q.strokeStyle='#fff';q.lineWidth=6;q.strokeRect(0,0,64,64)}
+          /* rura dolna przy ramie (listwa siatki) */
+/* siatka: biala, sznurek ok. 3 mm, oczko ok. 10 cm; gora/tyl wisza lekko (ugiecie), boki wybrzuszone na zewnatrz */
+ const cv=document.createElement('canvas');cv.width=cv.height=128;{const q=cv.getContext('2d');q.strokeStyle='#fff';q.lineWidth=10;q.strokeRect(0,0,128,128)}
  const tx=new THREE.CanvasTexture(cv);tx.wrapS=tx.wrapT=THREE.RepeatWrapping;tx.anisotropy=8;
- const nm=new THREE.MeshStandardMaterial({color:0xf4f4f1,map:tx,alphaTest:.25,side:THREE.DoubleSide,roughness:.95}),pos=[],uv=[],ix=[],K=1/.12;
- const prof=[[0,IH]].concat(AR.slice(1).map(a=>[a[0]-.01,a[1]]));   /* od poprzeczki, po luku, do ziemi */
- /* gora + tyl: wstega miedzy lukami wzdluz profilu */
- {let s=0;const zl=zL+P/2+.02,zr=zR-P/2-.02,b=pos.length/3;prof.forEach((p,i)=>{if(i)s+=Math.hypot(p[0]-prof[i-1][0],p[1]-prof[i-1][1]);[[zl,0],[zr,1]].forEach(([z,k])=>{pos.push(xb-p[0],gy+p[1]+.01,z);uv.push(s*K,(z-zl)*K)})});
-  for(let i=0;i<prof.length-1;i++){const a=b+2*i;ix.push(a,a+1,a+3,a,a+3,a+2)}}
- /* boki: wachlarz z dolu przy ramie */
- [zL+P/2+.02,zR-P/2-.02].forEach(z=>{const b=pos.length/3,pts=[[0,0]].concat(prof,[[1.02,0]]);pts.forEach(p=>{pos.push(xb-p[0],gy+p[1]+(p[1]>0?.01:.02),z);uv.push(p[0]*K,p[1]*K)});for(let i=1;i<pts.length-1;i++)ix.push(b,b+i,b+i+1)});
+ const nm=new THREE.MeshStandardMaterial({color:0xf6f6f3,map:tx,alphaTest:.12,side:THREE.DoubleSide,roughness:.95}),pos=[],uv=[],ix=[],K=1/.10;
+ const prof=[[0,IH]].concat(AR.slice(1).map(a=>[a[0]-.01,a[1]]));
+ const NZ=14,zl=zL+P/2+.02,zr=zR-P/2-.02;
+ /* gora + tyl: siatka (profil x szerokosc) z ugieciem w srodku rozpietosci */
+ {let s=0;const b=pos.length/3,ss=[0];prof.forEach((p,i)=>{if(i)s+=Math.hypot(p[0]-prof[i-1][0],p[1]-prof[i-1][1]);ss.push(s)});ss.shift();
+  prof.forEach((p,i)=>{const nx=i<prof.length-1?prof[i+1][1]-p[1]:p[1]-prof[i-1][1],ny=i<prof.length-1?-(prof[i+1][0]-p[0]):-(p[0]-prof[i-1][0]),nl=Math.hypot(nx,ny)||1;
+   for(let j=0;j<=NZ;j++){const t=j/NZ,sag=.035*Math.sin(Math.PI*t)*(i>0&&i<prof.length-1?1:0),z=zl+(zr-zl)*t;pos.push(xb-p[0]-(-ny/nl)*0+(nx>0?0:0)-sag*(ny/nl)*-1*0,gy+p[1]+.01-sag*(i<4?1:0),z-0);uv.push(ss[i]*K,(z-zl)*K)}});
+  for(let i=0;i<prof.length-1;i++)for(let j=0;j<NZ;j++){const a=b+i*(NZ+1)+j,c=a+NZ+1;ix.push(a,a+1,c+1,a,c+1,c)}}
+ /* boki: siatka miedzy slupkiem ramy a lukiem; wybrzuszenie na zewnatrz */
+ [[zl,-1],[zr,1]].forEach(([z0,sg])=>{const NA=6,b=pos.length/3;prof.forEach((p,i)=>{for(let a=0;a<=NA;a++){const t=a/NA,u=p[0]*t,bulge=.05*Math.sin(Math.PI*t)*Math.min(1,p[1]/.4);pos.push(xb-u,gy+p[1]+(p[1]>0?.01:.02),z0+sg*bulge);uv.push(u*K,p[1]*K)}});
+  for(let i=0;i<prof.length-1;i++)for(let a=0;a<NA;a++){const q=b+i*(NA+1)+a,c=q+NA+1;ix.push(q,q+1,c+1,q,c+1,c)}});
  const ng=new THREE.BufferGeometry();ng.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));ng.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));ng.setIndex(ix);ng.computeVertexNormals();add(ng,nm,0,0,0,false);
  /* pilka nr 5 (srednica 22 cm): biala z czarnymi pieciokatami (kolory wierzcholkow wg 12 kierunkow ikosaedru), lezy na trawie w swietle bramki */
  const g=new THREE.SphereGeometry(.11,40,28),ph=(1+Math.sqrt(5))/2,D=[];[[0,1,ph],[0,-1,ph],[0,1,-ph],[0,-1,-ph],[1,ph,0],[-1,ph,0],[1,-ph,0],[-1,-ph,0],[ph,0,1],[-ph,0,1],[ph,0,-1],[-ph,0,-1]].forEach(a=>D.push(new V3(...a).normalize()));
