@@ -255,6 +255,12 @@ function fan(){const cx=mx+SM/2,cy=my+SM/2,O=ord.slice().sort((p,q)=>(subs[p].cl
  /* otwarty podtryb: aktywny bąbelek (i podikonka pola przy pomiarze) leza w pierwszym rzedzie, tuz przy glownym */
  if(cur>=0){const R0=SM/2+SS/2+4,a0=arcOf(cx,cy,R0),t0=a0.start+a0.len/2,sp0=(SS+4)/R0,pr=(cur===measI||cur===areaI)&&areaI>=0&&measI>=0;
   if(pr){TP[measI]=[cx+R0*Math.cos(t0-sp0/2),cy+R0*Math.sin(t0-sp0/2)];TP[areaI]=[cx+R0*Math.cos(t0+sp0/2),cy+R0*Math.sin(t0+sp0/2)]}else TP[cur]=[cx+R0*Math.cos(t0),cy+R0*Math.sin(t0)]}
+ /* tryb spaceru: zaden babelek podmenu nie moze lezec na joystickach - zablokowane przenosimy w najblizsze wolne miejsce przy glownym */
+ if(document.body.classList.contains('walking')){const bm=SS/2+6,isB=(x,y)=>blk().some(b=>x>b[0]-bm&&x<b[2]+bm&&y>b[1]-bm&&y<b[3]+bm),pr=cur>=0&&(cur===measI||cur===areaI)&&areaI>=0&&measI>=0,S=cur>=0?(pr?[measI,areaI]:[cur]):ord.concat(areaI>=0?[areaI]:[]).filter(i=>i!==areaI||false),placed=[],bad=[];
+  const w=W(),h=H(),m=SS/2+8,inb=(x,y)=>x>=ins.l+m&&x<=w-ins.r-m&&y>=ins.t+m&&y<=h-ins.b-m;
+  S.forEach(i=>{if(isB(TP[i][0],TP[i][1])||!inb(TP[i][0],TP[i][1]))bad.push(i);else placed.push(TP[i])});
+  const okp=(x,y)=>x>=ins.l+m&&x<=w-ins.r-m&&y>=ins.t+m&&y<=h-ins.b-m&&!isB(x,y)&&Math.hypot(x-cx,y-cy)>=SM/2+SS/2+4&&placed.every(q=>Math.hypot(q[0]-x,q[1]-y)>=SS+4);
+  bad.forEach(i=>{const p0=TP[i];let best=null,bd=1e9;for(let R=SM/2+SS/2+4;R<=420;R+=6)for(let a=0;a<360;a+=5){const x=cx+R*Math.cos(a*Math.PI/180),y=cy+R*Math.sin(a*Math.PI/180);if(!okp(x,y))continue;const d=Math.hypot(x-p0[0],y-p0[1]);if(d<bd){bd=d;best=[x,y]}}if(best){TP[i]=best}placed.push(TP[i])})}
  apply()}
 function apply(){const cx=mx+SM/2,cy=my+SM/2;subs.forEach((b,i)=>{const pair=cur===measI||cur===areaI,show=i===areaI?(!menu&&pair):(menu||cur===i||(i===measI&&cur===areaI)),p=show?TP[i]:[cx,cy];b.style.left=(p[0]-SS/2)+'px';b.style.top=(p[1]-SS/2)+'px';b.style.transitionDelay=menu?(i*22)+'ms':((n-i)*14)+'ms';b.classList.toggle('show',show)})}
 function xy(){const w=W(),h=H(),x0=G+ins.l,x1=Math.max(x0,w-SM-G-ins.r),y0=G+ins.t,y1=Math.max(y0,h-SM-G-ins.b),t=clamp(pos.t,0,1);
