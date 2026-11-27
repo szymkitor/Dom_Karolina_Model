@@ -1174,14 +1174,12 @@ window.ROOMS={1:['Pokój dzienny z jadalnią',39.11,'panele / terakota'],2:['Ane
   const SEED={2:[8.1,12.1],3:[6.98,18.93],4:[2.88,15.25],5:[7.64,15.6],6:[2.88,11.8],7:[2.88,20.14],8:[2.88,18.35],9:[2.88,9.3],10:[6.4,9.58],12:[8.02,4.84],13:[2.02,7.58],14:[3.5,3.5]},OPEN=lb[Math.floor(11.9/R)*NY+Math.floor(5/R)],map={};
   Object.keys(SEED).forEach(k=>{const p=SEED[k],l=lb[Math.floor(p[0]/R)*NY+Math.floor(p[1]/R)];if(l&&l!==OPEN)map[l]=+k});
   const rm=new Uint8Array(N);
-  for(let i=0;i<NX;i++){const x=(i+.5)*R;for(let j=0;j<NY;j++){const l=lb[i*NY+j];if(!l)continue;if(l===OPEN){const y=(j+.5)*R;rm[i*NY+j]=x>=9.35?1:(x>=5.95&&y>=8.83?2:11)}else rm[i*NY+j]=map[l]||0}}
-  /* progi (otwory drzwiowe): posadzka i strop w otworze naleza do mniejszego z dwoch sasiednich pokoi - dzieki temu podloga pokoju jest ciagla az do ościeży */
-  const at=(x,y)=>{const i=Math.floor(x/R),j=Math.floor(y/R);return i<0||j<0||i>=NX||j>=NY?0:rm[i*NY+j]},rr=id=>id?window.ROOMS[id][1]:1e9;
-  window.NADP.forEach(r=>{const cx=(r[0]+r[1])/2,cy=(r[2]+r[3])/2,tx=(r[1]-r[0])<(r[3]-r[2]);const a=tx?at(r[0]-.05,cy):at(cx,r[2]-.05),b=tx?at(r[1]+.05,cy):at(cx,r[3]+.05),id=rr(a)<=rr(b)?a:b;if(!id)return;
-   const x0=Math.round(r[0]/R),x1=Math.round(r[1]/R),y0=Math.round(r[2]/R),y1=Math.round(r[3]/R);for(let i=x0;i<x1;i++)for(let j=y0;j<y1;j++)rm[i*NY+j]=id});
+  for(let i=0;i<NX;i++){const x=(i+.5)*R;for(let j=0;j<NY;j++){const l=lb[i*NY+j];if(!l)continue;if(l===OPEN){const y=(j+.5)*R;rm[i*NY+j]=x>=9.35?1:(x>=5.95&&y>=8.83&&!(x<6.17&&y>=10.46&&y<13.41)?2:11)   /* wneka korytarza (x 5,82-6,17, y 10,46-13,41) nalezy do korytarza */}else rm[i*NY+j]=map[l]||0}}
+  /* progi (otwory drzwiowe): kazdy prog ma wlasny identyfikator (100+nr) - nie wchodzi w pole zadnego pokoju i mierzy sie osobno */
+  window.NADP.forEach((r,k)=>{const x0=Math.round(r[0]/R),x1=Math.round(r[1]/R),y0=Math.round(r[2]/R),y1=Math.round(r[3]/R);for(let i=x0;i<x1;i++)for(let j=y0;j<y1;j++)rm[i*NY+j]=100+k;window.ROOMS[100+k]=['Próg',null,'']});
   return rm};
  window.roomAt=(x,y)=>{if(!RM)RM=build();const i0=Math.floor(x/R),j0=Math.floor(y/R);for(let r=0;r<=45;r++)for(let di=-r;di<=r;di++)for(let dj=-r;dj<=r;dj++){if(Math.max(Math.abs(di),Math.abs(dj))!==r)continue;const i=i0+di,j=j0+dj;if(i<0||j<0||i>=NX||j>=NY)continue;const v=RM[i*NY+j];if(v)return v}return 0};
- window.roomAtS=(x,y)=>{if(!RM)RM=build();const i=Math.floor(x/R),j=Math.floor(y/R);return i<0||j<0||i>=NX||j>=NY?0:RM[i*NY+j]};
+ window.roomAtS=(x,y)=>{if(!RM)RM=build();const i=Math.floor(x/R),j=Math.floor(y/R);if(i<0||j<0||i>=NX||j>=NY)return 0;const v=RM[i*NY+j];return v>=100?0:v};
  window.roomAreaGrid=()=>{if(!RM)RM=build();const A={};for(let k=0;k<RM.length;k++)if(RM[k])A[RM[k]]=(A[RM[k]]||0)+R*R;return A};
  /* prostokaty (plan x0,x1,y0,y1) skladajace sie na pokoj id: biegi komorek scalone miedzy kolumnami */
  const RC={};const rects=id=>{if(RC[id])return RC[id];if(!RM)RM=build();const out=[];let open={};
@@ -1197,8 +1195,8 @@ window.ROOMS={1:['Pokój dzienny z jadalnią',39.11,'panele / terakota'],2:['Ane
    for(const q of rc){if(q[1]<=bx0||q[0]>=bx1||-q[2]<=bz0||-q[3]>=bz1)continue;let p=V.map(w=>[w[0],w[2]]);p=clip(p,w=>w[0]-q[0]);if(p.length>=3)p=clip(p,w=>q[1]-w[0]);if(p.length>=3)p=clip(p,w=>w[1]+q[3]);if(p.length>=3)p=clip(p,w=>-q[2]-w[1]);
     for(let i=1;i+1<p.length;i++)tris.push(p[0][0],Y,p[0][1],p[i][0],Y,p[i][1],p[i+1][0],Y,p[i+1][1])}}
   if(!tris.length)return null;let ar=0;for(let i=0;i<tris.length;i+=9){ar+=.5*Math.abs((tris[i+3]-tris[i])*(tris[i+8]-tris[i+2])-(tris[i+6]-tris[i])*(tris[i+5]-tris[i+2]))}
-  const r=window.ROOMS[id],df=ar-r[1];
-  return{kind:'plane',rm:1,n:[0,1,0],d:hy,vn:[0,floor?1:-1,0],tris,N:1000+id*2+(floor?0:1),pt:[pt.x,pt.y,pt.z],label:id+'. '+r[0]+(floor?'':' (sufit)'),note:'Pole zmierzone na geometrii '+(floor?'posadzki':'spodu stropu')+' pokoju '+id+' (łącznie z progami drzwi) · '+(floor?'podłoga: '+r[2]+' · ':'')+'wg rzutu A-1: '+r[1].toFixed(2).replace('.',',')+' m² (różnica '+(df>=0?'+':'−')+Math.abs(df).toFixed(2).replace('.',',')+' m²)'}}}
+  const r=window.ROOMS[id],th=r[1]==null,df=th?0:ar-r[1];
+  return{kind:'plane',rm:1,n:[0,1,0],d:hy,vn:[0,floor?1:-1,0],tris,N:1000+id*2+(floor?0:1),pt:[pt.x,pt.y,pt.z],label:(th?'':id+'. ')+r[0]+(floor?'':' (sufit)'),note:th?'Próg drzwi — mierzony osobno, nie wchodzi w pole sąsiednich pokoi':'Pole zmierzone na geometrii '+(floor?'posadzki':'spodu stropu')+' pokoju '+id+' (bez progów drzwi) · '+(floor?'podłoga: '+r[2]+' · ':'')+'wg rzutu A-1: '+r[1].toFixed(2).replace('.',',')+' m² (różnica '+(df>=0?'+':'−')+Math.abs(df).toFixed(2).replace('.',',')+' m²)'}}}
 
  /* kolizje trybu spaceru: sciany zewnetrzne (czesci bryly na wysokosci ciala), przeszklenia, sciany dzialowe; drzwi wejsciowe i brama garazowa blokuja tylko gdy zamkniete */
  const ext=[],dor=[],gar=[],hsd=[],dd=(x,y,r)=>Math.hypot(Math.max(r[0]-x,0,x-r[2]),Math.max(r[1]-y,0,y-r[3]));
