@@ -1647,17 +1647,21 @@ function pineTex(){const c=document.createElement('canvas');c.width=c.height=128
  sg.updateMatrixWorld(true);window.SHED_GP=lens;
 }
 /* sciezka z przekrojow pni (plastry drewna wbite w ziemie, ok. 2,5 cm nad trawnikiem) przed wejsciem do szopy */
-{const cv=document.createElement('canvas');cv.width=cv.height=256;const c2=cv.getContext('2d');c2.fillStyle='#c79b63';c2.fillRect(0,0,256,256);
- for(let r=122;r>2;r-=3+Math.random()*4){c2.strokeStyle=['#a97a45','#b98a52','#d3aa72','#9d6e3b'][Math.floor(Math.random()*4)];c2.lineWidth=1+Math.random()*1.6;c2.beginPath();c2.ellipse(128+(Math.random()-.5)*2,128+(Math.random()-.5)*2,r,r*(.97+Math.random()*.05),0,0,6.3);c2.stroke()}
- c2.fillStyle='#7d5429';c2.beginPath();c2.arc(128,128,4,0,6.3);c2.fill();c2.strokeStyle='rgba(70,42,18,.55)';c2.lineWidth=1.6;c2.beginPath();c2.moveTo(128,128);c2.lineTo(128+105,128-18);c2.stroke();
- c2.strokeStyle='#5a3d22';c2.lineWidth=7;c2.beginPath();c2.arc(128,128,124,0,6.3);c2.stroke();
+{const cv=document.createElement('canvas');cv.width=cv.height=256;const c2=cv.getContext('2d'),R=Math.random;c2.fillStyle='#4a3e33';c2.fillRect(0,0,256,256);
+ for(let r=122;r>2;r-=2.5+R()*4){c2.strokeStyle=['#3a3027','#554538','#2f261e','#46392d'][Math.floor(R()*4)];c2.lineWidth=.8+R()*1.6;c2.beginPath();c2.ellipse(128+(R()-.5)*2,128+(R()-.5)*2,r,r*(.97+R()*.05),0,0,6.3);c2.stroke()}
+ /* zwietrzale drewno: rozlane ciemne plamy wilgoci, szaro-zielone naloty, brud i otarcia od chodzenia */
+ for(let i=0;i<26;i++){const x=R()*256,y=R()*256,g=c2.createRadialGradient(x,y,0,x,y,18+R()*40);g.addColorStop(0,R()<.5?'rgba(22,17,12,.5)':'rgba(88,92,70,.28)');g.addColorStop(1,'rgba(0,0,0,0)');c2.fillStyle=g;c2.fillRect(0,0,256,256)}
+ for(let i=0;i<500;i++){c2.fillStyle=['rgba(20,15,10,.45)','rgba(110,100,86,.25)','rgba(60,52,40,.4)'][i%3];c2.fillRect(R()*256,R()*256,1+R()*2.5,1+R()*2.5)}
+ c2.strokeStyle='rgba(15,11,8,.8)';c2.lineWidth=1.6;for(let k=0;k<3;k++){const a=R()*6.3;c2.beginPath();c2.moveTo(128,128);c2.lineTo(128+Math.cos(a)*(70+R()*50),128+Math.sin(a)*(70+R()*50));c2.stroke()}
+ c2.fillStyle='#2b221a';c2.beginPath();c2.arc(128,128,4,0,6.3);c2.fill();
+ {const g=c2.createRadialGradient(128,128,95,128,128,128);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(18,14,10,.75)');c2.fillStyle=g;c2.fillRect(0,0,256,256)}
  const tx=new THREE.CanvasTexture(cv);tx.anisotropy=8;
- const bc=document.createElement('canvas');bc.width=64;bc.height=64;const b2=bc.getContext('2d');b2.fillStyle='#5b4330';b2.fillRect(0,0,64,64);for(let i=0;i<40;i++){b2.fillStyle=['#4a3626','#6d5239','#3f2f21'][i%3];b2.fillRect(Math.random()*64,0,1+Math.random()*3,64)}
+ const bc=document.createElement('canvas');bc.width=64;bc.height=64;const b2=bc.getContext('2d');b2.fillStyle='#352b22';b2.fillRect(0,0,64,64);for(let i=0;i<40;i++){b2.fillStyle=['#2a2119','#463a2d','#231b14'][i%3];b2.fillRect(R()*64,0,1+R()*3,64)}
  const bt=new THREE.CanvasTexture(bc);bt.wrapS=bt.wrapT=THREE.RepeatWrapping;
- const top=new THREE.MeshStandardMaterial({map:tx,color:0x8a6a4d,roughness:.85}),side=new THREE.MeshStandardMaterial({map:bt,roughness:.95}),bot=new THREE.MeshStandardMaterial({color:0x5b4330});
+ const top=new THREE.MeshStandardMaterial({map:tx,roughness:.55,metalness:.04}),side=new THREE.MeshStandardMaterial({map:bt,roughness:.95}),bot=new THREE.MeshStandardMaterial({color:0x2e241b});
  const kc=document.createElement('canvas');kc.width=kc.height=64;{const g=kc.getContext('2d'),gr=g.createRadialGradient(32,32,10,32,32,32);gr.addColorStop(0,'rgba(0,0,0,.6)');gr.addColorStop(.55,'rgba(0,0,0,.35)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,64,64)}
  const kt=new THREE.CanvasTexture(kc);
- [[-.80,34.30,.27],[-.30,34.22,.22],[-1.15,33.80,.20],[-.55,33.78,.26],[-.05,33.78,.20],[-.85,33.25,.25],[-.30,33.25,.22],[-1.30,33.30,.18],[-.60,32.75,.20]].forEach(([x,y,r])=>{
+ [[-1.11,33.87,.18],[.12,33.77,.21],[-.78,34.33,.20],[-.67,33.84,.20],[-.77,33.29,.25],[.13,34.24,.20],[-1.34,34.31,.27],[-.28,33.49,.23],[-1.41,33.52,.18],[-.26,34.05,.20]].forEach(([x,y,r])=>{
   const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r*1.03,.12,32),[side,top,bot]);q.position.set(x,G0+.015-.06,-y);q.rotation.y=Math.random()*6.3;q.castShadow=true;q.receiveShadow=true;scene.add(q);
   const b=new THREE.Mesh(new THREE.PlaneGeometry(r*2.7,r*2.7),new THREE.MeshBasicMaterial({map:kt,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2,userData:{lnHid:1}}));b.rotation.x=-Math.PI/2;b.position.set(x,G0+.002,-y);b.renderOrder=1;b.userData.hl=1;scene.add(b)})}   /* cien kontaktowy pod kazdym plastrem (realny cien 1,5 cm elementu jest prawie niewidoczny) */
 FOOT.push([[-2.55,34.723],[.91,34.723],[.91,36.913],[-2.55,36.913]]);   /* obrys domku */
@@ -2520,7 +2524,7 @@ hoseHook(0,.66,-1.05,-Math.PI/2);hoseHook(1,.66,-20.3,-Math.PI/2);
 // kran na słupku (dodatkowy punkt wody) wystający z paska żwirowego przed szopą, na lewo od drzwi: rura Ø40 mm, h 70 cm, mosiężna głowica, wąż
 {const g=new THREE.Group(),br=M(0xb8995a,{roughness:.35,metalness:.85}),gz=M(0x9aa0a6,{roughness:.45,metalness:.6}),hd=M(0x1c1d20,{roughness:.6}),cy=(r,h,px,py,pz,m,rx)=>{const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,14),m);q.position.set(px,py,pz);q.rotation.x=rx||0;q.castShadow=true;g.add(q)};
  cy(.02,.7,0,.35,0,gz);cy(.04,.03,0,.015,0,gz);cy(.027,.08,0,.74,0,br);cy(.014,.1,0,.74,.05,br,Math.PI/2);cy(.012,.04,0,.71,.1,br);cy(.01,.05,0,.79,0,br);cy(.03,.012,0,.82,0,hd);cy(.021,.05,0,.69,.1,br);
- {const pts=[[0,.67,.1],[0,.58,.12],[0,.34,.2],[.02,.1,.3],[.1,.02,.42],[.3,.02,.52],[.5,.02,.4],[.45,.02,.2],[.25,.02,.15],[.15,.02,.3]].map(p=>new THREE.Vector3(p[0],p[1],p[2])),hz=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,false,'centripetal'),70,.0125,8,false),M(0x2f7a3c,{roughness:.55}));hz.castShadow=true;g.add(hz)}
+ {const pts=[[0,.67,.1],[0,.58,.12],[0,.34,.2],[-.02,.1,.3],[-.1,.02,.42],[-.3,.02,.52],[-.5,.02,.4],[-.45,.02,.2],[-.25,.02,.15],[-.15,.02,.3]].map(p=>new THREE.Vector3(p[0],p[1],p[2])),hz=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,false,'centripetal'),70,.0125,8,false),M(0x2f7a3c,{roughness:.55}));hz.castShadow=true;g.add(hz)}
  g.position.set(-1.87,-.28,-34.673);scene.add(g);g.traverse(o=>{if(o.isMesh)statics.push(o)})}
 // gniazdo siłowe CEE 16 A / 400 V (5-biegunowe, czerwone, IP44, natynkowe) na krótkim załamaniu ściany (kotłownia, y 8,8, x 0–1) obok pompy ciepła (K10), x 0,12, na wys. 1,0 m
 {const g=new THREE.Group(),rd=M(0xc1272d,{roughness:.5}),bk=M(0x1c1d20,{roughness:.6}),mt=M(0xd9dcdf,{roughness:.4,metalness:.6}),bx=(w,h,d,x,y,z,m,rx)=>{const q=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);q.position.set(x,y,z);q.rotation.x=rx||0;q.castShadow=true;g.add(q)};
