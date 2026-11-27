@@ -1165,23 +1165,40 @@ function wallSolid(B,MT,NM,KY){MT=MT||wallMat;const R=v=>Math.round(v*1e6)/1e6,c
 /* ===== POMIESZCZENIA wg rzutu parteru A-1 (zestawienie pomieszczen): podzial podlog i sufitow na pokoje; pole w trybie pomiaru powierzchni = pole z projektu =====
    Podzial liczony z geometrii scian dzialowych (flood-fill na siatce 3 cm; otwory drzwiowe zamkniete nadprozami). Przestrzen otwarta (salon + aneks + korytarz) dzielona prostymi: salon = x >= 9,35 (lico sciany nad salonem), aneks = x >= 5,95 i y >= 8,83 (dobrane tak, by pola zgadzaly sie z tabela), korytarz = reszta. */
 window.ROOMS={1:['Pokój dzienny z jadalnią',39.11,'panele / terakota'],2:['Aneks kuchenny',13.44,'terakota'],3:['Pokój',15.62,'panele'],4:['Pokój',11.83,'panele'],5:['Pokój',14.15,'panele'],6:['Pokój',7.57,'panele'],7:['Garderoba',4.35,'panele'],8:['Łazienka',5.37,'terakota'],9:['Łazienka',4.99,'terakota'],10:['Spiżarka',1.40,'terakota'],11:['Korytarz',21.79,'terakota'],12:['Wiatrołap',8.66,'terakota'],13:['Pomieszczenie techniczne',6.28,'terakota'],14:['Garaż',37.02,'terakota']};
-{const R=.03,NX=Math.ceil(15/R),NY=Math.ceil(21.5/R);let RM=null;
- const build=()=>{const fr=new Uint8Array(NX*NY),fl=(r,v)=>{const x0=Math.round(r[0]/R),x1=Math.round(r[1]/R),y0=Math.round(r[2]/R),y1=Math.round(r[3]/R);for(let i=x0;i<x1;i++)for(let j=y0;j<y1;j++)fr[i*NY+j]=v};
+{const R=.01,NX=Math.ceil(15/R),NY=Math.ceil(21.5/R);let RM=null;
+ const build=()=>{const N=NX*NY,fr=new Uint8Array(N),fl=(r,v)=>{const x0=Math.round(r[0]/R),x1=Math.round(r[1]/R),y0=Math.round(r[2]/R),y1=Math.round(r[3]/R);for(let i=x0;i<x1;i++)for(let j=y0;j<y1;j++)fr[i*NY+j]=v};
   INN.forEach(r=>fl(r,1));IW.concat(window.NADP).forEach(r=>fl(r,0));
-  const lb=new Int16Array(NX*NY),stk=[];let nl=0;
-  for(let s0=0;s0<NX*NY;s0++){if(!fr[s0]||lb[s0])continue;nl++;stk.push(s0);lb[s0]=nl;while(stk.length){const c=stk.pop(),i=(c/NY)|0,j=c-i*NY;for(const[d1,d2]of[[1,0],[-1,0],[0,1],[0,-1]]){const a=i+d1,b=j+d2;if(a<0||b<0||a>=NX||b>=NY)continue;const n=a*NY+b;if(fr[n]&&!lb[n]){lb[n]=nl;stk.push(n)}}}}
+  const lb=new Int16Array(N),stk=new Int32Array(N);let nl=0;
+  for(let s0=0;s0<N;s0++){if(!fr[s0]||lb[s0])continue;nl++;let sp=0;stk[sp++]=s0;lb[s0]=nl;while(sp){const c=stk[--sp],i=(c/NY)|0,j=c-i*NY;
+    if(i+1<NX){const n=c+NY;if(fr[n]&&!lb[n]){lb[n]=nl;stk[sp++]=n}}if(i>0){const n=c-NY;if(fr[n]&&!lb[n]){lb[n]=nl;stk[sp++]=n}}if(j+1<NY){const n=c+1;if(fr[n]&&!lb[n]){lb[n]=nl;stk[sp++]=n}}if(j>0){const n=c-1;if(fr[n]&&!lb[n]){lb[n]=nl;stk[sp++]=n}}}}
   const SEED={2:[8.1,12.1],3:[6.98,18.93],4:[2.88,15.25],5:[7.64,15.6],6:[2.88,11.8],7:[2.88,20.14],8:[2.88,18.35],9:[2.88,9.3],10:[6.4,9.58],12:[8.02,4.84],13:[2.02,7.58],14:[3.5,3.5]},OPEN=lb[Math.floor(11.9/R)*NY+Math.floor(5/R)],map={};
   Object.keys(SEED).forEach(k=>{const p=SEED[k],l=lb[Math.floor(p[0]/R)*NY+Math.floor(p[1]/R)];if(l&&l!==OPEN)map[l]=+k});
-  const rm=new Uint8Array(NX*NY);
-  for(let i=0;i<NX;i++)for(let j=0;j<NY;j++){const l=lb[i*NY+j];if(!l)continue;if(l===OPEN){const x=(i+.5)*R,y=(j+.5)*R;rm[i*NY+j]=x>=9.35?1:(x>=5.95&&y>=8.83?2:11)}else rm[i*NY+j]=map[l]||0}
+  const rm=new Uint8Array(N);
+  for(let i=0;i<NX;i++){const x=(i+.5)*R;for(let j=0;j<NY;j++){const l=lb[i*NY+j];if(!l)continue;if(l===OPEN){const y=(j+.5)*R;rm[i*NY+j]=x>=9.35?1:(x>=5.95&&y>=8.83?2:11)}else rm[i*NY+j]=map[l]||0}}
+  /* progi (otwory drzwiowe): posadzka i strop w otworze naleza do mniejszego z dwoch sasiednich pokoi - dzieki temu podloga pokoju jest ciagla az do ościeży */
+  const at=(x,y)=>{const i=Math.floor(x/R),j=Math.floor(y/R);return i<0||j<0||i>=NX||j>=NY?0:rm[i*NY+j]},rr=id=>id?window.ROOMS[id][1]:1e9;
+  window.NADP.forEach(r=>{const cx=(r[0]+r[1])/2,cy=(r[2]+r[3])/2,tx=(r[1]-r[0])<(r[3]-r[2]);const a=tx?at(r[0]-.05,cy):at(cx,r[2]-.05),b=tx?at(r[1]+.05,cy):at(cx,r[3]+.05),id=rr(a)<=rr(b)?a:b;if(!id)return;
+   const x0=Math.round(r[0]/R),x1=Math.round(r[1]/R),y0=Math.round(r[2]/R),y1=Math.round(r[3]/R);for(let i=x0;i<x1;i++)for(let j=y0;j<y1;j++)rm[i*NY+j]=id});
   return rm};
- window.roomAt=(x,y)=>{if(!RM)RM=build();const i0=Math.floor(x/R),j0=Math.floor(y/R);for(let r=0;r<=15;r++)for(let di=-r;di<=r;di++)for(let dj=-r;dj<=r;dj++){if(Math.max(Math.abs(di),Math.abs(dj))!==r)continue;const i=i0+di,j=j0+dj;if(i<0||j<0||i>=NX||j>=NY)continue;const v=RM[i*NY+j];if(v)return v}return 0};
+ window.roomAt=(x,y)=>{if(!RM)RM=build();const i0=Math.floor(x/R),j0=Math.floor(y/R);for(let r=0;r<=45;r++)for(let di=-r;di<=r;di++)for(let dj=-r;dj<=r;dj++){if(Math.max(Math.abs(di),Math.abs(dj))!==r)continue;const i=i0+di,j=j0+dj;if(i<0||j<0||i>=NX||j>=NY)continue;const v=RM[i*NY+j];if(v)return v}return 0};
  window.roomAtS=(x,y)=>{if(!RM)RM=build();const i=Math.floor(x/R),j=Math.floor(y/R);return i<0||j<0||i>=NX||j>=NY?0:RM[i*NY+j]};
  window.roomAreaGrid=()=>{if(!RM)RM=build();const A={};for(let k=0;k<RM.length;k++)if(RM[k])A[RM[k]]=(A[RM[k]]||0)+R*R;return A};
- /* powierzchnia pomieszczenia id jako obiekt wyniku narzedzia pomiarowego (podswietlenie = ksztalt pokoju, pole = z zestawienia projektu) */
- window.roomSurf=(pt,floor)=>{const id=window.roomAt(pt.x,-pt.z);if(!id)return null;const Y=pt.y+(floor?.004:-.004),tris=[];
-  for(let i=0;i<NX;i++){let j=0;while(j<NY){if(RM[i*NY+j]!==id){j++;continue}const j0=j;while(j<NY&&RM[i*NY+j]===id)j++;const x0=i*R,x1=(i+1)*R,y0=j0*R,y1=j*R;tris.push(x0,Y,-y0,x1,Y,-y0,x1,Y,-y1,x0,Y,-y0,x1,Y,-y1,x0,Y,-y1)}}
-  const r=window.ROOMS[id];return{kind:'plane',plot:1,n:[0,1,0],d:Y,vn:[0,floor?1:-1,0],tris,N:1000+id*2+(floor?0:1),pt:[pt.x,pt.y,pt.z],area:r[1],label:id+'. '+r[0]+(floor?'':' (sufit)'),note:'Pomieszczenie '+id+': '+r[0].toLowerCase()+' · '+(floor?'podłoga: '+r[2]:'sufit')+' · pole wg rzutu parteru A-1'}}}
+ /* prostokaty (plan x0,x1,y0,y1) skladajace sie na pokoj id: biegi komorek scalone miedzy kolumnami */
+ const RC={};const rects=id=>{if(RC[id])return RC[id];if(!RM)RM=build();const out=[];let open={};
+  for(let i=0;i<NX;i++){const nx={};let j=0;while(j<NY){if(RM[i*NY+j]!==id){j++;continue}const j0=j;while(j<NY&&RM[i*NY+j]===id)j++;const k=j0+'_'+j,o=open[k];if(o){o[1]=(i+1)*R;nx[k]=o}else{const q=[i*R,(i+1)*R,j0*R,j*R];out.push(q);nx[k]=q}}open=nx}
+  return RC[id]=out};
+ /* powierzchnia pomieszczenia id jako obiekt wyniku narzedzia pomiarowego: pole = ZMIERZONE z geometrii siatki posadzki (lub spodu stropu) wewnatrz pokoju; pole z zestawienia projektu podawane obok jako odniesienie */
+ const HZ={};const horiz=(name,up)=>{const k=name+up;if(HZ[k])return HZ[k];const out=[];scene.traverse(o=>{if(!o.isMesh||o.name!==name)return;o.updateMatrixWorld(true);const g=o.geometry,P=g.attributes.position,ix=g.index?g.index.array:null,T=ix?ix.length/3:P.count/3,v=new THREE.Vector3();
+   for(let t=0;t<T;t++){const V=[0,1,2].map(q=>{const i=ix?ix[3*t+q]:3*t+q;return v.set(P.getX(i),P.getY(i),P.getZ(i)).applyMatrix4(o.matrixWorld).toArray()});
+    const e1=[V[1][0]-V[0][0],V[1][2]-V[0][2]],e2=[V[2][0]-V[0][0],V[2][2]-V[0][2]],ny=e1[1]*e2[0]-e1[0]*e2[1];if(Math.abs(V[1][1]-V[0][1])>1e-4||Math.abs(V[2][1]-V[0][1])>1e-4||Math.abs(ny)<1e-9)continue;if((ny>0)!==up)continue;out.push(V)}});return HZ[k]=out};
+ window.roomSurf=(pt,floor)=>{const id=window.roomAt(pt.x,-pt.z);if(!id)return null;const rc=rects(id),src=horiz(floor?'podlogi':'strop',floor),tris=[],off=floor?.004:-.004,hy=pt.y;
+  const clip=(poly,keep)=>{const o=[];for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length],fa=keep(a),fb=keep(b);if(fa>=0)o.push(a);if((fa>=0)!==(fb>=0)){const r=fa/(fa-fb);o.push([a[0]+(b[0]-a[0])*r,a[1]+(b[1]-a[1])*r])}}return o};
+  for(const V of src){const bx0=Math.min(V[0][0],V[1][0],V[2][0]),bx1=Math.max(V[0][0],V[1][0],V[2][0]),bz0=Math.min(V[0][2],V[1][2],V[2][2]),bz1=Math.max(V[0][2],V[1][2],V[2][2]),Y=V[0][1]+off;
+   for(const q of rc){if(q[1]<=bx0||q[0]>=bx1||-q[2]<=bz0||-q[3]>=bz1)continue;let p=V.map(w=>[w[0],w[2]]);p=clip(p,w=>w[0]-q[0]);if(p.length>=3)p=clip(p,w=>q[1]-w[0]);if(p.length>=3)p=clip(p,w=>w[1]+q[3]);if(p.length>=3)p=clip(p,w=>-q[2]-w[1]);
+    for(let i=1;i+1<p.length;i++)tris.push(p[0][0],Y,p[0][1],p[i][0],Y,p[i][1],p[i+1][0],Y,p[i+1][1])}}
+  if(!tris.length)return null;let ar=0;for(let i=0;i<tris.length;i+=9){ar+=.5*Math.abs((tris[i+3]-tris[i])*(tris[i+8]-tris[i+2])-(tris[i+6]-tris[i])*(tris[i+5]-tris[i+2]))}
+  const r=window.ROOMS[id],df=ar-r[1];
+  return{kind:'plane',rm:1,n:[0,1,0],d:hy,vn:[0,floor?1:-1,0],tris,N:1000+id*2+(floor?0:1),pt:[pt.x,pt.y,pt.z],label:id+'. '+r[0]+(floor?'':' (sufit)'),note:'Pole zmierzone na geometrii '+(floor?'posadzki':'spodu stropu')+' pokoju '+id+' (łącznie z progami drzwi) · '+(floor?'podłoga: '+r[2]+' · ':'')+'wg rzutu A-1: '+r[1].toFixed(2).replace('.',',')+' m² (różnica '+(df>=0?'+':'−')+Math.abs(df).toFixed(2).replace('.',',')+' m²)'}}}
 
  /* kolizje trybu spaceru: sciany zewnetrzne (czesci bryly na wysokosci ciala), przeszklenia, sciany dzialowe; drzwi wejsciowe i brama garazowa blokuja tylko gdy zamkniete */
  const ext=[],dor=[],gar=[],hsd=[],dd=(x,y,r)=>Math.hypot(Math.max(r[0]-x,0,x-r[2]),Math.max(r[1]-y,0,y-r[3]));
@@ -3321,7 +3338,7 @@ const MTC=(()=>{
   if(st.kind==='area'&&s.kind==='plane'&&s.n&&s.n[1]>.99&&s.pt&&s.pt[1]<-.28&&s.pt[1]>-.36&&window.__GARD&&inPoly(s.pt[0],-s.pt[2],window.__GARD)){s=polySurf(window.__GARD,-.288,s.pt)}else if(st.kind==='area'&&s.kind==='plane'&&s.n&&s.n[1]>.99&&s.pt&&Math.abs(s.pt[1]+.34)<.012&&typeof PL!=='undefined'&&inPoly(s.pt[0],-s.pt[2],PL)){s=plotSurf(s.pt)}   /* ogrod przed domem: raycast trafia w niewidoczny obrys dzialki (y -0,3045), a nie w kore (znacznik plant), wiec ogrod rozpoznajemy po punkcie trafienia */   /* trawnik dzialki = cala dzialka w jej granicach (nie pas trawy wraz z poboczami) */
   if(st.kind==='area'&&mode!=='obj'&&s.kind==='plane'&&!s.plot&&p.h.object&&p.h.face){let ws=null;try{ws=wallSurf(p.h,p.dir)||jambSurf(p.h,p.dir,s)}catch(e){console.warn(e)}if(ws)s=ws}   /* sciany pokoi */
   if(st.kind==='area'&&mode!=='obj'&&window.roomSurf&&p.h.object&&(p.h.object.name==='podlogi'||p.h.object.name==='strop')&&p.h.face){const ny=p.h.face.normal.y,fl=p.h.object.name==='podlogi';if((fl&&ny>.9)||(!fl&&ny<-.9)){const rs=window.roomSurf(p.h.point,fl);if(rs)s=rs}}   /* podlogi i sufity: pole calego pokoju wg planu zamiast jednej plyty calego domu */
-  if(st.kind==='area'&&mode!=='obj'&&window.roomSurf&&p.h.object&&p.h.object.name!=='strop'&&p.dir&&p.dir.y>.05&&Math.abs(p.h.point.y-2.7)<.004&&!s.plot){const rs=window.roomSurf(p.h.point,false);if(rs&&rs.area)s=rs}   /* trafienie w spod stropu przez zbiezna scianke/bryle (rrowne y=2.70) tez liczone jako sufit */
+  if(st.kind==='area'&&mode!=='obj'&&window.roomSurf&&p.h.object&&p.h.object.name!=='strop'&&p.dir&&p.dir.y>.05&&Math.abs(p.h.point.y-2.7)<.004&&!s.plot&&!s.rm){const rs=window.roomSurf(p.h.point,false);if(rs)s=rs}   /* trafienie w spod stropu przez zbiezna scianke/bryle (rrowne y=2.70) tez liczone jako sufit */
    if(st.kind==='area'){s.area=s.plot?s.area:triArea(s.tris);const key=s.kind+'|'+s.N+'|'+s.area.toFixed(5);s.key=key;if(st.add){if(!st.areas.some(q=>q.key===key))st.areas.push(s)}else st.areas=[s];st.warn='';render();redraw();return}
   if(st.A&&st.B){st.A=st.B=st.res=null}
   if(!st.A){st.A=s;st.res=null}else{
