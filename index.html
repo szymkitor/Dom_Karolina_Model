@@ -1176,6 +1176,7 @@ window.ROOMS={1:['Pokój dzienny z jadalnią',39.11,'panele / terakota'],2:['Ane
   for(let i=0;i<NX;i++)for(let j=0;j<NY;j++){const l=lb[i*NY+j];if(!l)continue;if(l===OPEN){const x=(i+.5)*R,y=(j+.5)*R;rm[i*NY+j]=x>=9.35?1:(x>=5.95&&y>=8.83?2:11)}else rm[i*NY+j]=map[l]||0}
   return rm};
  window.roomAt=(x,y)=>{if(!RM)RM=build();const i0=Math.floor(x/R),j0=Math.floor(y/R);for(let r=0;r<=15;r++)for(let di=-r;di<=r;di++)for(let dj=-r;dj<=r;dj++){if(Math.max(Math.abs(di),Math.abs(dj))!==r)continue;const i=i0+di,j=j0+dj;if(i<0||j<0||i>=NX||j>=NY)continue;const v=RM[i*NY+j];if(v)return v}return 0};
+ window.roomAtS=(x,y)=>{if(!RM)RM=build();const i=Math.floor(x/R),j=Math.floor(y/R);return i<0||j<0||i>=NX||j>=NY?0:RM[i*NY+j]};
  window.roomAreaGrid=()=>{if(!RM)RM=build();const A={};for(let k=0;k<RM.length;k++)if(RM[k])A[RM[k]]=(A[RM[k]]||0)+R*R;return A};
  /* powierzchnia pomieszczenia id jako obiekt wyniku narzedzia pomiarowego (podswietlenie = ksztalt pokoju, pole = z zestawienia projektu) */
  window.roomSurf=(pt,floor)=>{const id=window.roomAt(pt.x,-pt.z);if(!id)return null;const Y=pt.y+(floor?.004:-.004),tris=[];
@@ -3271,10 +3272,54 @@ const MTC=(()=>{
  function polySurf(P,Y,pt){const idx=THREE.ShapeUtils.triangulateShape(P.map(p=>new THREE.Vector2(p[0],p[1])),[]),tris=[];idx.forEach(t=>t.forEach(k=>tris.push(P[k][0],Y,-P[k][1])));let a=0;for(let i=0;i<P.length;i++){const p=P[i],q=P[(i+1)%P.length];a+=p[0]*q[1]-q[0]*p[1]}return{kind:'plane',plot:1,n:[0,1,0],d:Y,vn:[0,1,0],tris,N:idx.length,pt:pt,area:Math.abs(a)/2}}
  function plotSurf(pt){const Y=-.34,idx=THREE.ShapeUtils.triangulateShape(PL.map(p=>new THREE.Vector2(p[0],p[1])),[]),tris=[];idx.forEach(t=>t.forEach(k=>tris.push(PL[k][0],Y,-PL[k][1])));
   let a=0;for(let i=0;i<PL.length;i++){const p=PL[i],q=PL[(i+1)%PL.length];a+=p[0]*q[1]-q[0]*p[1]}return{kind:'plane',plot:1,n:[0,1,0],d:Y,vn:[0,1,0],tris,N:idx.length,pt:pt,area:Math.abs(a)/2}}
+ /* sciana wewnetrzna pokoju jako jedna ciagla powierzchnia: wszystkie wspolplaszczyznowe trojkaty scian (bryla_scian + sciany_dzialowe), przyciete do zasiegu danego pokoju (wg siatki pomieszczen) */
+ const WALLN={bryla_scian:1,sciany_dzialowe:1};let WALLM=null;
+ /* geometria plaszczyzny pionowej: normalna do obserwatora vn, parametr u wzdluz sciany, predykat "przed sciana (5 cm) jest pokoj id" */
+ function wallPlane(h,dir){const mesh=h.object;if(!WALLN[mesh.name]||!window.roomAtS)return null;mesh.updateMatrixWorld(true);const W0=worldPos(mesh),ix0=mesh.geometry.index?mesh.geometry.index.array:null,f=h.faceIndex;
+  const A=[0,1,2].map(k=>{const v=ix0?ix0[3*f+k]:3*f+k;return[W0[3*v],W0[3*v+1],W0[3*v+2]]});
+  let n=MTC.cross(MTC.sub(A[1],A[0]),MTC.sub(A[2],A[0]));const nl=Math.hypot(n[0],n[1],n[2]);if(nl<1e-12)return null;n=[n[0]/nl,n[1]/nl,n[2]/nl];if(Math.abs(n[1])>.02)return null;
+  const hl=Math.hypot(n[0],n[2]);n=[n[0]/hl,0,n[2]/hl];const vn=(n[0]*dir.x+n[2]*dir.z)>0?[-n[0],0,-n[2]]:n,hp=[h.point.x,h.point.y,h.point.z];
+  const d=vn[0]*hp[0]+vn[2]*hp[2],tx=-vn[2],tz=vn[0],R0u=tx*hp[0]+tz*hp[2],base=[hp[0]-tx*R0u,hp[2]-tz*R0u];
+  const room=u=>window.roomAtS(base[0]+tx*u+vn[0]*.05,-(base[1]+tz*u+vn[2]*.05));
+  return{vn,hp,d,tx,tz,room,id:room(R0u)}}
+ /* przyciecie listy trojkatow (plaska tablica) do przedzialow u, w ktorych pred(room(u)) jest prawdziwe, oraz do zakresu wysokosci [y0,y1] */
+ function wallClip(WP,T,pred,y0,y1){const{tx,tz,room}=WP,out=[],inR=u=>pred(room(u));
+  const clip=(poly,keep)=>{const o=[];for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length],fa=keep(a),fb=keep(b);if(fa>=0)o.push(a);if((fa>=0)!==(fb>=0)){const r=fa/(fa-fb);o.push([a[0]+(b[0]-a[0])*r,a[1]+(b[1]-a[1])*r,a[2]+(b[2]-a[2])*r])}}return o};
+  for(let q=0;q<T.length;q+=9){const P=[[T[q],T[q+1],T[q+2]],[T[q+3],T[q+4],T[q+5]],[T[q+6],T[q+7],T[q+8]]];
+   const us=P.map(p=>tx*p[0]+tz*p[2]),u0=Math.min(...us),u1=Math.max(...us);if(u1-u0<1e-6)continue;
+   const iv=[];let prev=inR(u0),st0=prev?u0:null,uPrev=u0;const N=Math.max(1,Math.ceil((u1-u0)/.015));
+   for(let k=1;k<=N;k++){const u=u0+(u1-u0)*k/N,cur=inR(u);if(cur!==prev){let a=uPrev,b=u;for(let z=0;z<14;z++){const mid=(a+b)/2;if(inR(mid)===prev)a=mid;else b=mid}const ub=(a+b)/2;if(prev)iv.push([st0,ub]);else st0=ub;prev=cur}uPrev=u}
+   if(prev)iv.push([st0,u1]);
+   for(const[ua,ub]of iv){let poly=P.map(p=>p.slice());poly=clip(poly,p=>tx*p[0]+tz*p[2]-ua);if(poly.length>=3)poly=clip(poly,p=>ub-(tx*p[0]+tz*p[2]));
+    if(y0!=null){if(poly.length>=3)poly=clip(poly,p=>p[1]-y0);if(poly.length>=3)poly=clip(poly,p=>y1-p[1])}
+    for(let i=1;i+1<poly.length;i++)out.push(...poly[0],...poly[i],...poly[i+1])}}
+  return out}
+ function wallSurf(h,dir){const WP=wallPlane(h,dir);if(!WP||!WP.id)return null;const{vn,hp,d,id}=WP,FY=(id===13||id===14)?-.25:0;   /* sciana tylko od posadzki do spodu stropu (bryla scian siega od fundamentu do stropu pietra) */
+  if(!WALLM){WALLM=[];scene.traverse(o=>{if(o.isMesh&&WALLN[o.name])WALLM.push(o)})}
+  const cand=[];
+  for(const m of WALLM){m.updateMatrixWorld(true);const W=worldPos(m),g=m.geometry,ix=g.index?g.index.array:null,T=ix?ix.length/3:g.attributes.position.count/3;
+   for(let t=0;t<T;t++){const P=[0,1,2].map(k=>{const v=ix?ix[3*t+k]:3*t+k;return[W[3*v],W[3*v+1],W[3*v+2]]});
+    if(P.some(p=>Math.abs(p[0]*vn[0]+p[2]*vn[2]-d)>.004))continue;
+    const c=MTC.cross(MTC.sub(P[1],P[0]),MTC.sub(P[2],P[0])),cl=Math.hypot(c[0],c[1],c[2]);if(cl<1e-9)continue;if((c[0]*vn[0]+c[2]*vn[2])/cl<.999)continue;
+    cand.push(...P[0],...P[1],...P[2])}}
+  const tris=wallClip(WP,cand,r=>r===id,FY,2.7);if(!tris.length)return null;const r=window.ROOMS[id];
+  return{kind:'plane',n:vn.slice(),d,vn:vn.slice(),tris,N:5000+id*100+Math.round(d*10),pt:hp,label:id+'. '+r[0]+' · ściana',note:'Ściana pomieszczenia '+id+' ('+r[0].toLowerCase()+') jako jedna ciągła płaszczyzna, tylko w obrębie tego pokoju'}}
+ /* wnęki / ościeża (przed plaszczyzna nie ma pokoju): zwykly platek wspolplaszczyznowy, ale przyciety do czesci, przed ktora jest otwor/wnęka, a nie pokoj lub elewacja */
+ /* skladowa spojna po wspolnych krawedziach (z T-spoinami: krawedzie zachodzace na siebie), zawierajaca punkt hp; sasiedztwo tylko w wierzcholku sie nie liczy */
+ function edgeComp(T,hp){const n=T.length/9;if(n<2||n>700)return T;const E=[];for(let t=0;t<n;t++){const q=t*9;for(let k=0;k<3;k++){const a=[T[q+3*k],T[q+3*k+1],T[q+3*k+2]],b=[T[q+3*((k+1)%3)],T[q+3*((k+1)%3)+1],T[q+3*((k+1)%3)+2]];E.push([t,a,b])}}
+  const par=Array.from({length:n},(_,i)=>i),fd=x=>{while(par[x]!==x){par[x]=par[par[x]];x=par[x]}return x};
+  const ov=(e,f)=>{const d=MTC.sub(e[2],e[1]),L=Math.hypot(d[0],d[1],d[2]);if(L<1e-6)return false;const u=[d[0]/L,d[1]/L,d[2]/L];const ln=(p)=>{const w=MTC.sub(p,e[1]),t=MTC.dot(w,u),r=MTC.sub(w,MTC.mul(u,t));return[t,Math.hypot(r[0],r[1],r[2])]};const A=ln(f[1]),B=ln(f[2]);if(A[1]>.0015||B[1]>.0015)return false;const lo=Math.max(0,Math.min(A[0],B[0])),hi=Math.min(L,Math.max(A[0],B[0]));return hi-lo>.002};
+  for(let i=0;i<E.length;i++)for(let j=i+1;j<E.length;j++){if(E[i][0]===E[j][0])continue;if(fd(E[i][0])===fd(E[j][0]))continue;if(ov(E[i],E[j]))par[fd(E[i][0])]=fd(E[j][0])}
+  let best=-1,bd=1e9;for(let t=0;t<n;t++){const q=t*9,cx=(T[q]+T[q+3]+T[q+6])/3,cy=(T[q+1]+T[q+4]+T[q+7])/3,cz=(T[q+2]+T[q+5]+T[q+8])/3,dd=Math.hypot(cx-hp[0],cy-hp[1],cz-hp[2]);if(dd<bd){bd=dd;best=t}}
+  const r=fd(best),o=[];for(let t=0;t<n;t++)if(fd(t)===r)for(let k=0;k<9;k++)o.push(T[t*9+k]);return o}
+ function jambSurf(h,dir,s){if(!s||s.kind!=='plane'||!s.tris||!s.tris.length||!WALLN[h.object.name])return null;let tris=s.tris;const WP=wallPlane(h,dir);if(WP){if(WP.id)return null;const c=wallClip(WP,tris,r=>r===0);if(c.length)tris=c}
+  const hp=[h.point.x,h.point.y,h.point.z];tris=edgeComp(tris,hp);if(tris.length===s.tris.length&&Math.abs(triArea(tris)-triArea(s.tris))<1e-6)return null;return Object.assign({},s,{tris,N:s.N+'j'+tris.length})}
+
  function onPick(cx,cy,mode){mode=mode||st.once||st.mode;if(st.kind==='area'&&mode==='edge')mode='plane';st.once=null;st.warn='';const p=pick(cx,cy);if(!p){reset();return}   /* klik w pustke (niebo / poza plansze) = reset wyboru */
   let s;try{s=analyzeHit(p.h,p.dir,mode)}catch(e){console.warn(e);s={err:'Nie udało się przeanalizować tej powierzchni.'}}
   if(s.err){st.warn=s.err;render();return}
   if(st.kind==='area'&&s.kind==='plane'&&s.n&&s.n[1]>.99&&s.pt&&s.pt[1]<-.28&&s.pt[1]>-.36&&window.__GARD&&inPoly(s.pt[0],-s.pt[2],window.__GARD)){s=polySurf(window.__GARD,-.288,s.pt)}else if(st.kind==='area'&&s.kind==='plane'&&s.n&&s.n[1]>.99&&s.pt&&Math.abs(s.pt[1]+.34)<.012&&typeof PL!=='undefined'&&inPoly(s.pt[0],-s.pt[2],PL)){s=plotSurf(s.pt)}   /* ogrod przed domem: raycast trafia w niewidoczny obrys dzialki (y -0,3045), a nie w kore (znacznik plant), wiec ogrod rozpoznajemy po punkcie trafienia */   /* trawnik dzialki = cala dzialka w jej granicach (nie pas trawy wraz z poboczami) */
+  if(st.kind==='area'&&mode!=='obj'&&s.kind==='plane'&&!s.plot&&p.h.object&&p.h.face){let ws=null;try{ws=wallSurf(p.h,p.dir)||jambSurf(p.h,p.dir,s)}catch(e){console.warn(e)}if(ws)s=ws}   /* sciany pokoi */
   if(st.kind==='area'&&mode!=='obj'&&window.roomSurf&&p.h.object&&(p.h.object.name==='podlogi'||p.h.object.name==='strop')&&p.h.face){const ny=p.h.face.normal.y,fl=p.h.object.name==='podlogi';if((fl&&ny>.9)||(!fl&&ny<-.9)){const rs=window.roomSurf(p.h.point,fl);if(rs)s=rs}}   /* podlogi i sufity: pole calego pokoju wg planu zamiast jednej plyty calego domu */
   if(st.kind==='area'&&mode!=='obj'&&window.roomSurf&&p.h.object&&p.h.object.name!=='strop'&&p.dir&&p.dir.y>.05&&Math.abs(p.h.point.y-2.7)<.004&&!s.plot){const rs=window.roomSurf(p.h.point,false);if(rs&&rs.area)s=rs}   /* trafienie w spod stropu przez zbiezna scianke/bryle (rrowne y=2.70) tez liczone jako sufit */
    if(st.kind==='area'){s.area=s.plot?s.area:triArea(s.tris);const key=s.kind+'|'+s.N+'|'+s.area.toFixed(5);s.key=key;if(st.add){if(!st.areas.some(q=>q.key===key))st.areas.push(s)}else st.areas=[s];st.warn='';render();redraw();return}
