@@ -1661,7 +1661,7 @@ function pineTex(){const c=document.createElement('canvas');c.width=c.height=128
  const top=new THREE.MeshStandardMaterial({map:tx,roughness:.55,metalness:.04}),side=new THREE.MeshStandardMaterial({map:bt,roughness:.95}),bot=new THREE.MeshStandardMaterial({color:0x2e241b});
  const kc=document.createElement('canvas');kc.width=kc.height=64;{const g=kc.getContext('2d'),gr=g.createRadialGradient(32,32,10,32,32,32);gr.addColorStop(0,'rgba(0,0,0,.6)');gr.addColorStop(.55,'rgba(0,0,0,.35)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,64,64)}
  const kt=new THREE.CanvasTexture(kc);
- [[-1.11,33.87,.18],[.12,33.77,.21],[-.78,34.33,.20],[-.67,33.84,.20],[-.77,33.29,.25],[.13,34.24,.20],[-1.34,34.31,.27],[-.28,33.49,.23],[-1.41,33.52,.18],[-.26,34.05,.20]].forEach(([x,y,r])=>{
+ [[-1.18,34.25,.33],[-.46,34.25,.33],[-.82,33.62,.34],[-.55,32.98,.30],[-.10,32.40,.28],[.45,31.85,.26]].forEach(([x,y,r])=>{
   const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r*1.03,.12,32),[side,top,bot]);q.position.set(x,G0+.015-.06,-y);q.rotation.y=Math.random()*6.3;q.castShadow=true;q.receiveShadow=true;scene.add(q);
   const b=new THREE.Mesh(new THREE.PlaneGeometry(r*2.7,r*2.7),new THREE.MeshBasicMaterial({map:kt,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2,userData:{lnHid:1}}));b.rotation.x=-Math.PI/2;b.position.set(x,G0+.002,-y);b.renderOrder=1;b.userData.hl=1;scene.add(b)})}   /* cien kontaktowy pod kazdym plastrem (realny cien 1,5 cm elementu jest prawie niewidoczny) */
 FOOT.push([[-2.55,34.723],[.91,34.723],[.91,36.913],[-2.55,36.913]]);   /* obrys domku */
