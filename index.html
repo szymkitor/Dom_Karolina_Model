@@ -1158,7 +1158,7 @@ function wallSolid(B,MT,NM,KY){MT=MT||wallMat;const R=v=>Math.round(v*1e6)/1e6,c
  FB.push([1.16,6.16,ZB,ZG,-.45,-.24]);
  /* nadproza nad drzwiami wewnetrznymi (wg rzutu: otwory w murze 90x210, 80x210, 150x210 cm; wysokosc od podlogi) - lita czesc sciany od gory otworu do stropu, w jednej bryle ze scianami dzialowymi */
  (window.NADP=[[1.99,2.89,6.35,6.59,1.85],[6.92,7.04,2.95,3.85,2.10],[4.35,4.59,9.03,9.93,2.10],[4.35,4.59,11.76,12.66,2.10],[4.35,4.59,13.68,14.58,2.10],[4.35,4.59,17.93,18.83,2.10],[4.35,4.59,19.40,20.30,2.10],[5.82,5.94,14.53,15.43,2.10],[6.87,6.99,9.54,10.34,2.10],[7.60,9.10,6.35,6.59,2.10],[4.82,5.72,16.84,16.96,2.10]]).forEach(d=>PW.push(bx(d.slice(0,4),d[4],ZS)));
- wallSolid(WB);   /* jedna bryla domu: sciany zewnetrzne + pas przy posadzce (po zebraniu wszystkich czesci) */   /* prog w otworze bramy garazowej (od konca pochylni do lica sciany wewnetrznej) */
+ window.WINU=U;wallSolid(WB);   /* jedna bryla domu: sciany zewnetrzne + pas przy posadzce (po zebraniu wszystkich czesci) */   /* prog w otworze bramy garazowej (od konca pochylni do lica sciany wewnetrznej) */
  wallSolid(PW,M(0xf5f3ef,{roughness:.95}),'sciany_dzialowe','INTWALLS');wallSolid(FB,M(0xa9a49b,{roughness:.9}),'podlogi','FLOORS');window.IL=new THREE.PointLight(0xfff3e0,0,9,2);scene.add(IL);   /* latarka wnetrza: slabe swiatlo przy kamerze w trybie spaceru, tylko gdy stoimy w domu (daje cieniowanie scian bez swiatla slonecznego) */
  
  wallSolid(C1,window.CEILM=M(0xfbfaf7,{roughness:.95}),'strop','CEIL');   /* spod stropu: lekka emisja (dzien), zeby nie zielenial od swiatla odbitego od trawnika */wallSolid(C2,M(0xcfc9be,{roughness:.9}),'podloga_pietra','UPFLOOR');
@@ -3319,8 +3319,9 @@ const MTC=(()=>{
     if(P.some(p=>Math.abs(p[0]*vn[0]+p[2]*vn[2]-d)>.004))continue;
     const c=MTC.cross(MTC.sub(P[1],P[0]),MTC.sub(P[2],P[0])),cl=Math.hypot(c[0],c[1],c[2]);if(cl<1e-9)continue;if((c[0]*vn[0]+c[2]*vn[2])/cl<.999)continue;
     cand.push(...P[0],...P[1],...P[2])}}
-  const tris=wallClip(WP,cand,r=>r===id,FY,2.7);if(!tris.length)return null;const r=window.ROOMS[id];
-  return{kind:'plane',n:vn.slice(),d,vn:vn.slice(),tris,N:5000+id*100+Math.round(d*10),pt:hp,label:id+'. '+r[0]+' · ściana',note:'Ściana pomieszczenia '+id+' ('+r[0].toLowerCase()+') jako jedna ciągła płaszczyzna, tylko w obrębie tego pokoju'}}
+  const gp=r=>(r===1||r===2||r===11)?1:r,G0=gp(id);   /* przestrzen otwarta (salon + aneks + korytarz) ma podzial tylko umowny - sciana nie jest tam cieta */
+  let tris=wallClip(WP,cand,r=>r&&gp(r)===G0,FY,2.7);if(!tris.length)return null;tris=edgeComp(tris,hp);   /* tylko skladowa spojna z miejscem klikniecia: wspolplaszczyznowe sciany rozdzielone wneka sa niezalezne */
+  return{kind:'plane',n:vn.slice(),d,vn:vn.slice(),tris,N:5000+id*100+Math.round(d*10)+'_'+tris.length,pt:hp}}
  /* wnęki / ościeża (przed plaszczyzna nie ma pokoju): zwykly platek wspolplaszczyznowy, ale przyciety do czesci, przed ktora jest otwor/wnęka, a nie pokoj lub elewacja */
  /* skladowa spojna po wspolnych krawedziach (z T-spoinami: krawedzie zachodzace na siebie), zawierajaca punkt hp; sasiedztwo tylko w wierzcholku sie nie liczy */
  function edgeComp(T,hp){const n=T.length/9;if(n<2||n>700)return T;const E=[];for(let t=0;t<n;t++){const q=t*9;for(let k=0;k<3;k++){const a=[T[q+3*k],T[q+3*k+1],T[q+3*k+2]],b=[T[q+3*((k+1)%3)],T[q+3*((k+1)%3)+1],T[q+3*((k+1)%3)+2]];E.push([t,a,b])}}
@@ -3330,7 +3331,17 @@ const MTC=(()=>{
   let best=-1,bd=1e9;for(let t=0;t<n;t++){const q=t*9,cx=(T[q]+T[q+3]+T[q+6])/3,cy=(T[q+1]+T[q+4]+T[q+7])/3,cz=(T[q+2]+T[q+5]+T[q+8])/3,dd=Math.hypot(cx-hp[0],cy-hp[1],cz-hp[2]);if(dd<bd){bd=dd;best=t}}
   const r=fd(best),o=[];for(let t=0;t<n;t++)if(fd(t)===r)for(let k=0;k<9;k++)o.push(T[t*9+k]);return o}
  function jambSurf(h,dir,s){if(!s||s.kind!=='plane'||!s.tris||!s.tris.length||!WALLN[h.object.name])return null;let tris=s.tris;const WP=wallPlane(h,dir);if(WP){if(WP.id)return null;const c=wallClip(WP,tris,r=>r===0);if(c.length)tris=c}
-  const hp=[h.point.x,h.point.y,h.point.z];tris=edgeComp(tris,hp);if(tris.length===s.tris.length&&Math.abs(triArea(tris)-triArea(s.tris))<1e-6)return null;return Object.assign({},s,{tris,N:s.N+'j'+tris.length})}
+  const hp=[h.point.x,h.point.y,h.point.z];tris=edgeComp(tris,hp);tris=winSide(tris,hp);if(tris.length===s.tris.length&&Math.abs(triArea(tris)-triArea(s.tris))<1e-6)return null;return Object.assign({},s,{tris,N:s.N+'j'+tris.length})}
+ /* wneka okienna: plaszczyzna ramy (D+.04 = 24 cm od lica zewnetrznego) dzieli ościeże na czesc zewnetrzna i wewnetrzna - zostaje ta po stronie klikniecia */
+ function winSide(T,hp){const W=window.WINU;if(!W)return T;const px=hp[0],py=-hp[2];
+  for(const o of W){if(o.kind==='garage'||o.kind==='lux')continue;const l=o.cut||[o.ctr-o.w/2,o.ctr+o.w/2],al=o.ax==='y'?px:py,ac=o.ax==='y'?py:px,lo=Math.min(o.c,o.c-o.s*.45),hi=Math.max(o.c,o.c-o.s*.45);
+   if(al<l[0]-.02||al>l[1]+.02||ac<lo-.01||ac>hi+.01||hp[1]<o.sill-.02||hp[1]>o.sill+o.h+.02)continue;
+   const F=o.c-o.s*.24,sg=ac>=F?1:-1,cv=p=>o.ax==='y'?-p[2]:p[0];const out=[];
+   for(let q=0;q<T.length;q+=9){let poly=[[T[q],T[q+1],T[q+2]],[T[q+3],T[q+4],T[q+5]],[T[q+6],T[q+7],T[q+8]]];const keep=p=>sg*(cv(p)-F);
+    const cl=[];for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length],fa=keep(a),fb=keep(b);if(fa>=0)cl.push(a);if((fa>=0)!==(fb>=0)){const r=fa/(fa-fb);cl.push([a[0]+(b[0]-a[0])*r,a[1]+(b[1]-a[1])*r,a[2]+(b[2]-a[2])*r])}}
+    for(let i=1;i+1<cl.length;i++)out.push(...cl[0],...cl[i],...cl[i+1])}
+   return out.length?out:T}
+  return T}
 
  function onPick(cx,cy,mode){mode=mode||st.once||st.mode;if(st.kind==='area'&&mode==='edge')mode='plane';st.once=null;st.warn='';const p=pick(cx,cy);if(!p){reset();return}   /* klik w pustke (niebo / poza plansze) = reset wyboru */
   let s;try{s=analyzeHit(p.h,p.dir,mode)}catch(e){console.warn(e);s={err:'Nie udało się przeanalizować tej powierzchni.'}}
