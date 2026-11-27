@@ -1654,9 +1654,12 @@ function pineTex(){const c=document.createElement('canvas');c.width=c.height=128
  const tx=new THREE.CanvasTexture(cv);tx.anisotropy=8;
  const bc=document.createElement('canvas');bc.width=64;bc.height=64;const b2=bc.getContext('2d');b2.fillStyle='#5b4330';b2.fillRect(0,0,64,64);for(let i=0;i<40;i++){b2.fillStyle=['#4a3626','#6d5239','#3f2f21'][i%3];b2.fillRect(Math.random()*64,0,1+Math.random()*3,64)}
  const bt=new THREE.CanvasTexture(bc);bt.wrapS=bt.wrapT=THREE.RepeatWrapping;
- const top=new THREE.MeshStandardMaterial({map:tx,color:0xc9ab84,roughness:.85}),side=new THREE.MeshStandardMaterial({map:bt,roughness:.95}),bot=new THREE.MeshStandardMaterial({color:0x5b4330});
- [[-.95,34.30,.19],[-.55,34.05,.16],[-1.15,33.85,.17],[-.7,33.6,.2],[-.3,33.35,.15],[-1.0,33.2,.16],[-.55,32.9,.18],[-.15,32.65,.14],[-.85,32.5,.17],[-.5,32.2,.16]].forEach(([x,y,r])=>{
-  const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r*1.03,.12,28),[side,top,bot]);q.position.set(x,G0+.025-.06,-y);q.rotation.y=Math.random()*6.3;q.castShadow=true;q.receiveShadow=true;scene.add(q)})}
+ const top=new THREE.MeshStandardMaterial({map:tx,color:0x8a6a4d,roughness:.85}),side=new THREE.MeshStandardMaterial({map:bt,roughness:.95}),bot=new THREE.MeshStandardMaterial({color:0x5b4330});
+ const kc=document.createElement('canvas');kc.width=kc.height=64;{const g=kc.getContext('2d'),gr=g.createRadialGradient(32,32,10,32,32,32);gr.addColorStop(0,'rgba(0,0,0,.6)');gr.addColorStop(.55,'rgba(0,0,0,.35)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,64,64)}
+ const kt=new THREE.CanvasTexture(kc);
+ [[-.80,34.30,.27],[-.30,34.22,.22],[-1.15,33.80,.20],[-.55,33.78,.26],[-.05,33.78,.20],[-.85,33.25,.25],[-.30,33.25,.22],[-1.30,33.30,.18],[-.60,32.75,.20]].forEach(([x,y,r])=>{
+  const q=new THREE.Mesh(new THREE.CylinderGeometry(r,r*1.03,.12,32),[side,top,bot]);q.position.set(x,G0+.015-.06,-y);q.rotation.y=Math.random()*6.3;q.castShadow=true;q.receiveShadow=true;scene.add(q);
+  const b=new THREE.Mesh(new THREE.PlaneGeometry(r*2.7,r*2.7),new THREE.MeshBasicMaterial({map:kt,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2,userData:{lnHid:1}}));b.rotation.x=-Math.PI/2;b.position.set(x,G0+.002,-y);b.renderOrder=1;b.userData.hl=1;scene.add(b)})}   /* cien kontaktowy pod kazdym plastrem (realny cien 1,5 cm elementu jest prawie niewidoczny) */
 FOOT.push([[-2.55,34.723],[.91,34.723],[.91,36.913],[-2.55,36.913]]);   /* obrys domku */
 const concM=gnTex(400,100,1,1,a=>gnBlock(a,0,0,400,100,'#a9a9a5',6000,0,0),.05),postM=M(0x16181b,{roughness:.45,metalness:.5});   /* beton szary z drobnym punktowym kruszywem (jak na zdjeciu); slupki ogrodzenia: czarny profil stalowy */
 function fence(x0,y0,x1,y1,h=1.75){const Ls=Math.hypot(x1-x0,y1-y0),dx=(x1-x0)/Ls,dy=(y1-y0)/Ls,n=Math.ceil(Ls/2.5),P=k=>[x0+(x1-x0)*k,y0+(y1-y0)*k];
