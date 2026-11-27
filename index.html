@@ -1609,20 +1609,20 @@ function pineTex(){const c=document.createElement('canvas');c.width=c.height=128
  bx(3.42,Y0,2.16,0,Y0/2,0,blk);
  {const sh=new THREE.Shape([new THREE.Vector2(0,0),new THREE.Vector2(.17,0),new THREE.Vector2(0,.05)]),g=new THREE.ExtrudeGeometry(sh,{depth:1.5,bevelEnabled:false});g.rotateY(-Math.PI/2);g.translate(.135+.75,0,hd);put(g,blk,0,0,0)}
  /* sciany z listew: przod po obu stronach drzwi, tyl, boki */
- wbx(1.11,YW-Y0,.04,-1.115,(YW+Y0)/2,hd-.02,wM);wbx(.84,YW-Y0,.04,1.25,(YW+Y0)/2,hd-.02,wM);   /* przod: lewy (114 cm) i prawy (87 cm) odcinek obok drzwi */
+ wbx(.976,YW-Y0,.04,-1.182,(YW+Y0)/2,hd-.02,wM);wbx(.976,YW-Y0,.04,1.182,(YW+Y0)/2,hd-.02,wM);   /* przod: lewy (114 cm) i prawy (87 cm) odcinek obok drzwi */
  wbx(3.34,YW-Y0,.04,0,(YW+Y0)/2,-hd+.02,wM);
  [-1,1].forEach(k=>{wbx(.04,YW-Y0,2.16,k*(hw-.02),(YW+Y0)/2,0,wM)});
  /* czarne naroza i slupki przy drzwiach */
- bx(.03,YW-Y0,.04,-.575,(YW+Y0)/2,hd+.002,blk);bx(.03,YW-Y0,.04,.845,(YW+Y0)/2,hd+.002,blk);
+ bx(.03,YW-Y0,.04,-.709,(YW+Y0)/2,hd+.002,blk);bx(.03,YW-Y0,.04,.709,(YW+Y0)/2,hd+.002,blk);
  /* drzwi dwuskrzydlowe 138,8 x 181 cm: 2 x 69,4 cm, antracytowe deski, czarna rama, klamka z rozeta, zawiasy */
  const dz=hd+.012;
- [[-.213],[.481]].forEach(([x])=>{const g=new THREE.BoxGeometry(.694,1.735,.03);g.translate(x,.075+.8675,dz);um(g);const q=new THREE.Mesh(g,dM);q.castShadow=q.receiveShadow=true;sg.add(q);statics.push(q)});
- bx(1.47,.067,.04,.135,1.81+.0335,dz,blk);bx(.006,1.735,.034,.134,.075+.8675,dz,blk);
- [-.56+.012,.83-.012].forEach(x=>[.28,.9,1.55].forEach(y=>bx(.03,.09,.014,x,.075+y,dz+.014,blk)));
- {const ro=put(new THREE.CylinderGeometry(.024,.024,.016,20),blk,.205,.075+.88,dz+.022);ro.rotation.x=Math.PI/2;bx(.12,.02,.02,.265,.075+.88,dz+.03,blk)}
+ [[-.347],[.347]].forEach(([x])=>{const g=new THREE.BoxGeometry(.694,1.735,.03);g.translate(x,.075+.8675,dz);um(g);const q=new THREE.Mesh(g,dM);q.castShadow=q.receiveShadow=true;sg.add(q);statics.push(q)});
+ bx(1.47,.067,.04,0,1.81+.0335,dz,blk);bx(.006,1.735,.034,0,.075+.8675,dz,blk);
+ [-.682,.682].forEach(x=>[.28,.9,1.55].forEach(y=>bx(.03,.09,.014,x,.075+y,dz+.014,blk)));
+ {const ro=put(new THREE.CylinderGeometry(.024,.024,.016,20),blk,.07,.075+.88,dz+.022);ro.rotation.x=Math.PI/2;bx(.12,.02,.02,.13,.075+.88,dz+.03,blk)}
  /* pasmo przeszklen (przod): czarna rama na calej szerokosci, 6 okien: [duze][male] | [duze][duze] nad drzwiami | [male][duze] */
  const fM=M(0x33312f,{roughness:.62,metalness:.05}),rcM=M(0x0b0b0b,{roughness:.8});
- const WL=[[-1.67,-.95],[-.90,-.70],[-.51,.10],[.17,.78],[.85,.98],[1.03,1.67]],yw0=1.935,yw1=2.115,yl=1.912,yc=2.135;
+ const WL=[[-1.67,-.95],[-.90,-.70],[-.51,-.03],[.03,.51],[.70,.90],[.95,1.67]],yw0=1.935,yw1=2.115,yl=1.912,yc=2.135;
  bx(3.42,YB-YW,.05,0,(YW+YB)/2,hd-.045,rcM);   /* ciemne tlo wneki okien */
  bx(3.42,.035,.04,0,YW+.0175,hd,fM);   /* gzyms nad listwami (wystaje) */
  bx(3.42,.035,.04,0,YB-.0175,hd-.004,fM);      /* listwa przejsciowa pod dachem (dwa stopnie) */
