@@ -160,6 +160,7 @@ body.walking canvas{touch-action:none}
 body.walking #pn_view .seg,body.walking #orth,body.walking #orth+*{opacity:.34;pointer-events:none}   /* w trybie spaceru zostaje tryb liniowy, siatka i granice dzialki; gotowe widoki i rzut ortogonalny wylaczone */
 #wkt{display:none;position:fixed;left:50%;transform:translateX(-50%);top:calc(74px + env(safe-area-inset-top,0px));max-width:calc(100vw - 24px);box-sizing:border-box;z-index:40;gap:8px;align-items:center;padding:6px 6px 6px 8px;border-radius:22px;font:600 13px system-ui,sans-serif;color:#fff;background:var(--lg-tint),var(--lg-bg);border:1px solid var(--lg-bd);box-shadow:var(--lg-sh);-webkit-backdrop-filter:var(--lg-f);backdrop-filter:var(--lg-f);text-shadow:0 1px 6px rgba(10,25,4,.5);-webkit-user-select:none;user-select:none}
 body.walking #wkt{display:flex}
+@media (min-width:640px){#wkt{top:calc(12px + env(safe-area-inset-top,0px))}}
 #wkt select{font:600 13px system-ui,sans-serif;color:#fff;background:rgba(20,24,28,.45);border:1px solid rgba(255,255,255,.35);border-radius:14px;padding:6px 8px;max-width:46vw;outline:none}
 #wkt select option,#wkt select optgroup{color:#111;background:#fff}
 #wkt button{font:700 13px system-ui,sans-serif;color:#fff;cursor:pointer;padding:7px 16px;border-radius:16px;border:1px solid rgba(255,255,255,.5);background:linear-gradient(155deg,#ffb05c,#e8643a);text-shadow:none}
