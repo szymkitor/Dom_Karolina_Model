@@ -213,7 +213,7 @@ body.walking #wkt{display:flex}
 <div class="ui hid" id="pn_elem">
  <div class="hd"><div class="tt">Elementy</div><div class="st">Drzwi, bramy, roleta, wiata, pergola</div></div>
  <section><h3>Dom</h3>
-  <div class="chips elg"><button id="dd" title="Otwórz / zamknij">Drzwi wejściowe</button><button id="hs0" title="Otwórz / zamknij">Drzwi HS – taras</button><button id="rl0" title="Zwiń / rozwiń">Roleta – sypialnia</button><button id="bd" title="Otwórz / zamknij">Drzwi sypialni</button><button id="bd2" title="Otwórz / zamknij">Drzwi garaż – wiatrołap</button><button id="bd3" title="Otwórz / zamknij">Drzwi łazienka (9)</button><button id="bd4" title="Otwórz / zamknij">Drzwi pokój (6)</button><button id="bd5" title="Otwórz / zamknij">Drzwi pokój (4)</button><button id="bd6" title="Otwórz / zamknij">Drzwi łazienka (8)</button><button id="bd7" title="Otwórz / zamknij">Drzwi garderoba (7)</button><button id="bd8" title="Otwórz / zamknij">Drzwi pokój (5)</button><button id="bda" title="Otwórz / zamknij">Wszystkie drzwi wewn.</button></div>
+  <div class="chips elg"><button id="dd" title="Otwórz / zamknij">Drzwi wejściowe</button><button id="hs0" title="Otwórz / zamknij">Drzwi HS – taras</button><button id="rl0" title="Zwiń / rozwiń">Roleta – sypialnia</button><button id="bd" title="Otwórz / zamknij">Drzwi sypialni</button><button id="bd2" title="Otwórz / zamknij">Drzwi garaż – wiatrołap</button><button id="bd3" title="Otwórz / zamknij">Drzwi łazienka (9)</button><button id="bd4" title="Otwórz / zamknij">Drzwi pokój (6)</button><button id="bd5" title="Otwórz / zamknij">Drzwi pokój (4)</button><button id="bd6" title="Otwórz / zamknij">Drzwi łazienka (8)</button><button id="bd7" title="Otwórz / zamknij">Drzwi garderoba (7)</button><button id="bd8" title="Otwórz / zamknij">Drzwi pokój (5)</button><button id="bd9" title="Otwórz / zamknij">Drzwi garaż – kotłownia (EI30)</button><button id="bda" title="Otwórz / zamknij">Wszystkie drzwi wewn.</button></div>
   <small class="hint">Drzwi HS: skrzydło rusza od narożnika w stronę kuchni i zasuwa się na część stałą.</small></section>
  <section><h3>Garaż i wjazd</h3>
   <div class="chips elg"><button id="gd" title="Otwórz / zamknij">Brama garażowa</button><button id="gt" title="Otwórz / zamknij">Brama wjazdowa</button><button id="fk0" title="Otwórz / zamknij">Furtka</button></div>
@@ -1526,8 +1526,51 @@ GD.apply();DR.apply();document.getElementById('dd').onclick=()=>{DR.t=DR.t?0:1;d
   ['bd6',{x:4.59,y:18.38,fx:1,fy:0,hs:1,T:.24}],      /* lazienka (8) -> sypialnia (3) */
   ['bd7',{x:4.59,y:19.85,fx:1,fy:0,hs:-1,T:.24,nb:1}],     /* garderoba (7) -> sypialnia (3) */
   ['bd8',{x:5.82,y:14.98,fx:-1,fy:0,hs:-1,T:.12}]];     /* pokoj (5) -> korytarz (otwieranie na korytarz) */
- const ids=['bd'].concat(D.map(d=>d[0])),all=document.getElementById('bda');
+ const ids=['bd'].concat(D.map(d=>d[0])).concat(['bd9']),all=document.getElementById('bda');
  D.forEach(d=>mkDoor(d[1]));
+ /* DRZWI STALOWE PRZECIWPOZAROWE: Wisniowski DSp EI30 BASIC (kat. k81), jednoskrzydlowe, plaszczowe (blacha ocynkowana 0,5 mm, lakier proszkowy jasnoszary jak na zdjeciach), skrzydlo 45 mm z wypelnieniem welna mineralna, ościeżnica narozna (stal 1,2 mm) z odsadzka 7 mm do muru i luzem 5,5 mm na wysokosci; otwor 90 x 210 cm (od posadzki garazu -0,25 do nadproza 1,85): skrzydlo 874 mm (swiatlo przejscia 820 mm), bezprogowe; 2 zawiasy (dolny ze sprezyna naciagowa); klamka standard z czarnego polipropylenu z rdzeniem stalowym na owalnym szyldzie z wkladka patentowa (z obu stron); skrzydlo otwierane w strone kotlowni, zawiasy po stronie x = 2,89 wg rzutu.
+    Uklad lokalny jak w mkDoor: u wzdluz otworu, v od lica sciany po stronie otwierania (kotlownia) w glab sciany, z od posadzki (przy fg.y = Y0). Os zawiasow w naroznku od strony lica skrzydla (u = -0,429, v = 0,031), dzieki czemu skrzydlo nie zahacza o ościeżnice. */
+ const mkSteel=cfg=>{const CX=cfg.x,CY=cfg.y,S=cfg.hs,T=cfg.T,PHI=Math.atan2(cfg.fx,-cfg.fy),CP=Math.cos(PHI),SP=Math.sin(PHI);
+  const DOOR={p:0,t:0,g:null,cfg,steel:1,apply(){if(this.g){const e=this.p*this.p*(3-2*this.p);this.g.rotation.y=-S*1.745*e}}};
+  const pm=M(0xc4c7c8,{roughness:.46,metalness:.12}),pf=M(0xbfc2c3,{roughness:.5,metalness:.1}),pp=M(0x0b0b0c,{roughness:.5,metalness:.05}),ss=M(0x9ea2a6,{roughness:.35,metalness:.8}),kk=M(0x030304,{roughness:.9}),hbz=M(0x6b6f73,{roughness:.4,metalness:.8});
+  const fg=new THREE.Group();fg.position.set(CX,cfg.y0,-CY);fg.rotation.y=PHI;scene.add(fg);
+  const bx=(par,u0,u1,z0,z1,v0,v1,m,du=0,dv=0,st)=>{const a=S*u0,b=S*u1,lo=Math.min(a,b),hi=Math.max(a,b),me=new THREE.Mesh(new THREE.BoxGeometry(hi-lo,z1-z0,v1-v0),m);me.position.set((lo+hi)/2-S*du,(z0+z1)/2,-((v0+v1)/2-dv));me.castShadow=me.receiveShadow=true;par.add(me);if(st)statics.push(me);return me};
+  const cy=(par,r,len,ax,u,z,v,m,du=0,dv=0)=>{const me=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,20),m);me.position.set(S*u-S*du,z,-(v-dv));if(ax==='v')me.rotation.x=Math.PI/2;if(ax==='u')me.rotation.z=Math.PI/2;me.castShadow=true;par.add(me);return me};
+  /* ościeżnica narozna: wymiar zewnetrzny 886 x 2094,5 mm (otwor 900 x 2100 minus luz 7 mm po bokach i 5,5 mm u gory), liner w otworze 2 mm, obrzeze od lica 2 mm, tylna przylga (kolnierz) do swiatla przejscia 820 mm; obrzeza i kolnierz zakrywaja szczeline montazowa */
+  const ZO=2.0945,F=(u0,u1,z0,z1,v0,v1)=>bx(fg,u0,u1,z0,z1,v0,v1,pm,0,0,1),sd=(a,b,z0,z1,v0,v1)=>{F(-b,-a,z0,z1,v0,v1);F(a,b,z0,z1,v0,v1)};
+  sd(.441,.443,0,ZO,.002,.0765);F(-.441,.441,2.0925,ZO,.002,.0765);   /* liner: boki + nadproze */
+  sd(.441,.45,0,2.089,0,.002);F(-.45,.45,2.089,2.1,0,.002);           /* obrzeze od strony otwierania */
+  sd(.4095,.45,0,2.061,.0765,.0785);F(-.45,.45,2.061,2.1,.0765,.0785);   /* kolnierz tylny (przylga skrzydla) */
+  /* zaczep zamka (stal nierdzewna) w ościeżnicy po stronie klamki */
+  bx(fg,.4095,.4115,.97,1.09,.0765,.0785,ss,0,0,1);
+  /* skrzydlo: 874 x 2078 x 44,5 mm, grupa obracana wokol osi zawiasow */
+  const UH=-.429,VH=.031,lf=new THREE.Group();lf.position.set(S*UH,0,-VH);fg.add(lf);DOOR.g=lf;
+  const L=(u0,u1,z0,z1,v0,v1,m=pf)=>bx(lf,u0,u1,z0,z1,v0,v1,m,UH,VH);
+  L(-.437,.437,.008,2.086,.031,.0755,pm);
+  /* przetloczenie 3-stronnego zagiecia (przylgi) przy krawedziach skrzydla od lica: waski rowek 3 mm */
+  L(-.437,.437,2.0805,2.086,.0285,.031,pf);L(.4315,.437,.008,2.0805,.0285,.031,pf);L(-.437,-.4315,.008,2.0805,.0285,.031,pf);
+  /* zawiasy: 2 szt. (gorny 1,78 m, dolny 0,30 m ze sprezyna naciagowa), lufa Ø22 mm w narozniku lica */
+  [[1.78,.12,0],[.30,.12,1]].forEach(([z,len,sp])=>{cy(lf,.011,len,'y',UH,z,VH,hbz,UH,VH);if(sp){cy(lf,.0125,.07,'y',UH,z+.085,VH,hbz,UH,VH)}});
+  /* klamka standard (czarny PP z rdzeniem stalowym) na owalnym szyldzie 52 x 190 mm z wkladka patentowa, z obu stron; dzwignia w strone zawiasow */
+  const HU=.375,HZ=1.045,PZ=.995,KZ=.945,pr=.026,ph=.095;
+  const oval=(()=>{const s=new THREE.Shape(),r=pr,h=ph-r;s.moveTo(-r,-h);s.lineTo(-r,h);s.absarc(0,h,r,Math.PI,0,true);s.lineTo(r,-h);s.absarc(0,-h,r,0,Math.PI,true);return new THREE.ExtrudeGeometry(s,{depth:.006,bevelEnabled:true,bevelThickness:.0012,bevelSize:.0012,bevelSegments:1})})();
+  const side=s=>{const dv=s<0?-1:1,v0=s<0?.031:.0755;   /* s<0: lico (strona otwierania), s>0: druga strona */
+   const pl=new THREE.Mesh(oval,pp);pl.position.set(S*HU-S*UH,PZ,-((s<0?v0:v0+.0065)-VH)*1);if(s<0)pl.position.z=-(v0-VH)-.0002;else pl.position.z=-(v0+.006-VH)-.0002;pl.scale.z=1;lf.add(pl);pl.castShadow=true;
+   const vo=v0+dv*.0072;   /* licze szyldu */
+   cy(lf,.0165,.004,'v',HU,HZ,vo+dv*.002,pp,UH,VH);   /* rozeta */
+   cy(lf,.0095,.033,'v',HU,HZ,vo+dv*.0185,pp,UH,VH);   /* szyjka */
+   const vc=vo+dv*.035;cy(lf,.0095,.132,'u',HU-.066,HZ,vc,pp,UH,VH);
+   const bl=new THREE.Mesh(new THREE.SphereGeometry(.0105,14,10),pp);bl.position.set(S*(HU-.132)-S*UH,HZ,-(vc-VH));bl.castShadow=true;lf.add(bl);
+   const b2=new THREE.Mesh(new THREE.SphereGeometry(.0095,12,8),pp);b2.position.set(S*HU-S*UH,HZ,-(vc-VH));lf.add(b2);
+   /* wkladka patentowa: pierscien stalowy + ciemny otwor euro (kolo + szczelina) */
+   cy(lf,.0085,.003,'v',HU,KZ,vo+dv*.0004,ss,UH,VH);cy(lf,.0055,.0034,'v',HU,KZ+.004,vo+dv*.0012,kk,UH,VH);bx(lf,HU-.0014,HU+.0014,KZ-.012,KZ+.004,vo+dv*.0002,vo+dv*.0026,kk,UH,VH)};
+  side(-1);side(1);
+  DOOR.apply();
+  const uP=[CP,SP],fP=[cfg.fx,cfg.fy],pt=(u,v)=>[CX+uP[0]*S*u-fP[0]*v,CY+uP[1]*S*u-fP[1]*v],bb=a=>{const xs=a.map(p=>p[0]),ys=a.map(p=>p[1]);return[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)]};
+  DOOR.nr=bb([pt(-.45,0),pt(.45,0),pt(.45,T),pt(-.45,T)]);
+  {const h=pt(UH,VH),e=[h[0]+fP[0]*.88,h[1]+fP[1]*.88],d=[uP[0]*.03,uP[1]*.03];DOOR.lr=bb([[h[0]-d[0],h[1]-d[1]],[h[0]+d[0],h[1]+d[1]],[e[0]+d[0],e[1]+d[1]],[e[0]-d[0],e[1]-d[1]]])}
+  BDS.push(DOOR);return DOOR};
+ window.BDS9=mkSteel({x:2.44,y:6.59,fx:0,fy:1,hs:1,T:.24,y0:-.25});   /* garaz -> kotlownia (EI30), otwieranie w kotlownie, zawiasy od x 2,89 */
  const sync=()=>{const n=BDS.filter(b=>b.t).length;all.classList.toggle('on',n===BDS.length)};
  BDS.forEach((b,i)=>{const e=document.getElementById(ids[i]);e.onclick=()=>{b.t=b.t?0:1;e.classList.toggle('on',!!b.t);sync()}});
  all.onclick=()=>{const v=BDS.every(b=>b.t)?0:1;BDS.forEach((b,i)=>{b.t=v;document.getElementById(ids[i]).classList.toggle('on',!!v)});sync()}}
