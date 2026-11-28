@@ -1521,11 +1521,11 @@ GD.apply();DR.apply();document.getElementById('dd').onclick=()=>{DR.t=DR.t?0:1;d
  window.BDR=mkDoor({x:5.27,y:16.98,fx:0,fy:-1,hs:1,T:.12});   /* sypialnia (3) <- korytarz, zawiasy od x 4,82, otwieranie na korytarz */
  const D=[['bd2',{x:7.04,y:3.40,fx:1,fy:0,hs:-1,T:.12,nb:1}],      /* garaz -> wiatrolap (otwieranie w wiatrolap) */
   ['bd3',{x:4.59,y:9.48,fx:1,fy:0,hs:-1,T:.24}],      /* lazienka (9) -> korytarz */
-  ['bd4',{x:4.35,y:12.21,fx:-1,fy:0,hs:1,T:.24}],     /* korytarz -> pokoj (6) */
-  ['bd5',{x:4.35,y:14.13,fx:-1,fy:0,hs:-1,T:.24}],    /* korytarz -> pokoj (4) */
+  ['bd4',{x:4.59,y:12.21,fx:1,fy:0,hs:-1,T:.24}],     /* pokoj (6) -> korytarz (otwieranie na korytarz, jak w sypialni) */
+  ['bd5',{x:4.59,y:14.13,fx:1,fy:0,hs:1,T:.24}],    /* pokoj (4) -> korytarz (otwieranie na korytarz) */
   ['bd6',{x:4.59,y:18.38,fx:1,fy:0,hs:1,T:.24}],      /* lazienka (8) -> sypialnia (3) */
   ['bd7',{x:4.59,y:19.85,fx:1,fy:0,hs:-1,T:.24,nb:1}],     /* garderoba (7) -> sypialnia (3) */
-  ['bd8',{x:5.94,y:14.98,fx:1,fy:0,hs:1,T:.12}]];     /* korytarz -> pokoj (5) */
+  ['bd8',{x:5.82,y:14.98,fx:-1,fy:0,hs:-1,T:.12}]];     /* pokoj (5) -> korytarz (otwieranie na korytarz) */
  const ids=['bd'].concat(D.map(d=>d[0])),all=document.getElementById('bda');
  D.forEach(d=>mkDoor(d[1]));
  const sync=()=>{const n=BDS.filter(b=>b.t).length;all.classList.toggle('on',n===BDS.length)};
