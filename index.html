@@ -1114,7 +1114,7 @@ BD.forEach(([ax,c,s,a0,a1])=>{const ops=U.filter(o=>o.ax==ax&&o.c==c&&o.s==s&&o.
 /* cokol: wg elewacji (str. 3) tynk konczy sie na -0,10 m, ponizej wciety o ok. 5 cm pas cokolu (jasnoszary) do gruntu; brak w otworze bramy garazowej (x 1,16-6,16) */
 {const ar=WP.reduce((t,p,i)=>{const q=WP[(i+1)%WP.length];return t+p[0]*q[1]-q[0]*p[1]},0),sg=ar>0?1:-1,n=WP.length,
  ins=d=>{const L=WP.map((p,i)=>{const q=WP[(i+1)%n],dx=q[0]-p[0],dy=q[1]-p[1],l=Math.hypot(dx,dy);return[p[0]-dy/l*sg*d,p[1]+dx/l*sg*d,dx,dy]});return WP.map((p,i)=>{const A=L[(i+n-1)%n],B=L[i],den=A[2]*B[3]-A[3]*B[2],t=((B[0]-A[0])*B[3]-(B[1]-A[1])*B[2])/den;return[A[0]+A[2]*t,A[1]+A[3]*t]})},
- P1=ins(.05),P2=ins(.30),plM=M(0xc6c8ca,{roughness:.92});
+ P1=ins(.05),P2=ins(.30),plM=M(0x8f9194,{roughness:.92});
  for(let i=0;i<n;i++){const j=(i+1)%n;let pcs=[[P1[i],P1[j],P2[j],P2[i]]];
   if(i===0)pcs=[clipH(pcs[0],-1,0,1.16),[[6.16,.05],[7.25,.05],[7.25,.30],[6.16,.30]]];if(i===1)continue;if(i===2)pcs=[clipH(pcs[0],1,0,-10.05)];   /* przy tarasie wejscia wciecie konczy sie na jego bocznej scianie (x 10,05) */
   pcs.forEach(pc=>{if(pc.length<3)return;const g=new THREE.ExtrudeGeometry(new THREE.Shape(pc.map(p=>new THREE.Vector2(p[0],p[1]))),{depth:.205,bevelEnabled:false});g.rotateX(-Math.PI/2);add(g,plM,0,-.305,0)})}}
