@@ -1497,8 +1497,8 @@ GD.apply();DR.apply();document.getElementById('dd').onclick=()=>{DR.t=DR.t?0:1;d
  [[ZM1,ZR1],[ZL0,ZM0]].forEach(([z0,z1])=>{L(-SU,SU,z0,z1,-.004,.012);fr((z0+z1)/2,z1-z0,-.004,-.009);fr((z0+z1)/2,z1-z0,.012,.017)});   /* plyciny HDF 16 mm + fazowane wypuklosci z obu stron */
  /* czolo zamka w krawedzi skrzydla */
  bx(lf,.399,.4002,1.03,1.11,.002,.022,sv,UH,VH);
- /* zawiasy 3 x (srebrne, dwuczopowe): lufa w szczelinie od strony korytarza + blaszki na licu skrzydla i na futrynie */
- [1.776,1.238,.296].forEach(z=>{cy(lf,.008,.100,'y',UH,z,VH,sv,UH,VH);bx(lf,-.432,-.384,z-.045,z+.045,-.0185,-.016,sv,UH,VH);bx(fg,-.440,-.402,z-.045,z+.045,-.0014,0,sv,0,0,1)});
+ /* zawiasy 3 x srebrne dwuczopowe Ø16 (str. 185): widoczna tylko lufa w rowku miedzy skrzydlem a futryna, czopy siedza w otworach w krawedzi skrzydla i futryny (bez blaszek na licu) */
+ [1.776,1.238,.296].forEach(z=>{cy(lf,.008,.065,'y',UH,z,VH,sv,UH,VH)});
  /* klamki LUNA SLIM kwadrat czarny mat (os 1,07 m, strona zamka u = +0,372, dzwignia w strone zawiasow) */
  const HU=.372,HZ=1.07,sd=(s)=>{const v0=s<0?F0:B1,dv=s<0?-1:1;   /* s<0: strona korytarza (lico przylgi), s>0: strona sypialni */
   const r1=s<0?F0-.007:B1,r2=s<0?F0:B1+.007;L(HU-.026,HU+.026,HZ-.026,HZ+.026,r1,r2,hb);   /* szyld kwadratowy 52 x 52 x 7 mm */
