@@ -3347,9 +3347,11 @@ const MTC=(()=>{
  function winSide(T,hp){const W=window.WINU;if(!W)return T;const px=hp[0],py=-hp[2];
   for(const o of W){if(o.kind==='garage'||o.kind==='lux')continue;const l=o.cut||[o.ctr-o.w/2,o.ctr+o.w/2],al=o.ax==='y'?px:py,ac=o.ax==='y'?py:px,lo=Math.min(o.c,o.c-o.s*.45),hi=Math.max(o.c,o.c-o.s*.45);
    if(al<l[0]-.02||al>l[1]+.02||ac<lo-.01||ac>hi+.01||hp[1]<o.sill-.02||hp[1]>o.sill+o.h+.02)continue;
-   const F=o.c-o.s*.24,sg=ac>=F?1:-1,cv=p=>o.ax==='y'?-p[2]:p[0];const out=[];
-   for(let q=0;q<T.length;q+=9){let poly=[[T[q],T[q+1],T[q+2]],[T[q+3],T[q+4],T[q+5]],[T[q+6],T[q+7],T[q+8]]];const keep=p=>sg*(cv(p)-F);
-    const cl=[];for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length],fa=keep(a),fb=keep(b);if(fa>=0)cl.push(a);if((fa>=0)!==(fb>=0)){const r=fa/(fa-fb);cl.push([a[0]+(b[0]-a[0])*r,a[1]+(b[1]-a[1])*r,a[2]+(b[2]-a[2])*r])}}
+   const F=o.c-o.s*.24,sg=ac>=F?1:-1,cv=p=>o.ax==='y'?-p[2]:p[0],av=p=>o.ax==='y'?p[0]:-p[2],e=.004;const out=[];
+   /* wneka = prostopadloscian otworu (rozpietosc x grubosc sciany x wysokosc okna) przyciety plaszczyzna ramy: zostaje tylko czesc po stronie klikniecia, bez wspolplaszczyznowych sasiadow (np. spod tarasu, lico sciany w narozniku) */
+   const PL=[p=>sg*(cv(p)-F),p=>hi-cv(p)+e,p=>cv(p)-lo+e,p=>av(p)-l[0]+e,p=>l[1]-av(p)+e,p=>p[1]-o.sill+e,p=>o.sill+o.h-p[1]+e];
+   for(let q=0;q<T.length;q+=9){let cl=[[T[q],T[q+1],T[q+2]],[T[q+3],T[q+4],T[q+5]],[T[q+6],T[q+7],T[q+8]]];
+    for(const keep of PL){if(cl.length<3)break;const nx=[];for(let i=0;i<cl.length;i++){const a=cl[i],b=cl[(i+1)%cl.length],fa=keep(a),fb=keep(b);if(fa>=0)nx.push(a);if((fa>=0)!==(fb>=0)){const r=fa/(fa-fb);nx.push([a[0]+(b[0]-a[0])*r,a[1]+(b[1]-a[1])*r,a[2]+(b[2]-a[2])*r])}}cl=nx}
     for(let i=1;i+1<cl.length;i++)out.push(...cl[0],...cl[i],...cl[i+1])}
    return out.length?out:T}
   return T}
